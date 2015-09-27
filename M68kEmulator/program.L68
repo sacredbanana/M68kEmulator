@@ -1,0 +1,33 @@
+00002000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.15.04
+Created On: 9/24/2015 5:28:25 AM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00002000                             7      ORG    $2000
+Line 8 ERROR: Invalid opcode
+00002000                             8      LOAD   $2002
+00002000                             9  START:                  ; first instruction of program
+00002000                            10  
+00002000                            11  * Put program code here
+00002000  163C 00FF                 12      move.b #$FF,d3
+00002004  7025                      13      MOVE.L #$25,d0
+00002006= 54 68 65 20 70 72 ...     14      dc.b 'The program loaded',0
+0000201A  FFFF FFFF                 15      SIMHALT             ; halt simulator
+0000201E                            16  
+0000201E                            17  * Put variables and constants here
+0000201E                            18  
+0000201E                            19      END    START        ; last line of source
+
+1 error detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+START               2000
