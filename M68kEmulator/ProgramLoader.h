@@ -7,6 +7,6 @@ class ProgramLoader
 public:
 	static void loadProgram(string fileName, CPUCore *cpu, Memory *memory);
 private:
-	static inline uint32_t ProgramLoader::extractHex(string record);
+	static inline uint32_t extractHex(string record);
 };
 

@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <cstdint>
 
-Memory::Memory(unsigned int sizeinKB = 256)
+Memory::Memory(unsigned int sizeinKB)
 {
 	this->sizeInKB = sizeinKB;
 	unsigned int sizeInBytes = sizeinKB * 1024;

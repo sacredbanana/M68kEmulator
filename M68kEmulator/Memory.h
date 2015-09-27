@@ -12,7 +12,7 @@ private:
 	void clearMemory();
 	void insertString(string s, unsigned int address);
 public:
-	Memory(unsigned int sizeInKB);
+	Memory(unsigned int sizeInKB = 256);
 	~Memory();
 	uint32_t startingLocation = 0;
 	uint8_t readByteFromMemory(uint32_t address, int offset = 0);
