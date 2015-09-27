@@ -19,7 +19,7 @@ private:
 		MC68060 = 68060
 	} model;
 
-	Memory *memory = NULL;
+	Memory *memory = nullptr;
 
 	bool decodeInstruction(uint16_t instruction);
 	void writeByteToDataRegister(uint8_t data, int reg);

@@ -753,7 +753,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			return true;
 			break;
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_POSTINCREMENT:
-			if (size = SIZE_WORD) {
+			if (size == SIZE_WORD) {
 				memory->writeWordToMemory(data, A[destinationReg]);
 				A[destinationReg] += 2;
 			}
@@ -764,7 +764,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			return true;
 			break;
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_PREDECREMENT:
-			if (size = SIZE_WORD) {
+			if (size == SIZE_WORD) {
 				A[destinationReg] += 2;
 				memory->writeWordToMemory(data, A[destinationReg]);
 			}
@@ -778,7 +778,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
 			cout << "Displacement: " << displacement << endl;
-			if (size = SIZE_WORD)
+			if (size == SIZE_WORD)
 				memory->writeWordToMemory(data, A[destinationReg], displacement);
 			else
 				memory->writeLongToMemory(data, A[destinationReg], displacement);
