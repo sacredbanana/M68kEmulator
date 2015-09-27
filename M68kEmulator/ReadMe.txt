@@ -1,40 +1,22 @@
 ========================================================================
-    CONSOLE APPLICATION : M68kEmulator Project Overview
+    CONSOLE APPLICATION : M68kEmulator by Cameron Armstrong 2015
 ========================================================================
 
-AppWizard has created this M68kEmulator application for you.
+This is an emulator of the Motorola 68000 series of microprocessors.
 
-This file contains a summary of what you will find in each of the files that
-make up your M68kEmulator application.
+How to compile in the command line in Mac/Linux:
+Navigate to the project directory and run: g++ M68kEmulator.cpp Memory.cpp CPUCore.cpp ProgramLoader.cpp -std=c++11 -o M68kEmulator
 
+The program will open a file in its directory called program.S68
+This is a Motorola S-Record file. The sample one provided was assembled with the EASy68K assembler. You may use this file or create your 
+own program by writing assembly code in an assembler and saving the S68 file as program.S68
 
-M68kEmulator.vcxproj
-    This is the main project file for VC++ projects generated using an Application Wizard.
-    It contains information about the version of Visual C++ that generated the file, and
-    information about the platforms, configurations, and project features selected with the
-    Application Wizard.
+Current recognised instructions:
 
-M68kEmulator.vcxproj.filters
-    This is the filters file for VC++ projects generated using an Application Wizard. 
-    It contains information about the association between the files in your project 
-    and the filters. This association is used in the IDE to show grouping of files with
-    similar extensions under a specific node (for e.g. ".cpp" files are associated with the
-    "Source Files" filter).
-
-M68kEmulator.cpp
-    This is the main application source file.
-
-/////////////////////////////////////////////////////////////////////////////
-Other standard files:
-
-StdAfx.h, StdAfx.cpp
-    These files are used to build a precompiled header (PCH) file
-    named M68kEmulator.pch and a precompiled types file named StdAfx.obj.
-
-/////////////////////////////////////////////////////////////////////////////
-Other notes:
-
-AppWizard uses "TODO:" comments to indicate parts of the source code you
-should add to or customize.
-
-/////////////////////////////////////////////////////////////////////////////
+CLR
+JMP
+MOVE.B
+MOVE.W
+MOVE.L
+MOVEQ
+TRAP
