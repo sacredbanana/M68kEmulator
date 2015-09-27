@@ -1,7 +1,6 @@
 // M68kEmulator.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
 #include "CPUCore.h"
 #include "Memory.h"
 #include "ProgramLoader.h"

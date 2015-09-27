@@ -152,7 +152,6 @@
     <ClInclude Include="CPUCore.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="ProgramLoader.h" />
-    <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
@@ -160,7 +159,6 @@
     <ClCompile Include="M68kEmulator.cpp" />
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="ProgramLoader.cpp" />
-    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
