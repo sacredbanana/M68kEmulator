@@ -1,6 +1,6 @@
 00002000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.04
-Created On: 9/28/2015 8:41:17 PM
+Created On: 9/28/2015 9:11:10 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -12,18 +12,18 @@ Created On: 9/28/2015 8:41:17 PM
 00002000                             8  START:                  ; first instruction of program
 00002000                             9  
 00002000                            10  * Put program code here
-00002000  227C 00002026             11      move.l #MESSAGE,a1
+00002000  227C 00002014             11      move.l #MESSAGE,a1
 00002006  103C 000D                 12      move.b #13,d0
 0000200A  4E4F                      13      TRAP #15
 0000200C  4E4F                      14      TRAP #15
-0000200E= 54 68 65 20 70 72 ...     15      dc.b 'The program loaded',0
-00002022  FFFF FFFF                 16      SIMHALT             ; halt simulator
-00002026                            17  
-00002026                            18  MESSAGE:
-00002026= 59 6F 75 20 73 68 ...     19      dc.b 'You should be able to read this!',0
-00002047                            20  * Put variables and constants here
-00002047                            21  
-00002047                            22      END    START        ; last line of source
+0000200E  4E71                      15      NOP
+00002010  FFFF FFFF                 16      SIMHALT             ; halt simulator
+00002014                            17  
+00002014                            18  MESSAGE:
+00002014= 59 6F 75 20 73 68 ...     19      dc.b 'You should be able to read this!',0
+00002035                            20  * Put variables and constants here
+00002035                            21  
+00002035                            22      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -32,5 +32,5 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-MESSAGE             2026
+MESSAGE             2014
 START               2000

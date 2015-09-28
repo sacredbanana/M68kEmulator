@@ -22,6 +22,7 @@
 #define MOVE_W 0x3000
 #define MOVE_L 0x2000
 #define MOVEQ 0x7000
+#define NOP 0x4E71
 #define TRAP 0x4E40
 
 //Addressing modes
@@ -893,7 +894,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	if ((instruction & 0xFFF0) == TRAP) {
 		uint8_t vector = instruction & 15;
 		if (debugMode)
-			cout << "Trap" << endl;
+			cout << "TRAP" << endl;
 		char character = 0;
 		unsigned int characterIndex = 0;
 		/* IO (Compatible with Easy68k)
@@ -999,6 +1000,14 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		default:
 			cout << "Unknown TRAP task" << endl;
 		}
+	}
+
+	// NOP (No Operation)
+	if (instruction == NOP) {
+		if (debugMode)
+			cout << "NO OPERATION" << endl;
+
+		return true;
 	}
 
 	// Illegal instruction
