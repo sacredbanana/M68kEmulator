@@ -1,6 +1,6 @@
 00002000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.04
-Created On: 9/28/2015 9:11:10 PM
+Created On: 9/28/2015 9:38:47 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -12,7 +12,7 @@ Created On: 9/28/2015 9:11:10 PM
 00002000                             8  START:                  ; first instruction of program
 00002000                             9  
 00002000                            10  * Put program code here
-00002000  227C 00002014             11      move.l #MESSAGE,a1
+00002000  43F9 00002014             11      LEA MESSAGE,a1
 00002006  103C 000D                 12      move.b #13,d0
 0000200A  4E4F                      13      TRAP #15
 0000200C  4E4F                      14      TRAP #15

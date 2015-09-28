@@ -17,8 +17,10 @@ Current recognised instructions:
 
 CLR
 JMP
+LEA
 MOVE.B
 MOVE.W
 MOVE.L
 MOVEQ
+NOP
 TRAP

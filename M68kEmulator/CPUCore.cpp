@@ -18,6 +18,7 @@
 //Instructions
 #define CLR 0x4200
 #define JMP 0x4EC0
+#define LEA 0x41C0
 #define MOVE_B 0x1000
 #define MOVE_W 0x3000
 #define MOVE_L 0x2000
@@ -897,80 +898,81 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			cout << "TRAP" << endl;
 		char character = 0;
 		unsigned int characterIndex = 0;
-		/* IO (Compatible with Easy68k)
-		0	 Display string at (A1), D1.W bytes long (max 255) with carriage return and line feed (CR, LF). (see task 13)
-		1	 Display string at (A1), D1.W bytes long (max 255) without CR, LF. (see task 14)
-		2	 Read string from keyboard and store at (A1), NULL terminated, length retuned in D1.W (max 80)
-		3	 Display signed number in D1.L in decimal in smallest field. (see task 15 & 20)
-		4	 Read a number from the keyboard into D1.L.
-		5	 Read single character from the keyboard into D1.B.
-		6	 Display single character in D1.B.
-		7
-		Set D1.B to 1 if keyboard input is pending, otherwise set to 0.
-		Use code 5 to read pending key.
-
-		8	 Return time in hundredths of a second since midnight in D1.L.
-		9	 Terminate the program. (Halts the simulator)
-		10
-		Print the NULL terminated string at (A1) to the default printer. (Not Teesside compatible.)
-		Always send a Form Feed character to end printing. (See below.)
-		11
-		Position the cursor at ROW, COL.
-		The high byte of D1.W holds the COL number (0-79),
-		The low byte holds the ROW number (0-31).
-		0,0 is top left 79,31 is the bottom right.
-		Out of range coordinates are ignored.
-		Clear Screen : Set D1.W to $FF00.
-		12
-		Keyboard Echo.
-		D1.B = 0 to turn off keyboard echo.
-		D1.B = non zero to enable it (default).
-		Echo is restored on 'Reset' or when a new file is loaded.
-		13	 Display the NULL terminated string at (A1) with CR, LF.
-		14	 Display the NULL terminated string at (A1) without CR, LF.
-		15
-		Display the unsigned number in D1.L converted to number base (2 through 36) contained in D2.B.
-		For example, to display D1.L in base16 put 16 in D2.B
-		Values of D2.B outside the range 2 to 36 inclusive are ignored.
-		16	 Adjust display properties
-		D1.B = 0 to turn off the display of the input prompt.
-		D1.B = 1 to turn on the display of the input prompt. (default)
-		D1.B = 2 do not display a line feed when Enter pressed during Trap task #2 input
-		D1.B = 3 display a line feed when Enter key pressed during Trap task #2 input (default)
-		Other values of D1 reserved for future use.
-		Input prompt display is enabled by default and by 'Reset' or when a new file is loaded.
-		17
-		Combination of Trap codes 14 & 3.
-		Display the NULL terminated string at (A1) without CR, LF then
-		Display the decimal number in D1.L.
-		18	 Combination of Trap codes 14 & 4.
-		Display the NULL terminated string at (A1) without CR, LF then
-		Read a number from the keyboard into D1.L.
-		19	 Returns current state of up to 4 specified keys or returns key scan code.
-		Pre: D1.L = four 1-byte key codes
-		Post: D1.L contains four 1-byte Booleans.
-		$FF = corresponding key is pressed, $00 = corresponding key not pressed.
-		Pre: D1.L = $00000000
-		Post: D1.B contains key code of last key pressed
-		20	 Display signed number in D1.L in decimal in field D2.B columns wide.
-		21	 Set Font Color
-		D1.L = color as $00BBGGRR
-		BB is amount of blue from $00 to $FF
-		GG is amount of green from $00 to $FF
-		RR is amount of red from $00 to $FF
-		D2.B = style by bits,  0 = off, 1 = on
-		bit0 is Bold
-		bit1 is Italic
-		bit2 is Underline
-		bit3 is StrikeOut
-		22
-		Read char at Row,Col of text screen.
-		Pre: D1.L = High 16 bits = Row
-		Low 16 bits = Col
-		Post: D1.B contains ASCII code of character.
-		*/
+		
 		switch (vector) {
 		case 15:
+			/* IO (Compatible with Easy68k)
+			0	 Display string at (A1), D1.W bytes long (max 255) with carriage return and line feed (CR, LF). (see task 13)
+			1	 Display string at (A1), D1.W bytes long (max 255) without CR, LF. (see task 14)
+			2	 Read string from keyboard and store at (A1), NULL terminated, length retuned in D1.W (max 80)
+			3	 Display signed number in D1.L in decimal in smallest field. (see task 15 & 20)
+			4	 Read a number from the keyboard into D1.L.
+			5	 Read single character from the keyboard into D1.B.
+			6	 Display single character in D1.B.
+			7
+			Set D1.B to 1 if keyboard input is pending, otherwise set to 0.
+			Use code 5 to read pending key.
+
+			8	 Return time in hundredths of a second since midnight in D1.L.
+			9	 Terminate the program. (Halts the simulator)
+			10
+			Print the NULL terminated string at (A1) to the default printer. (Not Teesside compatible.)
+			Always send a Form Feed character to end printing. (See below.)
+			11
+			Position the cursor at ROW, COL.
+			The high byte of D1.W holds the COL number (0-79),
+			The low byte holds the ROW number (0-31).
+			0,0 is top left 79,31 is the bottom right.
+			Out of range coordinates are ignored.
+			Clear Screen : Set D1.W to $FF00.
+			12
+			Keyboard Echo.
+			D1.B = 0 to turn off keyboard echo.
+			D1.B = non zero to enable it (default).
+			Echo is restored on 'Reset' or when a new file is loaded.
+			13	 Display the NULL terminated string at (A1) with CR, LF.
+			14	 Display the NULL terminated string at (A1) without CR, LF.
+			15
+			Display the unsigned number in D1.L converted to number base (2 through 36) contained in D2.B.
+			For example, to display D1.L in base16 put 16 in D2.B
+			Values of D2.B outside the range 2 to 36 inclusive are ignored.
+			16	 Adjust display properties
+			D1.B = 0 to turn off the display of the input prompt.
+			D1.B = 1 to turn on the display of the input prompt. (default)
+			D1.B = 2 do not display a line feed when Enter pressed during Trap task #2 input
+			D1.B = 3 display a line feed when Enter key pressed during Trap task #2 input (default)
+			Other values of D1 reserved for future use.
+			Input prompt display is enabled by default and by 'Reset' or when a new file is loaded.
+			17
+			Combination of Trap codes 14 & 3.
+			Display the NULL terminated string at (A1) without CR, LF then
+			Display the decimal number in D1.L.
+			18	 Combination of Trap codes 14 & 4.
+			Display the NULL terminated string at (A1) without CR, LF then
+			Read a number from the keyboard into D1.L.
+			19	 Returns current state of up to 4 specified keys or returns key scan code.
+			Pre: D1.L = four 1-byte key codes
+			Post: D1.L contains four 1-byte Booleans.
+			$FF = corresponding key is pressed, $00 = corresponding key not pressed.
+			Pre: D1.L = $00000000
+			Post: D1.B contains key code of last key pressed
+			20	 Display signed number in D1.L in decimal in field D2.B columns wide.
+			21	 Set Font Color
+			D1.L = color as $00BBGGRR
+			BB is amount of blue from $00 to $FF
+			GG is amount of green from $00 to $FF
+			RR is amount of red from $00 to $FF
+			D2.B = style by bits,  0 = off, 1 = on
+			bit0 is Bold
+			bit1 is Italic
+			bit2 is Underline
+			bit3 is StrikeOut
+			22
+			Read char at Row,Col of text screen.
+			Pre: D1.L = High 16 bits = Row
+			Low 16 bits = Col
+			Post: D1.B contains ASCII code of character.
+			*/
 			switch (D[0] & 0xFF) {
 			case 13:
 				character = memory->readByteFromMemory(A[1]);
@@ -1006,6 +1008,109 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	if (instruction == NOP) {
 		if (debugMode)
 			cout << "NO OPERATION" << endl;
+
+		return true;
+	}
+
+	// LEA (Load Effective Addreww)
+	if ((instruction & 0xF1C0) == LEA) {
+
+		int sourceMode = ((instruction >> 3) & 7);
+		int sourceReg = (instruction & 7);
+		int destinationReg = ((instruction >> 9) & 7);
+
+		if (debugMode) {
+			cout << "LOADING EFFECTIVE ADDRESS" << endl;
+			cout << "Source mode is: " << sourceMode << endl;
+			cout << "Source address register is: " << sourceReg << endl;
+			cout << "Destination address register is: " << destinationReg << endl << endl;
+		}
+
+		switch (sourceMode) {
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT:
+			A[destinationReg] = A[sourceReg];
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
+			PC += 2;
+			displacement = memory->readWordFromMemory(PC);
+			if (debugMode)
+				cout << "Displacement: " << displacement << endl;
+			A[destinationReg] = A[sourceReg] + displacement;
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_INDEX:
+			PC += 2;
+			indexRegister = (memory->readByteFromMemory(PC) >> 4) & 0x0F;
+			indexSize = memory->readByteFromMemory(PC) & 0x0F;
+			longDisplacement = memory->readByteFromMemory(PC + 1);
+			if (indexRegister <= 7) {
+				if (indexSize == INDEX_SIZE_WORD) {
+					longDisplacement += (int16_t)D[indexRegister];
+				}
+				else
+					longDisplacement += D[indexRegister];
+			}
+			else {
+				if (indexSize == INDEX_SIZE_WORD) {
+					longDisplacement += (int16_t)A[indexRegister - 8];
+				}
+				else
+					longDisplacement += D[indexRegister - 8];
+			}
+			A[destinationReg] = A[sourceReg] + longDisplacement;
+			break;
+		case ADDRESS_MODE_OTHERS:
+			switch (sourceReg) {
+			case ADDRESS_MODE_ABSOLUTE_SHORT:
+				PC += 2;
+				absoluteAddress = memory->readWordFromMemory(PC);
+				A[destinationReg] = absoluteAddress;
+				break;
+			case ADDRESS_MODE_ABSOLUTE_LONG:
+				PC += 2;
+				absoluteAddress = memory->readLongFromMemory(PC);
+				A[destinationReg] = absoluteAddress;
+				PC += 2;
+				break;
+			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_DISPLACEMENT:
+				PC += 2;
+				displacement = memory->readWordFromMemory(PC);
+				if (debugMode)
+					cout << "Displacement: " << displacement << endl;
+				A[destinationReg] = PC + displacement;
+				break;
+			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_INDEX:
+				PC += 2;
+				indexRegister = (memory->readByteFromMemory(PC) >> 4) & 0x0F;
+				indexSize = memory->readByteFromMemory(PC) & 0x0F;
+				longDisplacement = memory->readByteFromMemory(PC + 1);
+				if (indexRegister <= 7) {
+					if (indexSize == INDEX_SIZE_WORD) {
+						longDisplacement += (int16_t)D[indexRegister];
+					}
+					else
+						longDisplacement += D[indexRegister];
+				}
+				else {
+					if (indexSize == INDEX_SIZE_WORD) {
+						longDisplacement += (int16_t)A[indexRegister - 8];
+					}
+					else
+						longDisplacement += D[indexRegister - 8];
+				}
+				A[destinationReg] = PC + longDisplacement;
+				break;
+			default:
+				cout << "Invalid addressing mode" << endl;
+				return false;
+				break;
+			}
+			break;
+
+		default:
+			cout << "Unrecognised addressing mode" << endl;
+			return false;
+			break;
+		}
 
 		return true;
 	}
