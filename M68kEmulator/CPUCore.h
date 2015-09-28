@@ -31,6 +31,7 @@ private:
 public:
 	CPUCore(Memory *memory, int model);
 	~CPUCore();
+	bool debugMode = false;
 	bool startNextCycle();
 	void displayInfo();
 	void setProgramCounter(unsigned int memoryLocation);

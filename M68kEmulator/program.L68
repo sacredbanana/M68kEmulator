@@ -1,6 +1,6 @@
 00002000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.04
-Created On: 9/24/2015 5:28:25 AM
+Created On: 9/28/2015 8:41:17 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -9,25 +9,28 @@ Created On: 9/24/2015 5:28:25 AM
 00000000                             5  * Description:
 00000000                             6  *-----------------------------------------------------------
 00002000                             7      ORG    $2000
-Line 8 ERROR: Invalid opcode
-00002000                             8      LOAD   $2002
-00002000                             9  START:                  ; first instruction of program
-00002000                            10  
-00002000                            11  * Put program code here
-00002000  163C 00FF                 12      move.b #$FF,d3
-00002004  7025                      13      MOVE.L #$25,d0
-00002006= 54 68 65 20 70 72 ...     14      dc.b 'The program loaded',0
-0000201A  FFFF FFFF                 15      SIMHALT             ; halt simulator
-0000201E                            16  
-0000201E                            17  * Put variables and constants here
-0000201E                            18  
-0000201E                            19      END    START        ; last line of source
+00002000                             8  START:                  ; first instruction of program
+00002000                             9  
+00002000                            10  * Put program code here
+00002000  227C 00002026             11      move.l #MESSAGE,a1
+00002006  103C 000D                 12      move.b #13,d0
+0000200A  4E4F                      13      TRAP #15
+0000200C  4E4F                      14      TRAP #15
+0000200E= 54 68 65 20 70 72 ...     15      dc.b 'The program loaded',0
+00002022  FFFF FFFF                 16      SIMHALT             ; halt simulator
+00002026                            17  
+00002026                            18  MESSAGE:
+00002026= 59 6F 75 20 73 68 ...     19      dc.b 'You should be able to read this!',0
+00002047                            20  * Put variables and constants here
+00002047                            21  
+00002047                            22      END    START        ; last line of source
 
-1 error detected
+No errors detected
 No warnings generated
 
 
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
+MESSAGE             2026
 START               2000

@@ -124,7 +124,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	uint8_t indexRegister = 0;
 	uint8_t indexSize = 0;
 
-	cout << hex << "The instruction is: " << instruction << dec << endl;
+	if (debugMode)
+		cout << hex << "The instruction is: " << instruction << dec << endl;
 	
 	// CLR (Clear an Operand)
 	if ((instruction & 0xFF00) == CLR) {
@@ -132,13 +133,17 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		SR &= ~(1 << SR_CCR_NEGATIVE);
 		SR &= ~(1 << SR_CCR_OVERFLOW);
 		SR &= ~(1 << SR_CCR_CARRY);
-		cout << "WE HAVE A CLEAR" << endl;
+		
 		int size = ((instruction >> 6) & 3);
-		cout << "Size is: " << size << endl;
 		int mode = ((instruction >> 3) & 7);
-		cout << "Mode is: " << mode << endl;
 		int reg = (instruction & 7);
-		cout << "Address register is: " << reg << endl << endl;
+
+		if (debugMode) {
+			cout << "WE HAVE A CLEAR" << endl;
+			cout << "Size is: " << size << endl;
+			cout << "Mode is: " << mode << endl;
+			cout << "Address register is: " << reg << endl << endl;
+		}
 
 		switch (mode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
@@ -192,7 +197,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			cout << "Displacement: " << displacement << endl;
+			if (debugMode)
+				cout << "Displacement: " << displacement << endl;
 			if (size == SIZE_BYTE)
 				memory->writeByteToMemory(0, A[reg], displacement);
 			else if (size == SIZE_WORD)
@@ -268,11 +274,14 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 	// JMP (Jump)
 	if ((instruction & 0xFFC0) == JMP) {
-		cout << "JUMPING" << endl;
 		int mode = ((instruction >> 3) & 7);
-		cout << "Mode is: " << mode << endl;
 		int reg = (instruction & 7);
-		cout << "Address register is: " << reg << endl << endl;
+
+		if (debugMode) {
+			cout << "JUMPING" << endl;
+			cout << "Mode is: " << mode << endl;
+			cout << "Address register is: " << reg << endl << endl;
+		}
 
 		switch (mode) {
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT:
@@ -282,7 +291,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			cout << "Displacement: " << displacement << endl;
+			if (debugMode)
+				cout << "Displacement: " << displacement << endl;
 			PC = A[reg] + displacement - 2;
 			return true;
 			break;
@@ -327,7 +337,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_DISPLACEMENT:
 				PC += 2;
 				displacement = memory->readWordFromMemory(PC);
-				cout << "Displacement: " << displacement << endl;
+				if (debugMode)
+					cout << "Displacement: " << displacement << endl;
 				PC += displacement - 2;;
 				break;
 			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_INDEX:
@@ -368,15 +379,19 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	if ((instruction & 0xF000) == MOVE_B) {
 		SR &= ~(1 << SR_CCR_OVERFLOW);
 		SR &= ~(1 << SR_CCR_CARRY);
-		cout << "WE HAVE A MOVE BYTE" << endl;
+		
 		int sourceMode = ((instruction >> 3) & 7);
-		cout << "Source mode is: " << sourceMode << endl;
 		int sourceReg = (instruction & 7);
-		cout << "Source address register is: " << sourceReg << endl;
 		int destinationMode = ((instruction >> 6) & 7);
-		cout << "Destination mode is: " << destinationMode << endl;
 		int destinationReg = ((instruction >> 9) & 7);
-		cout << "Destination address register is: " << destinationReg << endl << endl;
+
+		if (debugMode) {
+			cout << "WE HAVE A MOVE BYTE" << endl;
+			cout << "Source mode is: " << sourceMode << endl;
+			cout << "Source address register is: " << sourceReg << endl;
+			cout << "Destination mode is: " << destinationMode << endl;
+			cout << "Destination address register is: " << destinationReg << endl << endl;
+		}
 
 		switch (sourceMode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
@@ -396,7 +411,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			cout << "Displacement: " << displacement << endl;
+			if (debugMode)
+				cout << "Displacement: " << displacement << endl;
 			data = memory->readByteFromMemory(A[sourceReg], displacement);
 			break;
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_INDEX:
@@ -436,7 +452,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_DISPLACEMENT:
 				PC += 2;
 				displacement = memory->readWordFromMemory(PC);
-				cout << "Displacement: " << displacement << endl;
+				if (debugMode)
+					cout << "Displacement: " << displacement << endl;
 				data = memory->readByteFromMemory(PC, displacement);
 				break;
 			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_INDEX:
@@ -565,15 +582,19 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		SR &= ~(1 << SR_CCR_OVERFLOW);
 		SR &= ~(1 << SR_CCR_CARRY);
-		cout << "WE HAVE A MOVE" << endl;
+		
 		int sourceMode = ((instruction >> 3) & 7);
-		cout << "Source mode is: " << sourceMode << endl;
 		int sourceReg = (instruction & 7);
-		cout << "Source address register is: " << sourceReg << endl;
 		int destinationMode = ((instruction >> 6) & 7);
-		cout << "Destination mode is: " << destinationMode << endl;
 		int destinationReg = ((instruction >> 9) & 7);
-		cout << "Destination address register is: " << destinationReg << endl << endl;
+
+		if (debugMode) {
+			cout << "WE HAVE A MOVE" << endl;
+			cout << "Source mode is: " << sourceMode << endl;
+			cout << "Source address register is: " << sourceReg << endl;
+			cout << "Destination mode is: " << destinationMode << endl;
+			cout << "Destination address register is: " << destinationReg << endl << endl;
+		}
 
 		switch (sourceMode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
@@ -611,7 +632,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			cout << "Displacement: " << displacement << endl;
+			if (debugMode)
+				cout << "Displacement: " << displacement << endl;
 			if (size == SIZE_WORD)
 				data = memory->readWordFromMemory(A[sourceReg], displacement);
 			else
@@ -668,7 +690,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_DISPLACEMENT:
 				PC += 2;
 				displacement = memory->readWordFromMemory(PC);
-				cout << "Displacement: " << displacement << endl;
+				if (debugMode)
+					cout << "Displacement: " << displacement << endl;
 				if (size == SIZE_WORD) {
 					data = memory->readWordFromMemory(PC, displacement);
 				}
@@ -777,7 +800,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			cout << "Displacement: " << displacement << endl;
+			if (debugMode)
+				cout << "Displacement: " << displacement << endl;
 			if (size == SIZE_WORD)
 				memory->writeWordToMemory(data, A[destinationReg], displacement);
 			else
@@ -849,11 +873,13 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		SR &= ~(1 << SR_CCR_OVERFLOW);
 		SR &= ~(1 << SR_CCR_CARRY);
-		cout << "WE HAVE A MOVE QUICK" << endl;
 		uint8_t data = (instruction & 0xFF);
-		cout << "Data is: " << hex << data << dec << endl;
 		int destinationReg = ((instruction >> 9) & 7);
-		cout << "Destination register is: " << destinationReg << endl;
+		if (debugMode) {
+			cout << "WE HAVE A MOVE QUICK" << endl;
+			cout << "Data is: " << hex << data << dec << endl;
+			cout << "Destination register is: " << destinationReg << endl;
+		}
 
 		data == 0 ? SR |= 1 << SR_CCR_ZERO : SR &= ~(1 << SR_CCR_ZERO);
 		((data >> 31) & 0x1) == 0 ? SR |= 1 << SR_CCR_NEGATIVE : SR &= ~(1 << SR_CCR_NEGATIVE);
@@ -866,7 +892,10 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	// TRAP
 	if ((instruction & 0xFFF0) == TRAP) {
 		uint8_t vector = instruction & 15;
-		cout << "Trap!!!!!!" << endl;
+		if (debugMode)
+			cout << "Trap" << endl;
+		char character = 0;
+		unsigned int characterIndex = 0;
 		/* IO (Compatible with Easy68k)
 		0	 Display string at (A1), D1.W bytes long (max 255) with carriage return and line feed (CR, LF). (see task 13)
 		1	 Display string at (A1), D1.W bytes long (max 255) without CR, LF. (see task 14)
@@ -939,17 +968,36 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		Low 16 bits = Col
 		Post: D1.B contains ASCII code of character.
 		*/
-		if (vector == 15) {
-			switch (D[0]) {
-			case 14:
-				char character = memory->readByteFromMemory(A[1]);
-				unsigned int characterIndex = 0;
+		switch (vector) {
+		case 15:
+			switch (D[0] & 0xFF) {
+			case 13:
+				character = memory->readByteFromMemory(A[1]);
+				characterIndex = 0;
 				while (character != 0) {
-					character = memory->readByteFromMemory(A[1] + characterIndex);
 					cout << character;
 					characterIndex++;
+					character = memory->readByteFromMemory(A[1] + characterIndex);
 				}
+				cout << endl;
+				return true;
+				break;
+			case 14:
+				character = memory->readByteFromMemory(A[1]);
+				characterIndex = 0;
+				while (character != 0) {
+					cout << character;
+					characterIndex++;
+					character = memory->readByteFromMemory(A[1] + characterIndex);
+				}
+				return true;
+				break;
+			default:
+				cout << "Unknown IO task" << endl;
+				break;
 			}
+		default:
+			cout << "Unknown TRAP task" << endl;
 		}
 	}
 
