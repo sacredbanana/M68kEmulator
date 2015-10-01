@@ -117,7 +117,7 @@ void Memory::dumpMemoryToConsole(unsigned int rowsToShow)
 	for (unsigned int row = 0; row < rowsToShow; row++) {
 		cout << right << setw(16) << setfill('0') << hex << (row * 16) + startingLocation << " " << left << setfill(' ');
 		for (int offset = 0; offset < 16; offset++)
-			cout << setw(3) << hex << uppercase << (int)memoryBlock[startingLocation + (16 * row) + offset];
+			cout << setw(2) << hex << setfill('0') << uppercase << (int)memoryBlock[startingLocation + (16 * row) + offset] << " ";
 		for (int offset = 0; offset < 16; offset++) {
 			if ((startingLocation + (16 * row) + offset) >= (sizeInKB * 1024)) {
 				cout << " ";

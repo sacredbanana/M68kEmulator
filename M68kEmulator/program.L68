@@ -1,6 +1,6 @@
 00002000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.04
-Created On: 9/28/2015 9:38:47 PM
+Created On: 10/1/2015 10:18:46 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -12,18 +12,13 @@ Created On: 9/28/2015 9:38:47 PM
 00002000                             8  START:                  ; first instruction of program
 00002000                             9  
 00002000                            10  * Put program code here
-00002000  43F9 00002014             11      LEA MESSAGE,a1
-00002006  103C 000D                 12      move.b #13,d0
-0000200A  4E4F                      13      TRAP #15
-0000200C  4E4F                      14      TRAP #15
-0000200E  4E71                      15      NOP
-00002010  FFFF FFFF                 16      SIMHALT             ; halt simulator
-00002014                            17  
-00002014                            18  MESSAGE:
-00002014= 59 6F 75 20 73 68 ...     19      dc.b 'You should be able to read this!',0
-00002035                            20  * Put variables and constants here
-00002035                            21  
-00002035                            22      END    START        ; last line of source
+00002000  203C 4444FFFF             11      move.l #$4444FFFF,d0
+00002006  0640 1021                 12      ADDI.w #$1021,d0
+0000200A  FFFF FFFF                 13      SIMHALT             ; halt simulator
+0000200E                            14  
+0000200E                            15  * Put variables and constants here
+0000200E                            16  
+0000200E                            17      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -32,5 +27,4 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-MESSAGE             2014
 START               2000
