@@ -122,6 +122,10 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 {
 	uint32_t data = 0;
 	uint32_t data2 = 0;
+	uint32_t result = 0;
+	bool mostSignificantBitSource = 0;
+	bool mostSignificantBitDestination = 0;
+	bool mostSignificantBitResult = 0;
 	int16_t displacement = 0;
 	int32_t longDisplacement = 0;
 	uint32_t absoluteAddress = 0;
@@ -1120,9 +1124,6 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	if ((instruction & 0xFF00) == ADDI) {
 		int size = (instruction >> 6) & 3;
 
-		SR &= ~(1 << SR_CCR_OVERFLOW);
-		SR &= ~(1 << SR_CCR_CARRY);
-
 		int mode = ((instruction >> 3) & 7);
 		int destinationReg = (instruction & 7);
 
@@ -1136,12 +1137,15 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		if (size == SIZE_BYTE) {
 			data = memory->readByteFromMemory(PC + 1);
+			mostSignificantBitSource = (data >> 7) & 1;
 		}
 		else if (size == SIZE_WORD) {
 			data = memory->readWordFromMemory(PC);
+			mostSignificantBitSource = (data >> 15) & 1;
 		}
 		else {
 			data = memory->readLongFromMemory(PC);
+			mostSignificantBitSource = (data >> 31) & 1;
 			PC += 2;
 		}
 
@@ -1150,15 +1154,24 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			cout << "Data: " << data << endl;
 			if (size == SIZE_BYTE) {
 				data2 = (uint8_t)D[destinationReg];
-				writeByteToDataRegister(data + data2, destinationReg);
+				mostSignificantBitDestination = (data2 >> 7) & 1;
+				result = data + data2;
+				mostSignificantBitResult = (result >> 7) & 1;
+				writeByteToDataRegister((uint8_t)result, destinationReg);
 			}
 			else if (size == SIZE_WORD) {
 				data2 = (uint16_t)D[destinationReg];
-				writeWordToDataRegister(data + data2, destinationReg);
+				mostSignificantBitDestination = (data2 >> 15) & 1;
+				result = data + data2;
+				mostSignificantBitResult = (result >> 15) & 1;
+				writeWordToDataRegister((uint16_t)result, destinationReg);
 			}
 			else {
 				data2 = D[destinationReg];
-				writeLongToDataRegister(data + data2, destinationReg);
+				mostSignificantBitDestination = (data2 >> 31) & 1;
+				result = data + data2;
+				mostSignificantBitResult = (result >> 31) & 1;
+				writeLongToDataRegister(result, destinationReg);
 			}
 			
 			break;
@@ -1305,8 +1318,27 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			break;
 		}
 
-		data == 0 ? SR |= 1 << SR_CCR_ZERO : SR &= ~(1 << SR_CCR_ZERO);
-		((data >> 31) & 0x1) == 0 ? SR |= 1 << SR_CCR_NEGATIVE : SR &= ~(1 << SR_CCR_NEGATIVE);
+		if (size == SIZE_BYTE) {
+			(uint8_t)result == 0 ? SR |= 1 << SR_CCR_ZERO : SR &= ~(1 << SR_CCR_ZERO);
+		}
+		else if (size == SIZE_WORD) {
+			(uint16_t)result == 0 ? SR |= 1 << SR_CCR_ZERO : SR &= ~(1 << SR_CCR_ZERO);
+		}
+		else {
+			result == 0 ? SR |= 1 << SR_CCR_ZERO : SR &= ~(1 << SR_CCR_ZERO);
+		}
+
+		mostSignificantBitResult == 1 ? SR |= 1 << SR_CCR_NEGATIVE : SR &= ~(1 << SR_CCR_NEGATIVE);
+		
+		if (mostSignificantBitDestination == 1 && mostSignificantBitResult == 0)
+			SR |= 1 << SR_CCR_CARRY;
+		else
+			SR &= ~(1 << SR_CCR_CARRY);
+
+		if (mostSignificantBitSource == mostSignificantBitDestination)
+			mostSignificantBitDestination != mostSignificantBitResult ? SR |= 1 << SR_CCR_OVERFLOW : SR &= ~(1 << SR_CCR_OVERFLOW);	
+
+		(SR >> SR_CCR_CARRY) & 1 == 1 ? SR |= 1 << SR_CCR_EXTEND : SR &= ~(1 << SR_CCR_EXTEND);
 
 		return true;
 	}
