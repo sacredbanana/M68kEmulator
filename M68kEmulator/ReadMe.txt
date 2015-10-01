@@ -15,12 +15,13 @@ The program will save a complete memory dump when finished called core_dump.txt
 
 Current recognised instructions:
 
+ADD
+ADDI
+ADDQ
 CLR
 JMP
 LEA
-MOVE.B
-MOVE.W
-MOVE.L
+MOVE
 MOVEQ
 NOP
 TRAP

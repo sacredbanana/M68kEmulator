@@ -1,6 +1,6 @@
 00002000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.04
-Created On: 10/2/2015 12:59:12 AM
+Created On: 10/2/2015 4:09:38 AM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -13,13 +13,26 @@ Created On: 10/2/2015 12:59:12 AM
 00002000                             9  
 00002000                            10  * Put program code here
 00002000  103C 0080                 11      move.b #$80,d0
-00002004  0600 0080                 12      addi.b #$80,d0
-00002008  5601                      13      addi.b #3,d1
-0000200A  FFFF FFFF                 14      SIMHALT             ; halt simulator
-0000200E                            15  
-0000200E                            16  * Put variables and constants here
-0000200E                            17  
-0000200E                            18      END    START        ; last line of source
+00002004  5601                      12      addi.b #3,d1
+00002006  47F8 0010                 13      LEA $10,a3
+0000200A  D24B                      14      add a3,d1
+0000200C  49F9 00002026             15      LEA NUMBER,a4
+00002012  4BF8 2060                 16      LEA $2060,a5
+00002016  D254                      17      add (a4),d1
+00002018  D35D                      18      add d1,(a5)+
+0000201A  D35D                      19      add d1,(a5)+
+0000201C  D35D                      20      add d1,(a5)+
+0000201E  D35D                      21      add d1,(a5)+
+00002020  D25D                      22      add (a5)+,d1
+00002022                            23      
+00002022  FFFF FFFF                 24      SIMHALT             ; halt simulator
+00002026                            25  
+00002026                            26  
+00002026                            27  NUMBER:
+00002026= 1234                      28      dc.w $1234
+00002028                            29  * Put variables and constants here
+00002028                            30  
+00002028                            31      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -28,4 +41,5 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
+NUMBER              2026
 START               2000
