@@ -880,7 +880,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		SR &= ~(1 << SR_CCR_OVERFLOW);
 		SR &= ~(1 << SR_CCR_CARRY);
-		uint8_t data = (instruction & 0xFF);
+		data = instruction & 0xFF;
 		int destinationReg = ((instruction >> 9) & 7);
 		if (debugMode) {
 			cout << "WE HAVE A MOVE QUICK" << endl;
@@ -889,7 +889,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		}
 
 		data == 0 ? SR |= 1 << SR_CCR_ZERO : SR &= ~(1 << SR_CCR_ZERO);
-		((data >> 31) & 0x1) == 0 ? SR |= 1 << SR_CCR_NEGATIVE : SR &= ~(1 << SR_CCR_NEGATIVE);
+		((data >> 7) & 0x1) == 1 ? SR |= 1 << SR_CCR_NEGATIVE : SR &= ~(1 << SR_CCR_NEGATIVE);
 
 		writeByteToDataRegister(data, destinationReg);
 
