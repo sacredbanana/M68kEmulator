@@ -114,7 +114,6 @@ bool CPUCore::startNextCycle()
 		return true;
 	}
 	else {
-		cout << "CPU CRASH!!" << endl << endl;
 		return false;
 	}
 }
@@ -986,6 +985,15 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			Post: D1.B contains ASCII code of character.
 			*/
 			switch (D[0] & 0xFF) {
+			case 4:
+				int number;
+				cin >> number;
+				writeLongToDataRegister(number, 1);
+				return true;
+				break;
+			case 9:
+				return false;
+				break;
 			case 13:
 				character = memory->readByteFromMemory(A[1]);
 				characterIndex = 0;

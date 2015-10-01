@@ -16,6 +16,7 @@ The program will save a complete memory dump when finished called core_dump.txt
 Current recognised instructions:
 
 ADD
+ADDA
 ADDI
 ADDQ
 CLR
