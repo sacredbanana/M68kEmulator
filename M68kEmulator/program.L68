@@ -1,6 +1,6 @@
 00002000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.04
-Created On: 10/2/2015 12:05:23 AM
+Created On: 10/2/2015 12:59:12 AM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -14,11 +14,12 @@ Created On: 10/2/2015 12:05:23 AM
 00002000                            10  * Put program code here
 00002000  103C 0080                 11      move.b #$80,d0
 00002004  0600 0080                 12      addi.b #$80,d0
-00002008  FFFF FFFF                 13      SIMHALT             ; halt simulator
-0000200C                            14  
-0000200C                            15  * Put variables and constants here
-0000200C                            16  
-0000200C                            17      END    START        ; last line of source
+00002008  5601                      13      addi.b #3,d1
+0000200A  FFFF FFFF                 14      SIMHALT             ; halt simulator
+0000200E                            15  
+0000200E                            16  * Put variables and constants here
+0000200E                            17  
+0000200E                            18      END    START        ; last line of source
 
 No errors detected
 No warnings generated
