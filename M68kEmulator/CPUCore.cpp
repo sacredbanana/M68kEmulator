@@ -17,6 +17,7 @@
 
 //Instructions
 #define ADD 0xD000
+#define ADDA 0xD000
 #define ADDI 0x0600
 #define ADDQ 0x5000
 #define CLR 0x4200
@@ -1129,6 +1130,10 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	// ADD (Add Binary)
 	if ((instruction & 0xF000) == ADD) {
 		int size = (instruction >> 6) & 7;
+
+		if (size == 3 || size == 7)
+			goto AddA;
+
 		int mode = (instruction >> 3) & 7;
 		int dataReg = (instruction >> 9) & 7;
 		int addressRegister = instruction & 7;
@@ -1722,6 +1727,258 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		return true;
 	}
 	
+	// ADDA (Add Address)
+	if ((instruction & 0xF000) == ADD) {
+		AddA:
+		int size = (instruction >> 6) & 7;
+
+		if (size == 3)
+			size == SIZE_WORD;
+		else if (size == SIZE_LONG)
+			size == SIZE_LONG;
+		else {
+			cout << "Invalid addressing mode." << endl;
+			return false;
+		}
+
+		int mode = (instruction >> 3) & 7;
+		int dataReg = (instruction >> 9) & 7;
+		int addressRegister = instruction & 7;
+
+		if (debugMode) {
+			cout << "WE HAVE AN ADDA" << endl;
+			cout << "Mode is: " << mode << endl;
+			cout << "Destination address register is: " << dataReg << endl;
+			cout << "Address register is: " << addressRegister << endl;
+		}
+
+		if (size == SIZE_WORD)
+			data = (uint16_t)A[dataReg];
+		else
+			data = A[dataReg];
+
+		switch (mode) {
+		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
+			cout << "Data: " << data << endl;
+			if (size == SIZE_WORD) {
+				data2 = (uint16_t)D[addressRegister];
+				result = data + data2;
+				writeWordToAddressRegister((uint16_t)result, dataReg);
+			}
+			else {
+				data2 = D[addressRegister];
+				result = data + data2;
+				writeLongToAddressRegister(result, dataReg);
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_DIRECT:
+			cout << "Data: " << data << endl;
+			if (size == SIZE_WORD) {
+				data2 = (uint16_t)A[addressRegister];
+				result = data + data2;
+				writeWordToAddressRegister((uint16_t)result, dataReg);
+			}
+			else {
+				data2 = A[addressRegister];
+				result = data + data2;
+				writeLongToAddressRegister(result, dataReg);
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT:
+			if (size == SIZE_WORD) {
+				data2 = memory->readWordFromMemory(A[addressRegister]);
+				result = data + data2;
+				writeWordToAddressRegister(result, dataReg);
+			}
+			else {
+				data2 = memory->readLongFromMemory(A[addressRegister]);
+				result = data + data2;
+				writeLongToAddressRegister(result, dataReg);
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_POSTINCREMENT:
+			if (size == SIZE_WORD) {
+				data2 = memory->readWordFromMemory(A[addressRegister]);
+				result = data + data2;
+				writeWordToAddressRegister(result, dataReg);
+				A[addressRegister] += 2;
+			}
+			else {
+				data2 = memory->readLongFromMemory(A[addressRegister]);
+				result = data + data2;
+				writeLongToAddressRegister(result, dataReg);
+				A[addressRegister] += 4;
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_PREDECREMENT:
+			if (size == SIZE_WORD) {
+				A[addressRegister] -= 2;
+				data2 = memory->readWordFromMemory(A[addressRegister]);
+				result = data + data2;
+				writeWordToAddressRegister(result, dataReg);
+			}
+			else {
+				A[addressRegister] -= 4;
+				data2 = memory->readLongFromMemory(A[addressRegister]);
+				result = data + data2;
+				writeLongToAddressRegister(result, dataReg);
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
+			PC += 2;
+			displacement = memory->readWordFromMemory(PC);
+			if (debugMode)
+				cout << "Displacement: " << displacement << endl;
+			if (size == SIZE_WORD) {
+				data2 = memory->readWordFromMemory(A[addressRegister], displacement);
+				result = data + data2;
+				writeWordToAddressRegister(result, dataReg);
+			}
+			else {
+				data2 = memory->readLongFromMemory(A[addressRegister], displacement);
+				result = data + data2;
+				writeLongToAddressRegister(result, dataReg);
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_INDEX:
+			PC += 2;
+			indexRegister = (memory->readByteFromMemory(PC) >> 4) & 0x0F;
+			indexSize = memory->readByteFromMemory(PC) & 0x0F;
+			longDisplacement = memory->readByteFromMemory(PC + 1);
+			if (indexRegister <= 7) {
+				if (indexSize == INDEX_SIZE_WORD) {
+					longDisplacement += (int16_t)D[indexRegister];
+				}
+				else
+					longDisplacement += D[indexRegister];
+			}
+			else {
+				if (indexSize == INDEX_SIZE_WORD) {
+					longDisplacement += (int16_t)A[indexRegister - 8];
+				}
+				else
+					longDisplacement += D[indexRegister - 8];
+			}
+			if (size == SIZE_WORD) {
+				data2 = memory->readWordFromMemory(A[addressRegister], longDisplacement);
+				result = data + data2;
+				writeWordToAddressRegister(result, dataReg);
+			}
+			else {
+				data2 = memory->readLongFromMemory(A[addressRegister], longDisplacement);
+				result = data + data2;
+				writeLongToAddressRegister(result, dataReg);
+			}
+			break;
+		case ADDRESS_MODE_OTHERS:
+			switch (addressRegister) {
+			case ADDRESS_MODE_ABSOLUTE_SHORT:
+				PC += 2;
+				absoluteAddress = memory->readWordFromMemory(PC);
+				if (size == SIZE_WORD) {
+					data2 = memory->readWordFromMemory(absoluteAddress);
+					result = data + data2;
+					writeWordToAddressRegister(result, dataReg);
+				}
+				else {
+					data2 = memory->readLongFromMemory(absoluteAddress);
+					result = data + data2;
+					writeLongToAddressRegister(result, dataReg);
+				}
+				break;
+			case ADDRESS_MODE_ABSOLUTE_LONG:
+				PC += 2;
+				absoluteAddress = memory->readLongFromMemory(PC);
+				if (size == SIZE_WORD) {
+					data2 = memory->readWordFromMemory(absoluteAddress);
+					result = data + data2;
+					writeWordToAddressRegister(result, dataReg);
+				}
+				else {
+					data2 = memory->readLongFromMemory(absoluteAddress);
+					result = data + data2;
+					writeLongToAddressRegister(result, dataReg);
+				}
+				PC += 2;
+				break;
+			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_DISPLACEMENT:
+				PC += 2;
+				displacement = memory->readWordFromMemory(PC);
+				if (debugMode)
+					cout << "Displacement: " << displacement << endl;
+				if (size == SIZE_WORD) {
+					data2 = memory->readWordFromMemory(PC, displacement);
+					result = data + data2;
+					writeWordToAddressRegister(result, dataReg);
+				}
+				else if (size == SIZE_LONG) {
+					data2 = memory->readLongFromMemory(PC, displacement);
+					result = data + data2;
+					writeLongToAddressRegister(result, dataReg);
+					PC += 2;
+				}
+				break;
+			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_INDEX:
+				PC += 2;
+				indexRegister = (memory->readByteFromMemory(PC) >> 4) & 0x0F;
+				indexSize = memory->readByteFromMemory(PC) & 0x0F;
+				longDisplacement = memory->readByteFromMemory(PC + 1);
+				if (indexRegister <= 7) {
+					if (indexSize == INDEX_SIZE_WORD) {
+						longDisplacement += (int16_t)D[indexRegister];
+					}
+					else
+						longDisplacement += D[indexRegister];
+				}
+				else {
+					if (indexSize == INDEX_SIZE_WORD) {
+						longDisplacement += (int16_t)A[indexRegister - 8];
+					}
+					else
+						longDisplacement += D[indexRegister - 8];
+				}
+				if (size == SIZE_WORD) {
+					data2 = memory->readWordFromMemory(PC, longDisplacement);
+					result = data + data2;
+					writeWordToAddressRegister(result, dataReg);
+				}
+				else if (size == SIZE_LONG) {
+					data2 = memory->readLongFromMemory(PC, longDisplacement);
+					result = data + data2;
+					writeLongToAddressRegister(result, dataReg);
+					PC += 2;
+				}
+				break;
+			case ADDRESS_MODE_IMMEDIATE_OR_STATUS_REGISTER:
+				PC += 2;
+				if (size == SIZE_WORD) {
+					data2 = memory->readWordFromMemory(PC);
+					result = data + data2;
+					writeWordToAddressRegister(result, dataReg);
+				}
+				else if (size == SIZE_LONG) {
+					data2 = memory->readLongFromMemory(PC);
+					result = data + data2;
+					writeLongToAddressRegister(result, dataReg);
+					PC += 2;
+				}
+				break;
+			default:
+				cout << "Invalid addressing mode" << endl;
+				return false;
+				break;
+			}
+			break;
+
+		default:
+			cout << "Unrecognised addressing mode" << endl;
+			return false;
+			break;
+		}
+
+		return true;
+	}
+
 	// ADDI (Add Immediate)
 	if ((instruction & 0xFF00) == ADDI) {
 		int size = (instruction >> 6) & 3;
