@@ -503,7 +503,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		}
 
 		data == 0 ? SR |= 1 << SR_CCR_ZERO : SR &= ~(1 << SR_CCR_ZERO);
-		((data >> 31) & 0x1) == 0 ? SR |= 1 << SR_CCR_NEGATIVE : SR &= ~(1 << SR_CCR_NEGATIVE);
+		((data >> 7) & 1) == 1 ? SR |= 1 << SR_CCR_NEGATIVE : SR &= ~(1 << SR_CCR_NEGATIVE);
 		
 		switch (destinationMode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
@@ -758,7 +758,11 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		}
 
 		data == 0 ? SR |= 1 << SR_CCR_ZERO : SR &= ~(1 << SR_CCR_ZERO);
-		((data >> 31) & 0x1) == 0 ? SR |= 1 << SR_CCR_NEGATIVE : SR &= ~(1 << SR_CCR_NEGATIVE);
+
+		if (size == SIZE_WORD)
+			((data >> 15) & 1) == 1 ? SR |= 1 << SR_CCR_NEGATIVE : SR &= ~(1 << SR_CCR_NEGATIVE);
+		else
+			((data >> 31) & 1) == 1 ? SR |= 1 << SR_CCR_NEGATIVE : SR &= ~(1 << SR_CCR_NEGATIVE);
 
 		switch (destinationMode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
