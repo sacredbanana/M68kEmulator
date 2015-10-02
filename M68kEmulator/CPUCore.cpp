@@ -20,6 +20,7 @@
 #define ADDA 0xD000
 #define ADDI 0x0600
 #define ADDQ 0x5000
+#define Bcc 0x6000
 #define CLR 0x4200
 #define CMP_B 0xB000
 #define CMP_W 0xB040
@@ -2603,13 +2604,13 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 				result = data - data2;
 				mostSignificantBitResult = (result >> 7) & 1;
 				mostSignificantBitSource = (data2 >> 7) & 1;
-				}
+			}
 			else if (size == SIZE_WORD) {
 				data2 = (uint16_t)D[addressRegister];
 				result = data - data2;
 				mostSignificantBitResult = (result >> 15) & 1;
 				mostSignificantBitSource = (data2 >> 15) & 1;
-				}
+			}
 			else {
 				data2 = D[addressRegister];
 				result = data - data2;
@@ -2934,16 +2935,109 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		mostSignificantBitResult == 1 ? SR |= 1 << SR_CCR_NEGATIVE : SR &= ~(1 << SR_CCR_NEGATIVE);
 
-		if (mostSignificantBitDestination == 1 && mostSignificantBitResult == 0)
+		if (mostSignificantBitDestination == 0 && mostSignificantBitResult == 1)
 			SR |= 1 << SR_CCR_CARRY;
 		else
 			SR &= ~(1 << SR_CCR_CARRY);
 
-		if (mostSignificantBitSource == mostSignificantBitDestination)
+		if (mostSignificantBitSource != mostSignificantBitDestination)
 			mostSignificantBitDestination != mostSignificantBitResult ? SR |= 1 << SR_CCR_OVERFLOW : SR &= ~(1 << SR_CCR_OVERFLOW);
 
 		return true;
-}
+	}
+
+	// Bcc (Branch Conditionally)
+	if ((instruction & 0xF000) == Bcc) {
+		int condition = (instruction >> 8) & 0xF;
+
+		displacement = instruction & 0xFF;
+
+		if (displacement == 0) {
+			PC += 2;
+			displacement = memory->readWordFromMemory(PC);
+		}
+
+		if (debugMode) {
+			cout << "We have a conditional branch" << endl;
+			cout << "Displacement: " << hex << displacement << endl;
+		}
+
+		switch (condition) {
+		case CONDITIONAL_CARRY_CLEAR:
+			if (((SR >> SR_CCR_CARRY) & 1) == 0)
+				PC += displacement;
+			break;
+		case CONDITIONAL_CARRY_SET:
+			if (((SR >> SR_CCR_CARRY) & 1) == 1)
+				PC += displacement;
+			break;
+		case CONDITIONAL_EQUAL:
+			if (((SR >> SR_CCR_ZERO) & 1) == 1)
+				PC += displacement;
+			break;
+		case CONDITIONAL_GREATER_OR_EQUAL:
+			if ((((SR >> SR_CCR_NEGATIVE) & 1) == 0) && (((SR >> SR_CCR_OVERFLOW) & 1) == 0))
+				PC += displacement;
+			else if ((((SR >> SR_CCR_NEGATIVE) & 1) == 1) && (((SR >> SR_CCR_OVERFLOW) & 1) == 1))
+				PC += displacement;
+			break;
+		case CONDITIONAL_GREATER_THAN:
+			if (((SR >> SR_CCR_ZERO) & 1) == 1)
+				break;
+			if ((((SR >> SR_CCR_NEGATIVE) & 1) == 0) && (((SR >> SR_CCR_OVERFLOW) & 1) == 0))
+				PC += displacement;
+			else if ((((SR >> SR_CCR_NEGATIVE) & 1) == 1) && (((SR >> SR_CCR_OVERFLOW) & 1) == 1))
+				PC += displacement;
+			break;
+		case CONDITIONAL_HIGH:
+			if ((((SR >> SR_CCR_CARRY) & 1) == 0) && (((SR >> SR_CCR_ZERO) & 1) == 0))
+				PC += displacement;
+			break;
+		case CONDITIONAL_LESS_OR_EQUAL:
+			if ((((SR >> SR_CCR_NEGATIVE) & 1) == 1) && (((SR >> SR_CCR_OVERFLOW) & 1) == 0))
+				PC += displacement;
+			else if ((((SR >> SR_CCR_NEGATIVE) & 1) == 0) && (((SR >> SR_CCR_OVERFLOW) & 1) == 1))
+				PC += displacement;
+			else if (((SR >> SR_CCR_ZERO) & 1) == 1)
+				PC += displacement;
+			break;
+		case CONDITIONAL_LOW_OR_SAME:
+			if ((((SR >> SR_CCR_CARRY) & 1) == 1) && (((SR >> SR_CCR_ZERO) & 1) == 1))
+				PC += displacement;
+			break;
+		case CONDITIONAL_LESS_THAN:
+			if ((((SR >> SR_CCR_NEGATIVE) & 1) == 1) && (((SR >> SR_CCR_OVERFLOW) & 1) == 0))
+				PC += displacement;
+			else if ((((SR >> SR_CCR_NEGATIVE) & 1) == 0) && (((SR >> SR_CCR_OVERFLOW) & 1) == 1))
+				PC += displacement;
+			break;
+		case CONDITIONAL_MINUS:
+			if (((SR >> SR_CCR_NEGATIVE) & 1) == 1)
+				PC += displacement;
+			break;
+		case CONDITIONAL_NOT_EQUAL:
+			if (((SR >> SR_CCR_ZERO) & 1) == 0)
+				PC += displacement;
+			break;
+		case CONDITIONAL_PLUS:
+			if (((SR >> SR_CCR_NEGATIVE) & 1) == 0)
+				PC += displacement;
+			break;
+		case CONDITIONAL_OVERFLOW_CLEAR:
+			if (((SR >> SR_CCR_OVERFLOW) & 1) == 0)
+				PC += displacement;
+			break;
+		case CONDITIONAL_OVERFLOW_SET:
+			if (((SR >> SR_CCR_OVERFLOW) & 1) == 1)
+				PC += displacement;
+			break;
+		default:
+			cout << "Illegal condition code" << endl;
+			return false;
+		}
+
+		return true;
+	}
 
 	// Illegal instruction
 	cout << "Illegal instruction!" << endl;
