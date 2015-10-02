@@ -21,6 +21,7 @@
 #define ADDI 0x0600
 #define ADDQ 0x5000
 #define Bcc 0x6000
+#define BRA 0x6000
 #define CLR 0x4200
 #define CMP_B 0xB000
 #define CMP_W 0xB040
@@ -139,7 +140,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	uint8_t indexSize = 0;
 
 	if (debugMode)
-		cout << hex << "The instruction is: " << instruction << dec << endl;
+		cout << hex << "The instruction is: " << instruction << " and PC is: " << PC << dec << endl;
 	
 	// CLR (Clear an Operand)
 	if ((instruction & 0xFF00) == CLR) {
@@ -1675,7 +1676,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			case ADDRESS_MODE_IMMEDIATE_OR_STATUS_REGISTER:
 				PC += 2;
 				if (size == SIZE_BYTE) {
-					data2 = memory->readByteFromMemory(PC);
+					data2 = memory->readByteFromMemory(PC+1);
 					result = data + data2;
 					mostSignificantBitResult = (result >> 7) & 1;
 					mostSignificantBitSource = (data2 >> 7) & 1;
@@ -1745,9 +1746,9 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		int size = (instruction >> 6) & 7;
 
 		if (size == 3)
-			size == SIZE_WORD;
+			size = SIZE_WORD;
 		else if (size == SIZE_LONG)
-			size == SIZE_LONG;
+			size = SIZE_LONG;
 		else {
 			cout << "Invalid addressing mode." << endl;
 			return false;
@@ -2887,7 +2888,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			case ADDRESS_MODE_IMMEDIATE_OR_STATUS_REGISTER:
 				PC += 2;
 				if (size == SIZE_BYTE) {
-					data2 = memory->readByteFromMemory(PC);
+					data2 = memory->readByteFromMemory(PC+1);
 					result = data - data2;
 					mostSignificantBitResult = (result >> 7) & 1;
 					mostSignificantBitSource = (data2 >> 7) & 1;
@@ -2946,6 +2947,45 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		return true;
 	}
 
+	// BRA (Branch Always)
+	if ((instruction & 0xFF00) == BRA) {
+		int8_t shortDisplacement = instruction & 0xFF;
+
+		if (((shortDisplacement >> 7) & 1) == 1) {
+			shortDisplacement = ~shortDisplacement - 1;
+			if (shortDisplacement == 0) {
+				PC += 2;
+				displacement = memory->readWordFromMemory(PC);
+				displacement += 2;
+				PC -= displacement;
+			}
+			else {
+				shortDisplacement += 2;
+				PC -= shortDisplacement;
+			}
+		}
+		else {
+			if (shortDisplacement == 0) {
+				PC += 2;
+				displacement = memory->readWordFromMemory(PC);
+				displacement -= 2;
+				PC += displacement;
+			}
+			else {
+				shortDisplacement -= 2;
+				PC += shortDisplacement;
+			}
+		}
+		
+
+		if (debugMode) {
+			cout << "We have a branch" << endl;
+			cout << "Displacement: " << hex << displacement << endl;
+		}
+
+		return true;
+	}
+
 	// Bcc (Branch Conditionally)
 	if ((instruction & 0xF000) == Bcc) {
 		int condition = (instruction >> 8) & 0xF;
@@ -2961,6 +3001,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			cout << "We have a conditional branch" << endl;
 			cout << "Displacement: " << hex << displacement << endl;
 		}
+
+		displacement -= 2;
 
 		switch (condition) {
 		case CONDITIONAL_CARRY_CLEAR:
@@ -2984,9 +3026,9 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case CONDITIONAL_GREATER_THAN:
 			if (((SR >> SR_CCR_ZERO) & 1) == 1)
 				break;
-			if ((((SR >> SR_CCR_NEGATIVE) & 1) == 0) && (((SR >> SR_CCR_OVERFLOW) & 1) == 0))
+			if ((((SR >> SR_CCR_NEGATIVE) & 1) == 1) && (((SR >> SR_CCR_OVERFLOW) & 1) == 1))
 				PC += displacement;
-			else if ((((SR >> SR_CCR_NEGATIVE) & 1) == 1) && (((SR >> SR_CCR_OVERFLOW) & 1) == 1))
+			else if ((((SR >> SR_CCR_NEGATIVE) & 1) == 0) && (((SR >> SR_CCR_OVERFLOW) & 1) == 0))
 				PC += displacement;
 			break;
 		case CONDITIONAL_HIGH:
@@ -3040,7 +3082,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	}
 
 	// Illegal instruction
-	cout << "Illegal instruction!" << endl;
+	cout << "Illegal instruction! PC: " << hex << PC << endl;
 	return false;
 }
 
