@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <bitset>
+#include <windows.h>
 
 //Status Register flags
 #define SR_CCR_CARRY 0
@@ -22,6 +23,7 @@
 #define ADDQ 0x5000
 #define Bcc 0x6000
 #define BRA 0x6000
+#define BSR 0x6100
 #define CLR 0x4200
 #define CMP_B 0xB000
 #define CMP_W 0xB040
@@ -33,6 +35,7 @@
 #define MOVE_L 0x2000
 #define MOVEQ 0x7000
 #define NOP 0x4E71
+#define RTS 0x4E75
 #define TRAP 0x4E40
 
 //Addressing modes
@@ -101,7 +104,7 @@ CPUCore::CPUCore(Memory *memory, int model = 68000)
 	A[4] = 0;
 	A[5] = 0;
 	A[6] = 0;
-	SP = 0x00FFFFFF;
+	SP = 0x0000FFFF;
 	SR = 1 << SR_SUPERVISOR_MODE;
 	PC = 0;
 }
@@ -910,6 +913,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	// TRAP
 	if ((instruction & 0xFFF0) == TRAP) {
 		uint8_t vector = instruction & 15;
+		uint16_t row = 0;
+		uint16_t column = 0;
 		if (debugMode)
 			cout << "TRAP" << endl;
 		char character = 0;
@@ -998,6 +1003,18 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 				break;
 			case 9:
 				return false;
+				break;
+			case 11:
+				row = D[1] & 0xFF;
+				column = (D[1] >> 8) & 0xFF;
+				COORD coord;
+				coord.X = column;
+				coord.Y = row;
+				SetConsoleCursorPosition(
+					GetStdHandle(STD_OUTPUT_HANDLE),
+					coord
+					);
+				return true;
 				break;
 			case 13:
 				character = memory->readByteFromMemory(A[1]);
@@ -2947,6 +2964,49 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		return true;
 	}
 
+	// BSR (Branch to Subroutine)
+	if ((instruction & 0xFF00) == BSR) {
+		if (debugMode)
+			cout << "Branch to subroutine" << endl;
+		SP -= 2;
+		memory->writeWordToMemory(PC,SP);
+		int8_t shortDisplacement = instruction & 0xFF;
+
+		if (((shortDisplacement >> 7) & 1) == 1) {
+			shortDisplacement = ~shortDisplacement - 1;
+			if (shortDisplacement == 0) {
+				PC += 2;
+				displacement = memory->readWordFromMemory(PC);
+				displacement += 2;
+				PC -= displacement;
+			}
+			else {
+				shortDisplacement += 2;
+				PC -= shortDisplacement;
+			}
+		}
+		else {
+			if (shortDisplacement == 0) {
+				PC += 2;
+				displacement = memory->readWordFromMemory(PC);
+				displacement -= 2;
+				PC += displacement;
+			}
+			else {
+				shortDisplacement -= 2;
+				PC += shortDisplacement;
+			}
+		}
+
+
+		if (debugMode) {
+			cout << "We have a branch" << endl;
+			cout << "Displacement: " << hex << displacement << endl;
+		}
+
+		return true;
+	}
+
 	// BRA (Branch Always)
 	if ((instruction & 0xFF00) == BRA) {
 		int8_t shortDisplacement = instruction & 0xFF;
@@ -3081,8 +3141,20 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		return true;
 	}
 
+	
+
+	// RTS (Return from Subroutine)
+	if (instruction == RTS) {
+		uint16_t address = memory->readWordFromMemory(SP);
+		SP += 2;
+		PC = address + 2;
+		if (debugMode)
+			cout << "Returning from subroutine" << endl;
+		return true;
+	}
+
 	// Illegal instruction
-	cout << "Illegal instruction! PC: " << hex << PC << endl;
+	cout << "Illegal instruction " << uppercase << hex << instruction << " at PC: " << PC << endl;
 	return false;
 }
 

@@ -8,7 +8,7 @@ class CPUCore
 {
 private:
 	uint32_t D[8]; // Data registers
-	uint32_t A[7]; // Address registers + SP
+	uint32_t A[8]; // Address registers + SP
 	uint32_t PC; // Program Counter register
 	uint16_t SR; // Status register
 

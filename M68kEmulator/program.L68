@@ -1,119 +1,2788 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.04
-Created On: 10/2/2015 9:14:30 AM
+Created On: 10/2/2015 11:59:12 AM
 
 00000000                             1  *-----------------------------------------------------------
-00000000                             2  * Program    :Hello World 2
-00000000                             3  * Written by :Emerson Williams and Brad Krupp Jr.
-00000000                             4  * Date       :2/7/07
-00000000                             5  * Description:Sample Program 2 for Quickstart Guide
+00000000                             2  * Program    : Final Project 
+00000000                             3  * Written by : Lindsay Insco
+00000000                             4  * Date       : April 25
+00000000                             5  * Description: For my final project, I chose to build a small text-based game. It's a bit rough but fully functional. 
 00000000                             6  *-----------------------------------------------------------
-00001000                             7  START   ORG     $1000
-00001000                             8  
-00001000                             9  *-------Code for output-------
-00001000  43F9 0000110C             10  LOOP    LEA     MESSAGE,A1     
-00001006  103C 000E                 11          MOVE.B  #14,D0          
-0000100A  4E4F                      12          TRAP    #15       
-0000100C                            13  
-0000100C                            14  *-------Code for input-------
-0000100C  103C 0004                 15          MOVE.B  #4,D0           Trap task 4 does the following:
-00001010  4E4F                      16          TRAP    #15             Read a number from the keyboard into D1.L
-00001012  B2BC 00000000             17          CMP.L   #0,D1           Compares D1 to the number 0
-00001018  6700 00EC                 18          BEQ     DONE            Branch to DONE if they are equal
-0000101C                            19          
-0000101C  B23C 0000                 20          CMP.B   #0,D1           Compares D1 to 0
-00001020  6D00 00D4                 21          BLT     INVALID         BLT branches if D1 is less than 0
-00001024  B23C 0009                 22          CMP.B   #9,D1           Compares D1 to 1
-00001028  6E00 00CC                 23          BGT     INVALID         BGT branches if D1 is greater than 9
-0000102C                            24  
-0000102C                            25  *--figure out what the number actually is--
-0000102C  B23C 0001                 26          CMP.B   #1,D1           Compares D1 and 1
-00001030  6600 0010                 27          BNE     TWO             BEQ branches if D1 and 1 are not equal
-00001034  43F9 0000115D             28          LEA     DISPONE,A1      
-0000103A  103C 000E                 29          MOVE.B  #14,D0  
-0000103E  4E4F                      30          TRAP    #15
-00001040  60BE                      31          BRA     LOOP    
-00001042                            32                  
-00001042  B23C 0002                 33  TWO     CMP.B   #2,D1           Compares D1 and 2
-00001046  6600 0010                 34          BNE     THREE           BEQ branches if D1 and 2 are not equal
-0000104A  43F9 0000116D             35          LEA     DISPTWO,A1      
-00001050  103C 000E                 36          MOVE.B  #14,D0  
-00001054  4E4F                      37          TRAP    #15
-00001056  60A8                      38          BRA     LOOP
-00001058                            39  
-00001058  B23C 0003                 40  THREE   CMP.B   #3,D1           Compares D1 and 3
-0000105C  6600 0010                 41          BNE     FOUR            BEQ branches if D1 and 3 are not equal
-00001060  43F9 0000117B             42          LEA     DISPTHR,A1      
-00001066  103C 000E                 43          MOVE.B  #14,D0  
-0000106A  4E4F                      44          TRAP    #15
-0000106C  6092                      45          BRA     LOOP
-0000106E                            46  
-0000106E  B23C 0004                 47  FOUR    CMP.B   #4,D1           Compares D1 and 4
-00001072  6600 0012                 48          BNE     FIVE
-00001076  43F9 00001189             49          LEA     DISPFOU,A1      
-0000107C  103C 000E                 50          MOVE.B  #14,D0  
-00001080  4E4F                      51          TRAP    #15
-00001082  6000 FF7C                 52          BRA     LOOP
-00001086                            53  
-00001086  B23C 0005                 54  FIVE    CMP.B   #5,D1           Compares D1 and 2
-0000108A  6600 0012                 55          BNE     SIX             BEQ branches if D1 and 2 are not equal
-0000108E  43F9 00001196             56          LEA     DISPFIV,A1      
-00001094  103C 000E                 57          MOVE.B  #14,D0  
-00001098  4E4F                      58          TRAP    #15
-0000109A  6000 FF64                 59          BRA     LOOP
-0000109E                            60  
-0000109E  B23C 0006                 61  SIX     CMP.B   #6,D1           Compares D1 and 3
-000010A2  6600 0012                 62          BNE     SEVEN           BEQ branches if D1 and 3 are not equal
-000010A6  43F9 000011A6             63          LEA     DISPSIX,A1      
-000010AC  103C 000E                 64          MOVE.B  #14,D0  
-000010B0  4E4F                      65          TRAP    #15
-000010B2  6000 FF4C                 66          BRA     LOOP
-000010B6                            67  
-000010B6  B23C 0007                 68  SEVEN   CMP.B   #7,D1           Compares D1 and 4
-000010BA  6600 0012                 69          BNE     EIGHT
-000010BE  43F9 000011B5             70          LEA     DISPSEV,A1      
-000010C4  103C 000E                 71          MOVE.B  #14,D0  
-000010C8  4E4F                      72          TRAP    #15
-000010CA  6000 FF34                 73          BRA     LOOP
-000010CE                            74  
-000010CE  B23C 0008                 75  EIGHT   CMP.B   #8,D1           Compares D1 and 2
-000010D2  6600 0012                 76          BNE     NINE            BEQ branches if D1 and 2 are not equal
-000010D6  43F9 000011C4             77          LEA     DISPEIG,A1      
-000010DC  103C 000E                 78          MOVE.B  #14,D0  
-000010E0  4E4F                      79          TRAP    #15
-000010E2  6000 FF1C                 80          BRA     LOOP
-000010E6                            81  
-000010E6  43F9 000011D4             82  NINE    LEA     DISPNIN,A1      
-000010EC  103C 000E                 83          MOVE.B  #14,D0  
-000010F0  4E4F                      84          TRAP    #15
-000010F2                            85  
-000010F2  6000 FF0C                 86          BRA     LOOP            Branch to LOOP
-000010F6                            87  
-000010F6  43F9 0000113E             88  INVALID LEA     INV,A1
-000010FC  103C 000E                 89          MOVE.B  #14,D0  
-00001100  4E4F                      90          TRAP    #15
-00001102  6000 FEFC                 91          BRA     LOOP
-00001106                            92          
-00001106  103C 0009                 93  DONE    MOVE.B  #9,D0
-0000110A  4E4F                      94          TRAP    #15             Halt Simulator
-0000110C                            95  
-0000110C  =0000000D                 96  CR      EQU     $0D         
-0000110C  =0000000A                 97  LF      EQU     $0A 
-0000110C                            98  
-0000110C= 45 6E 74 65 72 20 ...     99  MESSAGE DC.B    'Enter a number between 0 and 9, Enter 0 to exit: ',0
-0000113E= 54 68 61 74 20 69 ...    100  INV     DC.B    'That is not between 1 and 9.',CR,LF,0
-0000115D= 48 45 4C 4C 4F 20 ...    101  DISPONE DC.B    'HELLO MERCURY',CR,LF,0
-0000116D= 48 45 4C 4C 4F 20 ...    102  DISPTWO DC.B    'HELLO VENUS',CR,LF,0
-0000117B= 48 45 4C 4C 4F 20 ...    103  DISPTHR DC.B    'HELLO EARTH',CR,LF,0
-00001189= 48 45 4C 4C 4F 20 ...    104  DISPFOU DC.B    'HELLO MARS',CR,LF,0
-00001196= 48 45 4C 4C 4F 20 ...    105  DISPFIV DC.B    'HELLO JUPITER',CR,LF,0
-000011A6= 48 45 4C 4C 4F 20 ...    106  DISPSIX DC.B    'HELLO SATURN',CR,LF,0
-000011B5= 48 45 4C 4C 4F 20 ...    107  DISPSEV DC.B    'HELLO URANUS',CR,LF,0
-000011C4= 48 45 4C 4C 4F 20 ...    108  DISPEIG DC.B    'HELLO NEPTUNE',CR,LF,0
-000011D4= 48 45 4C 4C 4F 20 ...    109  DISPNIN DC.B    'HELLO PLUTO',CR,LF,0
-000011E2                           110  
-000011E2                           111  
-000011E2                           112          END     START
+00001000                             7      ORG $1000
+00001000                             8  START:              ; first instruction of program
+00001000                             9  
+00001000                            10  *TITLE SCREEN-----------------------------------------------
+00001000  6100 1EEE                 11  OPEN    BSR CLRSCRN
+00001004  43F9 000032CF             12      LEA TITLE1,A1
+0000100A  6100 1F0C                 13      BSR DISPLAY
+0000100E  43F9 00003320             14      LEA TITLE2,A1
+00001014  6100 1F02                 15      BSR DISPLAY
+00001018  43F9 00003372             16      LEA TITLE3,A1
+0000101E  6100 1EF8                 17      BSR DISPLAY
+00001022  43F9 000033C4             18      LEA TITLE4,A1
+00001028  6100 1EEE                 19      BSR DISPLAY
+0000102C  6100 1EA4                 20      BSR NEWLINE
+00001030  6100 1EA0                 21      BSR NEWLINE
+00001034  6100 1EB2                 22      BSR ENTER
+00001038                            23      
+00001038  43F9 00003416             24      LEA TITLE5,A1
+0000103E  6100 1ED8                 25      BSR DISPLAY
+00001042  43F9 0000343E             26      LEA TITLE6,A1
+00001048  6100 1ECE                 27      BSR DISPLAY
+0000104C  6100 1E84                 28      BSR NEWLINE
+00001050  6100 1E80                 29      BSR NEWLINE
+00001054                            30      
+00001054  103C 0002                 31      MOVE.B  #2,D0
+00001058  43F9 00003485             32      LEA BUFF,A1
+0000105E  4E4F                      33      TRAP    #15
+00001060                            34      
+00001060  45F9 00003476             35      LEA NG,A2
+00001066  47F9 0000347C             36      LEA PWS,A3
+0000106C                            37      
+0000106C  1219                      38      MOVE.B  (A1)+,D1
+0000106E  141A                      39      MOVE.B  (A2)+,D2
+00001070  161B                      40      MOVE.B  (A3)+,D3
+00001072                            41      
+00001072  B401                      42      CMP.b   D1,D2
+00001074  6700 000C                 43      BEQ NGL
+00001078  B601                      44      CMP.b   D1,D3
+0000107A  6700 001A                 45      BEQ PWSL
+0000107E  6000 002A                 46      BRA WRONG2
+00001082  1219                      47  NGL MOVE.B  (A1)+,D1
+00001084  141A                      48      MOVE.B  (A2)+,D2
+00001086  B43C 000D                 49      CMP.B   #$0D,D2
+0000108A  6700 0034                 50      BEQ INTRO
+0000108E  B401                      51      CMP.B   D1,D2
+00001090  67F0                      52      BEQ NGL
+00001092  6600 0016                 53      BNE WRONG2
+00001096  1219                      54  PWSL    MOVE.B  (A1)+,D1
+00001098  161B                      55      MOVE.B  (A3)+,D3
+0000109A  B63C 000D                 56      CMP.B   #$0D,D3
+0000109E  6700 1EC6                 57      BEQ PROMPT
+000010A2  B601                      58      CMP.B   D1,D3
+000010A4  67F0                      59      BEQ PWSL
+000010A6  6600 0002                 60      BNE WRONG2
+000010AA                            61      
+000010AA  43F9 000034D6             62  WRONG2  LEA WRCHAR,A1
+000010B0  6100 1E66                 63      BSR DISPLAY
+000010B4  6100 1E1C                 64      BSR NEWLINE
+000010B8  6100 1E2E                 65      BSR ENTER
+000010BC  6000 FF42                 66      BRA OPEN
+000010C0                            67  
+000010C0                            68  
+000010C0                            69  
+000010C0                            70  
+000010C0                            71  *INTRODUCTION-----------------------------------------------
+000010C0                            72  
+000010C0  6100 1E2E                 73  INTRO   BSR CLRSCRN
+000010C4  43F9 0000350B             74      LEA WELCOME,A1  ; Welcome message
+000010CA  6100 1E4C                 75      BSR DISPLAY
+000010CE  6100 1E02                 76      BSR newLine
+000010D2                            77      
+000010D2  103C 0002                 78      MOVE.B  #2,D0       ; name input
+000010D6  43F9 00003202             79      LEA NAME,A1
+000010DC  4E4F                      80      TRAP    #15
+000010DE                            81      
+000010DE  6100 1DF2                 82      BSR newLine
+000010E2                            83          
+000010E2  103C 000E                 84      MOVE.B  #14,D0
+000010E6  4E4F                      85      TRAP    #15
+000010E8                            86  
+000010E8  43F9 00003557             87      LEA NCHANGE,A1  ; Renamed to Alex
+000010EE  6100 1E28                 88      BSR DISPLAY
+000010F2                            89  
+000010F2  6100 1E06                 90      BSR ECHOOFF
+000010F6                            91      
+000010F6  6100 1DF0                 92      BSR ENTER
+000010FA                            93      
+000010FA  43F9 000035A0             94      LEA NOWTHAT,A1
+00001100  6100 1E16                 95      BSR DISPLAY 
+00001104  6100 1DE2                 96      BSR ENTER
+00001108                            97          
+00001108  6100 1DE6                 98      BSR CLRSCRN
+0000110C                            99      
+0000110C                           100  *DISPLAY INTRODUCTION
+0000110C                           101      
+0000110C  43F9 000035A0            102      LEA NOWTHAT,A1
+00001112  6100 1E04                103      BSR DISPLAY
+00001116  43F9 000035EE            104      LEA TODAY,A1
+0000111C  6100 1DFA                105      BSR DISPLAY
+00001120  43F9 0000363A            106      LEA SOFANCY,A1
+00001126  6100 1DF0                107      BSR DISPLAY
+0000112A  43F9 00003685            108      LEA WHYIMAG,A1
+00001130  6100 1DE6                109      BSR DISPLAY
+00001134  43F9 000036D3            110      LEA PLAYBOX,A1
+0000113A  6100 1DDC                111      BSR DISPLAY
+0000113E  6100 1DA8                112      BSR ENTER
+00001142                           113      
+00001142  6100 1D8E                114      BSR newLine
+00001146                           115      
+00001146  43F9 000036FB            116      LEA WELLTHA,A1
+0000114C  6100 1DCA                117      BSR DISPLAY
+00001150  43F9 00003746            118      LEA PICTURE,A1
+00001156  6100 1DC0                119      BSR DISPLAY
+0000115A  43F9 00003790            120      LEA DOTODAY,A1
+00001160  6100 1DB6                121      BSR DISPLAY
+00001164  43F9 000037D9            122      LEA YOURMIN,A1
+0000116A  6100 1DAC                123      BSR DISPLAY
+0000116E  43F9 0000381D            124      LEA INFORMA,A1
+00001174  6100 1DA2                125      BSR DISPLAY
+00001178                           126      
+00001178  6100 1D6E                127      BSR ENTER
+0000117C  6100 1D54                128      BSR newLine
+00001180  43F9 00003864            129  LOOP1   LEA CGOOD,A1
+00001186  6100 1D90                130      BSR DISPLAY
+0000118A  43F9 0000386C            131      LEA CBAD,A1
+00001190  6100 1D86                132      BSR DISPLAY
+00001194                           133      
+00001194  103C 0005                134      MOVE.B  #5,D0       ; Read keyboard entry
+00001198  4E4F                     135      TRAP    #15
+0000119A                           136      
+0000119A  6100 1D36                137      BSR NEWLINE
+0000119E  B23C 0031                138      CMP.B   #$31,D1
+000011A2  6700 000E                139      BEQ GCH1
+000011A6  B23C 0032                140      CMP.B   #$32,D1
+000011AA  6700 0014                141      BEQ BCH1
+000011AE  6600 0028                142      BNE ER1
+000011B2  43F9 00003873            143  GCH1    LEA IFGOOD,A1
+000011B8  6100 1D5E                144      BSR DISPLAY
+000011BC  6000 0026                145      BRA NEXT1
+000011C0  43F9 000038BC            146  BCH1    LEA IFBAD,A1
+000011C6  6100 1D50                147      BSR DISPLAY
+000011CA  43F9 00003907            148      LEA IFBAD2,A1
+000011D0  6100 1D46                149      BSR DISPLAY
+000011D4  6000 000E                150      BRA NEXT1
+000011D8  43F9 000032A2            151  ER1 LEA EMSG,A1
+000011DE  6100 1D38                152      BSR DISPLAY
+000011E2  609C                     153      BRA LOOP1
+000011E4                           154  
+000011E4  6100 1D02                155  NEXT1   BSR ENTER
+000011E8  6100 1CE8                156      BSR NEWLINE
+000011EC  43F9 00003949            157      LEA ANYWAYS,A1
+000011F2  6100 1D24                158      BSR DISPLAY
+000011F6  6100 1CF0                159      BSR ENTER
+000011FA                           160      
+000011FA  6100 1CF4                161      BSR CLRSCRN
+000011FE                           162      
+000011FE  43F9 00003994            163      LEA ASTHEGA,A1
+00001204  6100 1D12                164      BSR DISPLAY
+00001208  43F9 000039E0            165      LEA YOURIMA,A1
+0000120E  103C 000E                166      MOVE.B  #14,D0
+00001212  4E4F                     167      TRAP    #15
+00001214  6100 1D1E                168      BSR REDTEXT
+00001218  43F9 00003A28            169      LEA HERERED,A1
+0000121E  6100 1CF8                170      BSR DISPLAY
+00001222  6100 1D24                171      BSR WHITEXT
+00001226  43F9 00003A2F            172      LEA IREALLY,A1
+0000122C  6100 1CEA                173      BSR DISPLAY
+00001230  6100 1CB6                174      BSR ENTER
+00001234                           175      
+00001234  6100 1C9C                176      BSR NEWLINE
+00001238                           177      
+00001238  43F9 00003A64            178      LEA THEOBJE,A1
+0000123E  6100 1CD8                179      BSR DISPLAY
+00001242  43F9 00003AAE            180      LEA AWESOMS,A1
+00001248  6100 1CCE                181      BSR DISPLAY
+0000124C  43F9 00003AF6            182      LEA FITSBUG,A1
+00001252  6100 1CC4                183      BSR DISPLAY
+00001256  43F9 00003B3D            184      LEA YOUNEED,A1
+0000125C  6100 1CBA                185      BSR DISPLAY
+00001260  43F9 00003B82            186      LEA CRAZYMO,A1
+00001266  6100 1CB0                187      BSR DISPLAY
+0000126A  6100 1C7C                188      BSR ENTER
+0000126E  6100 1C62                189      BSR NEWLINE
+00001272                           190      
+00001272  43F9 00003BC8            191      LEA NOWFOOD,A1
+00001278  6100 1C9E                192      BSR DISPLAY
+0000127C  6100 1C54                193      BSR NEWLINE
+00001280  6100 1C50                194      BSR NEWLINE
+00001284  6100 1C7C                195      BSR ECHOON
+00001288  103C 0002                196      MOVE.B  #2,D0
+0000128C  43F9 00003252            197      LEA FOOD,A1
+00001292  4E4F                     198      TRAP    #15
+00001294  103C 000E                199      MOVE.B  #14,D0
+00001298  4E4F                     200      TRAP    #15
+0000129A  6100 1C5E                201      BSR ECHOOFF
+0000129E                           202      
+0000129E  43F9 00003BF1            203      LEA NOWFOD2,A1
+000012A4  6100 1C24                204      BSR DNOLINE
+000012A8  6100 1C8A                205      BSR REDTEXT
+000012AC  43F9 000032BD            206      LEA ALEXRED,A1
+000012B2  6100 1C16                207      BSR DNOLINE
+000012B6  6100 1C90                208      BSR WHITEXT
+000012BA  43F9 00003C1C            209      LEA NOWFOD3,A1
+000012C0  6100 1C08                210      BSR DNOLINE
+000012C4  6100 1C6E                211      BSR REDTEXT
+000012C8  43F9 000032C9            212      LEA EGGSRED,A1
+000012CE  6100 1C48                213      BSR DISPLAY
+000012D2  6100 1C74                214      BSR WHITEXT
+000012D6  43F9 00003C2D            215      LEA INSTEAD,A1
+000012DC  6100 1C3A                216      BSR DISPLAY
+000012E0  6100 1C06                217      BSR ENTER
+000012E4  6100 1C0A                218      BSR CLRSCRN
+000012E8                           219      
+000012E8                           220  *VIDEO GAME INTRO-----------------------------------------
+000012E8  43F9 00003C36            221      LEA VI1,A1
+000012EE  6100 1BDA                222      BSR DNOLINE
+000012F2  6100 1C40                223      BSR REDTEXT
+000012F6  43F9 00003C42            224      LEA VI2,A1
+000012FC  6100 1BCC                225      BSR DNOLINE
+00001300  6100 1C46                226      BSR WHITEXT
+00001304  43F9 00003C48            227      LEA VI3,A1
+0000130A  6100 1C0C                228      BSR DISPLAY
+0000130E  43F9 00003C82            229      LEA VI4,A1
+00001314  6100 1C02                230      BSR DISPLAY
+00001318  43F9 00003CCE            231      LEA VI5,A1
+0000131E  6100 1BAA                232      BSR DNOLINE
+00001322  6100 1C10                233      BSR REDTEXT
+00001326  43F9 00003CE4            234      LEA VI6,A1
+0000132C  6100 1B9C                235      BSR DNOLINE
+00001330  6100 1C16                236      BSR WHITEXT
+00001334  43F9 00003CED            237      LEA VI7,A1
+0000133A  6100 1B8E                238      BSR DNOLINE
+0000133E  6100 1BF4                239      BSR REDTEXT
+00001342  43F9 00003CFE            240      LEA VI8,A1
+00001348  6100 1B80                241      BSR DNOLINE
+0000134C  6100 1BFA                242      BSR WHITEXT
+00001350  43F9 00003D0C            243      LEA VI9,A1
+00001356  6100 1BC0                244      BSR DISPLAY
+0000135A  43F9 00003D18            245      LEA VI10,A1
+00001360  6100 1B68                246      BSR DNOLINE
+00001364  6100 1BCE                247      BSR REDTEXT
+00001368  43F9 00003D4F            248      LEA VI11,A1
+0000136E  6100 1B5A                249      BSR DNOLINE
+00001372  6100 1BD4                250      BSR WHITEXT
+00001376  43F9 00003D55            251      LEA VI12,A1
+0000137C  6100 1B9A                252      BSR DISPLAY
+00001380  43F9 00003D5D            253      LEA VI13,A1
+00001386  6100 1B90                254      BSR DISPLAY
+0000138A  43F9 00003DA6            255      LEA VI14,A1
+00001390  6100 1B86                256      BSR DISPLAY
+00001394  6100 1B3C                257      BSR NEWLINE
+00001398  6100 1B4E                258      BSR ENTER
+0000139C                           259      
+0000139C  43F9 00003DD5            260      LEA VI15,A1
+000013A2  6100 1B74                261      BSR DISPLAY
+000013A6  43F9 00003E1E            262      LEA VI16,A1
+000013AC  6100 1B6A                263      BSR DISPLAY
+000013B0  43F9 00003E65            264      LEA VI17,A1
+000013B6  6100 1B12                265      BSR DNOLINE
+000013BA  6100 1B78                266      BSR REDTEXT
+000013BE  43F9 00003E84            267      LEA VI18,A1
+000013C4  6100 1B04                268      BSR DNOLINE
+000013C8  6100 1B7E                269      BSR WHITEXT
+000013CC  43F9 00003E9E            270      LEA VI19,A1
+000013D2  6100 1B44                271      BSR DISPLAY
+000013D6  6100 1AFA                272      BSR NEWLINE
+000013DA  6100 1B0C                273      BSR ENTER
+000013DE                           274      
+000013DE  43F9 00003EA0            275      LEA VI20,A1
+000013E4  6100 1AE4                276      BSR DNOLINE
+000013E8  6100 1B4A                277      BSR REDTEXT
+000013EC  43F9 00003ECE            278      LEA VI21,A1
+000013F2  6100 1B24                279      BSR DISPLAY
+000013F6  6100 1B50                280      BSR WHITEXT
+000013FA  43F9 00003ED3            281      LEA VI22,A1
+00001400  6100 1B16                282      BSR DISPLAY
+00001404  43F9 00003F16            283      LEA VI23,A1
+0000140A  6100 1B0C                284      BSR DISPLAY
+0000140E  6100 1AC2                285      BSR NEWLINE
+00001412  6100 1AD4                286      BSR ENTER
+00001416                           287      
+00001416  43F9 00003F29            288      LEA VI24,A1
+0000141C  6100 1AFA                289      BSR DISPLAY
+00001420  43F9 00003F6D            290      LEA VI25,A1
+00001426  6100 1AF0                291      BSR DISPLAY
+0000142A  43F9 00003FB2            292      LEA VI26,A1
+00001430  6100 1AE6                293      BSR DISPLAY
+00001434  6100 1A9C                294      BSR NEWLINE
+00001438  6100 1AAE                295      BSR ENTER
+0000143C  6100 1AB2                296      BSR CLRSCRN
+00001440                           297      
+00001440  43F9 00003FD1            298      LEA VI27,A1
+00001446  6100 1AD0                299      BSR DISPLAY
+0000144A  43F9 00004014            300      LEA VI28,A1
+00001450  6100 1A78                301      BSR DNOLINE
+00001454  6100 1ADE                302      BSR REDTEXT
+00001458  43F9 0000401F            303      LEA VI29,A1
+0000145E  6100 1A6A                304      BSR DNOLINE
+00001462  6100 1AE4                305      BSR WHITEXT
+00001466  43F9 0000402B            306      LEA VI30,A1
+0000146C  6100 1A5C                307      BSR DNOLINE
+00001470  6100 1AC2                308      BSR REDTEXT
+00001474  43F9 00004036            309      LEA VI31,A1
+0000147A  6100 1A4E                310      BSR DNOLINE
+0000147E  6100 1AC8                311      BSR WHITEXT
+00001482  43F9 00004041            312      LEA VI32,A1
+00001488  6100 1A8E                313      BSR DISPLAY
+0000148C  43F9 00004052            314      LEA VI33,A1
+00001492  6100 1A36                315      BSR DNOLINE
+00001496  6100 1A9C                316      BSR REDTEXT
+0000149A  43F9 0000405F            317      LEA VI34,A1
+000014A0  6100 1A28                318      BSR DNOLINE
+000014A4  6100 1AA2                319      BSR WHITEXT
+000014A8  43F9 0000406A            320      LEA VI35,A1
+000014AE  6100 1A1A                321      BSR DNOLINE
+000014B2  6100 1A80                322      BSR REDTEXT
+000014B6  43F9 0000408E            323      LEA VI36,A1
+000014BC  6100 1A5A                324      BSR DISPLAY
+000014C0  43F9 00004094            325      LEA VI37,A1
+000014C6  6100 1A02                326      BSR DNOLINE
+000014CA  6100 1A7C                327      BSR WHITEXT
+000014CE  43F9 0000409C            328      LEA VI38,A1
+000014D4  6100 19F4                329      BSR DNOLINE
+000014D8  6100 1A5A                330      BSR REDTEXT
+000014DC  43F9 000040A3            331      LEA VI39,A1
+000014E2  6100 19E6                332      BSR DNOLINE
+000014E6  6100 1A60                333      BSR WHITEXT
+000014EA  43F9 000040BE            334      LEA VI40,A1
+000014F0  6100 1A26                335      BSR DISPLAY
+000014F4  6100 19DC                336      BSR NEWLINE
+000014F8  6100 19EE                337      BSR ENTER
+000014FC                           338      
+000014FC  43F9 000040C0            339      LEA VI41,A1
+00001502  6100 19C6                340      BSR DNOLINE
+00001506  43F9 000040F2            341      LEA VI42,A1
+0000150C  6100 1A26                342      BSR REDTEXT
+00001510  6100 19B8                343      BSR DNOLINE
+00001514  6100 1A32                344      BSR WHITEXT
+00001518  43F9 000040FB            345      LEA VI43,A1
+0000151E  6100 19F8                346      BSR DISPLAY
+00001522  43F9 0000410F            347      LEA VI44,A1
+00001528  6100 19EE                348      BSR DISPLAY
+0000152C  6100 19A4                349      BSR NEWLINE
+00001530  6100 19B6                350      BSR ENTER
+00001534                           351      
+00001534  6100 199C                352  LOOP2   BSR NEWLINE
+00001538  43F9 00004143            353      LEA VI45,A1
+0000153E  6100 19D8                354      BSR DISPLAY
+00001542  43F9 00004168            355      LEA VI46,A1
+00001548  6100 19CE                356      BSR DISPLAY
+0000154C                           357      
+0000154C  103C 0005                358      MOVE.B  #5,D0       ; Read keyboard entry
+00001550  4E4F                     359      TRAP    #15
+00001552                           360      
+00001552  B23C 0031                361      CMP.B   #$31,D1
+00001556  6700 0024                362      BEQ OUT
+0000155A  B23C 0032                363      CMP.B   #$32,D1
+0000155E  6700 0E96                364      BEQ IN
+00001562  6600 0002                365      BNE ER2
+00001566  6100 196A                366  ER2 BSR NEWLINE
+0000156A  43F9 000032A2            367      LEA EMSG,A1
+00001570  103C 000E                368      MOVE.B  #14,D0
+00001574  4E4F                     369      TRAP    #15
+00001576  6100 195A                370      BSR newLine
+0000157A  60B8                     371      BRA LOOP2
+0000157C                           372      
+0000157C                           373      
+0000157C                           374      
+0000157C                           375      
+0000157C                           376  *OUTSIDE INTRO--------------------------------------------
+0000157C  6100 1972                377  OUT BSR CLRSCRN
+00001580  43F9 0000418E            378      LEA OI1,A1
+00001586  6100 1990                379      BSR DISPLAY
+0000158A  43F9 000041D1            380      LEA OI2,A1
+00001590  6100 1938                381      BSR DNOLINE
+00001594  6100 199E                382      BSR REDTEXT
+00001598  43F9 000041F1            383      LEA OI3R,A1
+0000159E  6100 192A                384      BSR DNOLINE
+000015A2  6100 19A4                385      BSR WHITEXT
+000015A6  43F9 00004203            386      LEA OI4,A1
+000015AC  6100 196A                387      BSR DISPLAY
+000015B0  6100 1920                388      BSR NEWLINE
+000015B4  6100 1932                389      BSR ENTER
+000015B8                           390      
+000015B8  43F9 00004217            391      LEA OI5,A1
+000015BE  6100 190A                392      BSR DNOLINE
+000015C2  6100 1970                393      BSR REDTEXT
+000015C6  43F9 00004256            394      LEA OI6R,A1
+000015CC  6100 197A                395      BSR WHITEXT
+000015D0  6100 1946                396      BSR DISPLAY
+000015D4  43F9 00004265            397      LEA OI7,A1
+000015DA  6100 193C                398      BSR DISPLAY
+000015DE  43F9 0000429D            399      LEA OI8,A1
+000015E4  6100 1932                400      BSR DISPLAY
+000015E8  6100 18E8                401      BSR NEWLINE
+000015EC  6100 18FA                402      BSR ENTER
+000015F0                           403      
+000015F0  43F9 000042BB            404      LEA OI9,A1
+000015F6  6100 18D2                405      BSR DNOLINE
+000015FA  6100 1938                406      BSR REDTEXT
+000015FE  43F9 000042CB            407      LEA OI10R,A1
+00001604  6100 18C4                408      BSR DNOLINE
+00001608  6100 193E                409      BSR WHITEXT
+0000160C  43F9 000042D7            410      LEA OI11,A1
+00001612  6100 18B6                411      BSR DNOLINE
+00001616  43F9 000042E9            412      LEA OI12R,A1
+0000161C  6100 1916                413      BSR REDTEXT
+00001620  6100 18A8                414      BSR DNOLINE
+00001624  6100 1922                415      BSR WHITEXT
+00001628  43F9 000042FB            416      LEA OI13,A1
+0000162E  6100 18E8                417      BSR DISPLAY
+00001632  43F9 00004306            418      LEA OI14,A1
+00001638  6100 18DE                419      BSR DISPLAY
+0000163C  43F9 00004342            420      LEA OI15,A1
+00001642  6100 18D4                421      BSR DISPLAY
+00001646  43F9 00004383            422      LEA OI16,A1
+0000164C  6100 18CA                423      BSR DISPLAY
+00001650  6100 1880                424      BSR NEWLINE
+00001654  6100 1892                425      BSR     ENTER
+00001658                           426      
+00001658  43F9 00004391            427  LOOP3   LEA OI17,A1
+0000165E  6100 18B8                428      BSR DISPLAY
+00001662  43F9 000043A3            429      LEA OI18,A1
+00001668  6100 18AE                430      BSR DISPLAY
+0000166C  6100 1864                431      BSR NEWLINE
+00001670                           432      
+00001670  103C 0005                433      MOVE.B  #5,D0
+00001674  4E4F                     434      TRAP    #15
+00001676                           435      
+00001676  B23C 0031                436      CMP.B   #$31,D1
+0000167A  6700 001E                437      BEQ OUTP
+0000167E  B23C 0032                438      CMP.B   #$32,D1
+00001682  6700 0672                439      BEQ OUTS
+00001686  6600 0002                440      BNE ER3
+0000168A  43F9 000032A2            441  ER3 LEA EMSG,A1
+00001690  6100 1886                442      BSR DISPLAY
+00001694  6100 183C                443      BSR NEWLINE
+00001698  60BE                     444      BRA LOOP3
+0000169A                           445  
+0000169A                           446  *OUTSIDE BRANCH PETA--------------------------------------
+0000169A  6100 1854                447  OUTP    BSR CLRSCRN
+0000169E                           448  
+0000169E  43F9 000030EE            449      LEA PASS1,A1
+000016A4  6100 1872                450      BSR DISPLAY
+000016A8  6100 183E                451      BSR ENTER
+000016AC  6100 1842                452      BSR CLRSCRN
+000016B0                           453      
+000016B0  43F9 000043D8            454      LEA OP1,A1
+000016B6  6100 1860                455      BSR DISPLAY
+000016BA  43F9 00004419            456      LEA OP2,A1
+000016C0  6100 1872                457      BSR REDTEXT
+000016C4  6100 1804                458      BSR DNOLINE
+000016C8  6100 187E                459      BSR WHITEXT
+000016CC  43F9 0000441E            460      LEA OP3,A1
+000016D2  6100 17F6                461      BSR DNOLINE
+000016D6  6100 185C                462      BSR REDTEXT
+000016DA  43F9 00004451            463      LEA OP4,A1
+000016E0  6100 17E8                464      BSR DNOLINE
+000016E4  6100 1862                465      BSR WHITEXT
+000016E8  43F9 00004456            466      LEA OP5,A1
+000016EE  6100 1828                467      BSR DISPLAY
+000016F2  43F9 00004458            468      LEA OP6,A1
+000016F8  6100 17D0                469      BSR DNOLINE
+000016FC  6100 1836                470      BSR REDTEXT
+00001700  43F9 00004466            471      LEA OP7,A1
+00001706  6100 17C2                472      BSR DNOLINE
+0000170A  6100 183C                473      BSR WHITEXT
+0000170E  43F9 00004470            474      LEA OP8,A1
+00001714  6100 17B4                475      BSR DNOLINE
+00001718  43F9 00004473            476      LEA OP9,A1
+0000171E  6100 17AA                477      BSR DNOLINE
+00001722  6100 1810                478      BSR REDTEXT
+00001726  43F9 0000448F            479      LEA OP10,A1
+0000172C  6100 179C                480      BSR DNOLINE
+00001730  6100 1816                481      BSR WHITEXT
+00001734  43F9 00004495            482      LEA OP11,A1
+0000173A  6100 17DC                483      BSR DISPLAY
+0000173E  43F9 0000449D            484      LEA OP12,A1
+00001744  6100 17D2                485      BSR DISPLAY
+00001748  43F9 000044DB            486      LEA OP13,A1
+0000174E  6100 17C8                487      BSR DISPLAY
+00001752  6100 177E                488      BSR NEWLINE
+00001756  6100 1790                489      BSR ENTER
+0000175A                           490      
+0000175A  43F9 000044E8            491      LEA OP14,A1
+00001760  6100 17B6                492      BSR DISPLAY
+00001764  43F9 00004528            493      LEA OP15,A1
+0000176A  6100 175E                494      BSR DNOLINE
+0000176E  6100 17C4                495      BSR REDTEXT
+00001772  43F9 00004538            496      LEA OP16,A1
+00001778  6100 1750                497      BSR DNOLINE
+0000177C  6100 17CA                498      BSR WHITEXT
+00001780  43F9 0000453E            499      LEA OP17,A1
+00001786  6100 1790                500      BSR DISPLAY
+0000178A  6100 17A8                501      BSR REDTEXT
+0000178E  43F9 00004566            502      LEA OP18,A1
+00001794  6100 1734                503      BSR DNOLINE
+00001798  6100 17AE                504      BSR WHITEXT
+0000179C  43F9 0000456A            505      LEA OP19,A1
+000017A2  6100 1726                506      BSR DNOLINE
+000017A6  6100 178C                507      BSR REDTEXT
+000017AA  43F9 0000456C            508      LEA OP20,A1
+000017B0  6100 1718                509      BSR DNOLINE
+000017B4  6100 1792                510      BSR WHITEXT
+000017B8  43F9 00004585            511      LEA OP21,A1
+000017BE  6100 1758                512      BSR DISPLAY
+000017C2  43F9 000045B0            513      LEA OP22,A1
+000017C8  6100 1700                514      BSR DNOLINE
+000017CC  6100 1766                515      BSR REDTEXT
+000017D0  43F9 000045DB            516      LEA OP23,A1
+000017D6  6100 16F2                517      BSR DNOLINE
+000017DA  6100 176C                518      BSR WHITEXT
+000017DE  43F9 000045ED            519      LEA OP24,A1
+000017E4  6100 1732                520      BSR DISPLAY
+000017E8  6100 16E8                521      BSR NEWLINE
+000017EC  6100 16FA                522      BSR ENTER
+000017F0                           523      
+000017F0  43F9 00004612            524      LEA OP27,A1
+000017F6  6100 1720                525      BSR DISPLAY
+000017FA  43F9 00004655            526      LEA OP28,A1
+00001800  6100 1716                527      BSR DISPLAY
+00001804  6100 16CC                528      BSR NEWLINE
+00001808  6100 16DE                529      BSR ENTER
+0000180C                           530      
+0000180C  43F9 00004679            531      LEA OP29,A1
+00001812  6100 16B6                532      BSR DNOLINE
+00001816  6100 171C                533      BSR REDTEXT
+0000181A  43F9 0000469B            534      LEA OP30,A1
+00001820  6100 16A8                535      BSR DNOLINE
+00001824  6100 1722                536      BSR WHITEXT
+00001828  43F9 000046A2            537      LEA OP31,A1
+0000182E  6100 169A                538      BSR DNOLINE
+00001832  6100 1700                539      BSR REDTEXT
+00001836  43F9 000046A6            540      LEA OP32,A1
+0000183C  6100 168C                541      BSR DNOLINE
+00001840  6100 1706                542      BSR WHITEXT
+00001844  43F9 000046AA            543      LEA OP33,A1
+0000184A  6100 167E                544      BSR DNOLINE
+0000184E  6100 16E4                545      BSR REDTEXT
+00001852  43F9 000046BA            546      LEA OP34,A1
+00001858  6100 1670                547      BSR DNOLINE
+0000185C  6100 16EA                548      BSR WHITEXT
+00001860  43F9 000046BF            549      LEA OP35,A1
+00001866  6100 16B0                550      BSR DISPLAY
+0000186A  6100 16C8                551      BSR REDTEXT
+0000186E  43F9 000046C1            552      LEA OP36,A1
+00001874  6100 1654                553      BSR DNOLINE
+00001878  6100 16CE                554      BSR WHITEXT
+0000187C  43F9 000046C8            555      LEA OP37,A1
+00001882  6100 1646                556      BSR DNOLINE
+00001886  6100 16AC                557      BSR REDTEXT
+0000188A  43F9 000046CE            558      LEA OP38,A1
+00001890  6100 1638                559      BSR DNOLINE
+00001894  6100 16B2                560      BSR WHITEXT
+00001898  43F9 000046E0            561      LEA OP39,A1
+0000189E  6100 162A                562      BSR DNOLINE
+000018A2  6100 1690                563      BSR REDTEXT
+000018A6  43F9 000046F6            564      LEA OP40,A1
+000018AC  6100 161C                565      BSR DNOLINE
+000018B0  6100 1696                566      BSR WHITEXT
+000018B4  43F9 000046FD            567      LEA OP41,A1
+000018BA  6100 165C                568      BSR DISPLAY
+000018BE  43F9 00004707            569      LEA OP42,A1
+000018C4  6100 1652                570      BSR DISPLAY
+000018C8  43F9 0000474D            571      LEA OP43,A1
+000018CE  6100 1648                572      BSR DISPLAY
+000018D2  6100 15FE                573      BSR NEWLINE
+000018D6  6100 1610                574      BSR ENTER
+000018DA                           575      
+000018DA  43F9 00004782            576      LEA OP44,A1
+000018E0  6100 15E8                577      BSR DNOLINE
+000018E4  6100 164E                578      BSR REDTEXT
+000018E8  43F9 000047B5            579      LEA OP45,A1
+000018EE  6100 1628                580      BSR DISPLAY
+000018F2  43F9 000047C3            581      LEA OP46,A1
+000018F8  6100 15D0                582      BSR DNOLINE
+000018FC  6100 164A                583      BSR WHITEXT
+00001900  43F9 000047D3            584      LEA OP47,A1
+00001906  6100 1610                585      BSR DISPLAY
+0000190A  6100 15C6                586      BSR NEWLINE
+0000190E  6100 15D8                587      BSR ENTER
+00001912                           588      
+00001912  43F9 0000480A            589      LEA OP48,A1
+00001918  6100 15FE                590      BSR DISPLAY
+0000191C  6100 15B4                591      BSR NEWLINE
+00001920  6100 15C6                592      BSR ENTER
+00001924                           593      
+00001924  6100 15AC                594  LOOP4   BSR NEWLINE
+00001928  43F9 00004834            595      LEA OP49,A1
+0000192E  6100 15E8                596      BSR DISPLAY
+00001932  43F9 0000487B            597      LEA OP50,A1
+00001938  6100 15DE                598      BSR DISPLAY
+0000193C  43F9 00004888            599      LEA OP51,A1
+00001942  6100 15D4                600      BSR DISPLAY
+00001946                           601      
+00001946  103C 0005                602      MOVE.B  #5,D0
+0000194A  4E4F                     603      TRAP    #15
+0000194C                           604      
+0000194C  B23C 0031                605      CMP.B   #$31,D1
+00001950  6700 0020                606      BEQ OUTPB
+00001954  B23C 0032                607      CMP.B   #$32,D1
+00001958  6700 0262                608      BEQ OUTPG
+0000195C  6600 0002                609      BNE ER4
+00001960  43F9 000032A2            610  ER4 LEA EMSG,A1
+00001966  103C 000E                611      MOVE.B  #14,D0
+0000196A  4E4F                     612      TRAP    #15
+0000196C  6100 1564                613      BSR NEWLINE
+00001970  60B2                     614      BRA LOOP4
+00001972                           615      
+00001972                           616  
+00001972                           617  *OUTSIDE BRANCH PETA BAD----------------------------------
+00001972  6100 157C                618  OUTPB   BSR CLRSCRN
+00001976  43F9 000048AA            619      LEA OPB1,A1
+0000197C  6100 159A                620      BSR DISPLAY
+00001980  43F9 000048F2            621      LEA OPB2,A1
+00001986  6100 1542                622      BSR DNOLINE
+0000198A  6100 15A8                623      BSR REDTEXT
+0000198E  43F9 00004925            624      LEA OPB3,A1
+00001994  6100 1534                625      BSR DNOLINE
+00001998  6100 15AE                626      BSR WHITEXT
+0000199C  43F9 0000492B            627      LEA OPB4,A1
+000019A2  6100 1526                628      BSR DNOLINE
+000019A6  6100 158C                629      BSR REDTEXT
+000019AA  43F9 0000492E            630      LEA OPB5,A1
+000019B0  6100 1518                631      BSR DNOLINE
+000019B4  6100 1592                632      BSR WHITEXT
+000019B8  43F9 00004946            633      LEA OPB6,A1
+000019BE  6100 1558                634      BSR DISPLAY
+000019C2  6100 150E                635      BSR NEWLINE
+000019C6  6100 1520                636      BSR ENTER
+000019CA                           637      
+000019CA  43F9 00004948            638      LEA OPB7,A1
+000019D0  6100 14F8                639      BSR DNOLINE
+000019D4  6100 155E                640      BSR REDTEXT
+000019D8  43F9 0000495C            641      LEA OPB8,A1
+000019DE  6100 14EA                642      BSR DNOLINE
+000019E2  6100 1564                643      BSR WHITEXT
+000019E6  43F9 00004961            644      LEA OPB9,A1
+000019EC  6100 14DC                645      BSR DNOLINE
+000019F0  6100 1542                646      BSR REDTEXT
+000019F4  43F9 0000496E            647      LEA OPB10,A1
+000019FA  6100 14CE                648      BSR DNOLINE
+000019FE  6100 1548                649      BSR WHITEXT
+00001A02  43F9 00004984            650      LEA OPB11,A1
+00001A08  6100 150E                651      BSR DISPLAY
+00001A0C  43F9 0000498F            652      LEA OPB12,A1
+00001A12  6100 1504                653      BSR DISPLAY
+00001A16  6100 151C                654      BSR REDTEXT
+00001A1A  43F9 000049D6            655      LEA OPB13,A1
+00001A20  6100 14A8                656      BSR DNOLINE
+00001A24  6100 1522                657      BSR WHITEXT
+00001A28  43F9 000049F3            658      LEA OPB14,A1
+00001A2E  6100 14E8                659      BSR DISPLAY
+00001A32  6100 149E                660      BSR NEWLINE
+00001A36  6100 14B0                661      BSR ENTER
+00001A3A                           662      
+00001A3A  43F9 00004A14            663      LEA OPB15,A1
+00001A40  6100 1488                664      BSR DNOLINE
+00001A44  6100 14EE                665      BSR REDTEXT
+00001A48  43F9 00004A2A            666      LEA OPB16,A1
+00001A4E  6100 14C8                667      BSR DISPLAY
+00001A52  43F9 00004A5E            668      LEA OPB17,A1
+00001A58  6100 1470                669      BSR DNOLINE
+00001A5C  6100 14EA                670      BSR WHITEXT
+00001A60  43F9 00004A63            671      LEA OPB18,A1
+00001A66  6100 1462                672      BSR DNOLINE
+00001A6A  6100 14C8                673      BSR REDTEXT
+00001A6E  43F9 00004A96            674      LEA OPB19,A1
+00001A74  6100 1454                675      BSR DNOLINE
+00001A78  6100 14CE                676      BSR WHITEXT
+00001A7C  43F9 00004A9B            677      LEA OPB20,A1
+00001A82  6100 1494                678      BSR DISPLAY
+00001A86  43F9 00004AA9            679      LEA OPB21,A1
+00001A8C  6100 148A                680      BSR DISPLAY
+00001A90  6100 1440                681      BSR NEWLINE
+00001A94  6100 1452                682      BSR ENTER
+00001A98                           683      
+00001A98  43F9 00004AB1            684  LOOP5   LEA OPB22,A1
+00001A9E  6100 1478                685      BSR DISPLAY
+00001AA2  43F9 00004AE0            686      LEA OPB23,A1
+00001AA8  6100 146E                687      BSR DISPLAY
+00001AAC                           688      
+00001AAC  103C 0005                689      MOVE.B  #5,D0
+00001AB0  4E4F                     690      TRAP    #15
+00001AB2                           691      
+00001AB2  B23C 0031                692      CMP.B   #$31,D1
+00001AB6  6700 13EA                693      BEQ SUI
+00001ABA  B23C 0032                694      CMP.B   #$32,D1
+00001ABE  6700 0014                695      BEQ OUTPB2
+00001AC2  6600 0002                696      BNE ER5
+00001AC6  43F9 000032A2            697  ER5 LEA EMSG,A1
+00001ACC  103C 000E                698      MOVE.B  #14,D0
+00001AD0  4E4F                     699      TRAP    #15
+00001AD2  60C4                     700      BRA LOOP5
+00001AD4                           701      
+00001AD4  6100 141A                702  OUTPB2  BSR CLRSCRN
+00001AD8  43F9 00004AF4            703      LEA OPB24,A1
+00001ADE  6100 13EA                704      BSR DNOLINE
+00001AE2  6100 1450                705      BSR REDTEXT
+00001AE6  43F9 00004B1D            706      LEA OPB25,A1
+00001AEC  6100 13DC                707      BSR DNOLINE
+00001AF0  6100 1456                708      BSR WHITEXT
+00001AF4  43F9 00004B28            709      LEA OPB26,A1
+00001AFA  6100 141C                710      BSR DISPLAY
+00001AFE  6100 13D2                711      BSR NEWLINE
+00001B02  6100 13E4                712      BSR ENTER
+00001B06                           713      
+00001B06  43F9 00004B2A            714      LEA OPB27,A1
+00001B0C  6100 13BC                715      BSR DNOLINE
+00001B10  6100 1422                716      BSR REDTEXT
+00001B14  43F9 00004B42            717      LEA OPB28,A1
+00001B1A  6100 13AE                718      BSR DNOLINE
+00001B1E  6100 1428                719      BSR WHITEXT
+00001B22  43F9 00004B51            720      LEA OPB29,A1
+00001B28  6100 13EE                721      BSR DISPLAY
+00001B2C  6100 1406                722      BSR REDTEXT
+00001B30  43F9 00004B73            723      LEA OPB30,A1
+00001B36  6100 1392                724      BSR DNOLINE
+00001B3A  6100 140C                725      BSR WHITEXT
+00001B3E  43F9 00004B7F            726      LEA OPB31,A1
+00001B44  6100 13D2                727      BSR DISPLAY
+00001B48  43F9 00004BBC            728      LEA OPB32,A1
+00001B4E  6100 137A                729      BSR DNOLINE
+00001B52  6100 13E0                730      BSR REDTEXT
+00001B56  43F9 00004BC6            731      LEA OPB33,A1
+00001B5C  6100 136C                732      BSR DNOLINE
+00001B60  6100 13E6                733      BSR WHITEXT
+00001B64  43F9 00004BDB            734      LEA OPB34,A1
+00001B6A  6100 135E                735      BSR DNOLINE
+00001B6E  6100 13C4                736      BSR REDTEXT
+00001B72  43F9 00004BF3            737      LEA OPB35,A1
+00001B78  6100 1350                738      BSR DNOLINE
+00001B7C  6100 13CA                739      BSR WHITEXT
+00001B80  43F9 00004BFF            740      LEA OPB36,A1
+00001B86  6100 1390                741      BSR DISPLAY
+00001B8A  43F9 00004C09            742      LEA OPB37,A1
+00001B90  6100 1338                743      BSR DNOLINE
+00001B94  6100 139E                744      BSR REDTEXT
+00001B98  43F9 00004C1F            745      LEA OPB38,A1
+00001B9E  6100 132A                746      BSR DNOLINE
+00001BA2  6100 13A4                747      BSR WHITEXT
+00001BA6  43F9 00004C24            748      LEA OPB39,A1
+00001BAC  6100 136A                749      BSR DISPLAY
+00001BB0  6100 1320                750      BSR NEWLINE
+00001BB4  6100 1332                751      BSR ENTER
+00001BB8  6000 10DA                752      BRA SUP
+00001BBC                           753  
+00001BBC                           754  
+00001BBC                           755  *OUTSIDE BRANCH PETA GOOD---------------------------------
+00001BBC  6100 1332                756  OUTPG   BSR CLRSCRN
+00001BC0  43F9 00004C26            757      LEA OPG1,A1
+00001BC6  6100 1302                758      BSR DNOLINE
+00001BCA  6100 1368                759      BSR REDTEXT
+00001BCE  43F9 00004C53            760      LEA OPG2,A1
+00001BD4  6100 1342                761      BSR DISPLAY
+00001BD8  43F9 00004C69            762      LEA OPG3,A1
+00001BDE  6100 12EA                763      BSR DNOLINE
+00001BE2  6100 1364                764      BSR WHITEXT
+00001BE6  43F9 00004C7C            765      LEA OPG4,A1
+00001BEC  6100 132A                766      BSR DISPLAY
+00001BF0  6100 12E0                767      BSR NEWLINE
+00001BF4  6100 12F2                768      BSR ENTER
+00001BF8                           769      
+00001BF8  43F9 00004C82            770      LEA OPG5,A1
+00001BFE  6100 1318                771      BSR DISPLAY
+00001C02  43F9 00004CC2            772      LEA OPG6,A1
+00001C08  6100 12C0                773      BSR DNOLINE
+00001C0C  6100 1326                774      BSR REDTEXT
+00001C10  43F9 00004CFF            775      LEA OPG7,A1
+00001C16  6100 1300                776      BSR DISPLAY
+00001C1A  43F9 00004D05            777      LEA OPG8,A1
+00001C20  6100 12A8                778      BSR DNOLINE
+00001C24  6100 1322                779      BSR WHITEXT
+00001C28  43F9 00004D0E            780      LEA OPG9,A1
+00001C2E  6100 12E8                781      BSR DISPLAY
+00001C32  6100 129E                782      BSR NEWLINE
+00001C36  6100 12B0                783      BSR ENTER
+00001C3A                           784      
+00001C3A  43F9 00004D10            785      LEA OPG10,A1
+00001C40  6100 12D6                786      BSR DISPLAY
+00001C44  43F9 00004D54            787      LEA OPG11,A1
+00001C4A  6100 127E                788      BSR DNOLINE
+00001C4E  6100 12E4                789      BSR REDTEXT
+00001C52  43F9 00004D6A            790      LEA OPG12,A1
+00001C58  6100 1270                791      BSR DNOLINE
+00001C5C  6100 12EA                792      BSR WHITEXT
+00001C60  43F9 00004D76            793      LEA OPG13,A1
+00001C66  6100 12B0                794      BSR DISPLAY
+00001C6A  43F9 00004D98            795      LEA OPG14,A1
+00001C70  6100 12A6                796      BSR DISPLAY
+00001C74  6100 125C                797      BSR NEWLINE
+00001C78  6100 126E                798      BSR ENTER
+00001C7C                           799      
+00001C7C  6100 12B6                800      BSR REDTEXT
+00001C80  43F9 00004DB3            801      LEA OPG15,A1
+00001C86  6100 1242                802      BSR DNOLINE
+00001C8A  6100 12BC                803      BSR WHITEXT
+00001C8E  43F9 00004DB8            804      LEA OPG16,A1
+00001C94  6100 1282                805      BSR DISPLAY
+00001C98  43F9 00004DF4            806      LEA OPG17,A1
+00001C9E  6100 1278                807      BSR DISPLAY
+00001CA2  43F9 00004E34            808      LEA OPG18,A1
+00001CA8  6100 126E                809      BSR DISPLAY
+00001CAC  43F9 00004E73            810      LEA OPG19,A1
+00001CB2  6100 1216                811      BSR DNOLINE
+00001CB6  6100 127C                812      BSR REDTEXT
+00001CBA  43F9 00004E79            813      LEA OPG20,A1
+00001CC0  6100 1208                814      BSR DNOLINE
+00001CC4  6100 1282                815      BSR WHITEXT
+00001CC8  43F9 00004E9D            816      LEA OPG21,A1
+00001CCE  6100 1248                817      BSR DISPLAY
+00001CD2  43F9 00004EB6            818      LEA OPG22,A1
+00001CD8  6100 123E                819      BSR DISPLAY
+00001CDC  6100 11F4                820      BSR NEWLINE
+00001CE0  6100 1206                821      BSR ENTER
+00001CE4                           822      
+00001CE4  43F9 00004F82            823      LEA OPG29,A1
+00001CEA  6100 122C                824      BSR DISPLAY
+00001CEE  6100 11F8                825      BSR ENTER
+00001CF2  6000 0FA0                826      BRA SUP
+00001CF6                           827  
+00001CF6                           828  *OUTSIDE STICK--------------------------------------------
+00001CF6  6100 11F8                829  OUTS    BSR CLRSCRN
+00001CFA                           830  
+00001CFA                           831  
+00001CFA  43F9 0000312A            832      LEA PASS2,A1
+00001D00  6100 1216                833      BSR DISPLAY
+00001D04  6100 11E2                834      BSR ENTER
+00001D08  6100 11E6                835      BSR CLRSCRN
+00001D0C                           836      
+00001D0C  43F9 00004FBD            837      LEA OS1,A1
+00001D12  6100 1204                838      BSR DISPLAY
+00001D16  43F9 00004FF9            839      LEA OS2,A1
+00001D1C  6100 11FA                840      BSR DISPLAY
+00001D20  43F9 00005035            841      LEA OS3,A1
+00001D26  6100 11F0                842      BSR DISPLAY
+00001D2A  43F9 00005072            843      LEA OS4,A1
+00001D30  6100 11E6                844      BSR DISPLAY
+00001D34  6100 119C                845      BSR NEWLINE
+00001D38  6100 11AE                846      BSR ENTER
+00001D3C                           847      
+00001D3C  43F9 00005097            848      LEA OS5,A1
+00001D42  6100 11D4                849      BSR DISPLAY
+00001D46  43F9 000050D1            850      LEA OS6,A1
+00001D4C  6100 11CA                851      BSR DISPLAY
+00001D50  6100 1180                852      BSR NEWLINE
+00001D54  6100 1192                853      BSR ENTER
+00001D58                           854      
+00001D58  43F9 000050FE            855      LEA OS7,A1
+00001D5E  6100 116A                856      BSR DNOLINE
+00001D62  6100 11D0                857      BSR REDTEXT
+00001D66  43F9 00005120            858      LEA OS8,A1
+00001D6C  6100 115C                859      BSR DNOLINE
+00001D70  6100 11D6                860      BSR WHITEXT
+00001D74  43F9 00005127            861      LEA OS9,A1
+00001D7A  6100 114E                862      BSR DNOLINE
+00001D7E  6100 11B4                863      BSR REDTEXT
+00001D82  43F9 0000512B            864      LEA OS10,A1
+00001D88  6100 1140                865      BSR DNOLINE
+00001D8C  6100 11BA                866      BSR WHITEXT
+00001D90  43F9 0000512F            867      LEA OS11,A1
+00001D96  6100 1180                868      BSR DISPLAY
+00001D9A  6100 1198                869      BSR REDTEXT
+00001D9E  43F9 0000513E            870      LEA OS12,A1
+00001DA4  6100 1124                871      BSR DNOLINE
+00001DA8  6100 119E                872      BSR WHITEXT
+00001DAC  43F9 00005143            873      LEA OS13,A1
+00001DB2  6100 1116                874      BSR DNOLINE
+00001DB6  6100 117C                875      BSR REDTEXT
+00001DBA  43F9 00005146            876      LEA OS14,A1
+00001DC0  6100 1108                877      BSR DNOLINE
+00001DC4  6100 1182                878      BSR WHITEXT
+00001DC8  43F9 0000514D            879      LEA OS15,A1
+00001DCE  6100 10FA                880      BSR DNOLINE
+00001DD2  6100 1160                881      BSR REDTEXT
+00001DD6  43F9 00005153            882      LEA OS16,A1
+00001DDC  6100 10EC                883      BSR DNOLINE
+00001DE0  6100 1166                884      BSR WHITEXT
+00001DE4  43F9 00005165            885      LEA OS17,A1
+00001DEA  6100 10DE                886      BSR DNOLINE
+00001DEE  6100 1144                887      BSR REDTEXT
+00001DF2  43F9 0000517B            888      LEA OS18,A1
+00001DF8  6100 10D0                889      BSR DNOLINE
+00001DFC  6100 114A                890      BSR WHITEXT
+00001E00  43F9 00005182            891      LEA OS19,A1
+00001E06  6100 1110                892      BSR DISPLAY
+00001E0A  43F9 00005186            893      LEA OS20,A1
+00001E10  6100 1106                894      BSR DISPLAY
+00001E14  43F9 000051C2            895      LEA OS21,A1
+00001E1A  6100 10FC                896      BSR DISPLAY
+00001E1E  43F9 00005202            897      LEA OS22,A1
+00001E24  6100 10F2                898      BSR DISPLAY
+00001E28  6100 10A8                899      BSR NEWLINE
+00001E2C  6100 10BA                900      BSR ENTER
+00001E30                           901      
+00001E30  43F9 0000520C            902      LEA OS23,A1
+00001E36  6100 1092                903      BSR DNOLINE
+00001E3A  6100 10F8                904      BSR REDTEXT
+00001E3E  43F9 0000523F            905      LEA OS24,A1
+00001E44  6100 10D2                906      BSR DISPLAY
+00001E48  43F9 0000524D            907      LEA OS25,A1
+00001E4E  6100 107A                908      BSR DNOLINE
+00001E52  6100 10F4                909      BSR WHITEXT
+00001E56  43F9 0000525D            910      LEA OS26,A1
+00001E5C  6100 10BA                911      BSR DISPLAY
+00001E60  43F9 0000528E            912      LEA OS27,A1
+00001E66  6100 10B0                913      BSR DISPLAY
+00001E6A  6100 1066                914      BSR NEWLINE
+00001E6E  6100 1078                915      BSR ENTER
+00001E72                           916      
+00001E72  43F9 00005294            917      LEA OS28,A1
+00001E78  6100 109E                918      BSR DISPLAY
+00001E7C  6100 1054                919      BSR NEWLINE
+00001E80  6100 1066                920      BSR ENTER
+00001E84                           921      
+00001E84  43F9 000052BE            922  LOOP6   LEA OS29,A1
+00001E8A  6100 103E                923      BSR DNOLINE
+00001E8E  6100 10A4                924      BSR REDTEXT
+00001E92  43F9 000052C2            925      LEA OS30,A1
+00001E98  6100 1030                926      BSR DNOLINE
+00001E9C  6100 10AA                927      BSR WHITEXT
+00001EA0  43F9 000052C8            928      LEA OS31,A1
+00001EA6  6100 1070                929      BSR DISPLAY
+00001EAA  43F9 00005301            930      LEA OS32,A1
+00001EB0  6100 1018                931      BSR DNOLINE
+00001EB4  6100 107E                932      BSR REDTEXT
+00001EB8  43F9 0000530C            933      LEA OS33,A1
+00001EBE  6100 100A                934      BSR DNOLINE
+00001EC2  6100 1084                935      BSR WHITEXT
+00001EC6  43F9 00005311            936      LEA OS34,A1
+00001ECC  6100 104A                937      BSR DISPLAY
+00001ED0  43F9 00005313            938      LEA OS35,A1
+00001ED6  6100 0FF2                939      BSR DNOLINE
+00001EDA  6100 1058                940      BSR REDTEXT
+00001EDE  43F9 0000532F            941      LEA OS36,A1
+00001EE4  6100 1032                942      BSR DISPLAY
+00001EE8  6100 105E                943      BSR WHITEXT
+00001EEC                           944      
+00001EEC                           945      
+00001EEC  103C 0005                946      MOVE.B  #5,D0
+00001EF0  4E4F                     947      TRAP    #15
+00001EF2                           948      
+00001EF2  B23C 0031                949      CMP.B   #$31,D1
+00001EF6  6700 02DE                950      BEQ OUTSB
+00001EFA  B23C 0032                951      CMP.B   #$32,D1
+00001EFE  6700 0018                952      BEQ OUTSG
+00001F02                           953      
+00001F02  43F9 000032A2            954      LEA EMSG,A1
+00001F08  6100 100E                955      BSR DISPLAY
+00001F0C  6100 0FC4                956      BSR NEWLINE
+00001F10  6100 0FD6                957      BSR ENTER
+00001F14  6000 FF6E                958      BRA LOOP6
+00001F18                           959  
+00001F18                           960  *OUTSIDE BRANCH STICK GOOD--------------------------------
+00001F18  6100 0FD6                961  OUTSG   BSR CLRSCRN
+00001F1C  43F9 00005334            962      LEA OSG1,A1
+00001F22  6100 0FF4                963      BSR DISPLAY
+00001F26  43F9 00005375            964      LEA OSG2,A1
+00001F2C  6100 0F9C                965      BSR DNOLINE
+00001F30  6100 1002                966      BSR REDTEXT
+00001F34  43F9 00005398            967      LEA OSG3,A1
+00001F3A  6100 0FDC                968      BSR DISPLAY
+00001F3E  43F9 000053B3            969      LEA OSG4,A1
+00001F44  6100 0F84                970      BSR DNOLINE
+00001F48  6100 0FFE                971      BSR WHITEXT
+00001F4C  43F9 000053C0            972      LEA OSG5,A1
+00001F52  6100 0FC4                973      BSR DISPLAY
+00001F56  6100 0F7A                974      BSR NEWLINE
+00001F5A  6100 0F8C                975      BSR ENTER
+00001F5E                           976      
+00001F5E  43F9 000053E0            977      LEA OSG6,A1
+00001F64  6100 0F64                978      BSR DNOLINE
+00001F68  6100 0FCA                979      BSR REDTEXT
+00001F6C  43F9 000053EF            980      LEA OSG7,A1
+00001F72  6100 0FA4                981      BSR DISPLAY
+00001F76  43F9 0000541E            982      LEA OSG8,A1
+00001F7C  6100 0F4C                983      BSR DNOLINE
+00001F80  6100 0FC6                984      BSR WHITEXT
+00001F84  43F9 00005432            985      LEA OSG9,A1
+00001F8A  6100 0F3E                986      BSR DNOLINE
+00001F8E  6100 0FA4                987      BSR REDTEXT
+00001F92  43F9 00005442            988      LEA OSG10,A1
+00001F98  6100 0F7E                989      BSR DISPLAY
+00001F9C  43F9 0000545D            990      LEA OSG11,A1
+00001FA2  6100 0F26                991      BSR DNOLINE
+00001FA6  6100 0FA0                992      BSR WHITEXT
+00001FAA  43F9 0000546B            993      LEA OSG12,A1
+00001FB0  6100 0F66                994      BSR DISPLAY
+00001FB4  43F9 00005499            995      LEA OSG13,A1
+00001FBA  6100 0F5C                996      BSR DISPLAY
+00001FBE  6100 0F12                997      BSR NEWLINE
+00001FC2  6100 0F24                998      BSR ENTER
+00001FC6                           999      
+00001FC6  43F9 000054A6           1000      LEA OSG14,A1
+00001FCC  6100 0F4A               1001      BSR DISPLAY
+00001FD0  43F9 000054E4           1002      LEA OSG15,A1
+00001FD6  6100 0EF2               1003      BSR DNOLINE
+00001FDA  6100 0F58               1004      BSR REDTEXT
+00001FDE  43F9 000054FB           1005      LEA OSG16,A1
+00001FE4  6100 0EE4               1006      BSR DNOLINE
+00001FE8  6100 0F5E               1007      BSR WHITEXT
+00001FEC  43F9 0000550C           1008      LEA OSG17,A1
+00001FF2  6100 0F24               1009      BSR DISPLAY
+00001FF6  43F9 00005524           1010      LEA OSG18,A1
+00001FFC  6100 0F1A               1011      BSR DISPLAY
+00002000  43F9 00005563           1012      LEA OSG19,A1
+00002006  6100 0EC2               1013      BSR DNOLINE
+0000200A  6100 0F28               1014      BSR REDTEXT
+0000200E  43F9 0000559B           1015      LEA OSG20,A1
+00002014  6100 0F02               1016      BSR DISPLAY
+00002018  43F9 000055A2           1017      LEA OSG21,A1
+0000201E  6100 0EAA               1018      BSR DNOLINE
+00002022  6100 0F24               1019      BSR WHITEXT
+00002026  43F9 000055B1           1020      LEA OSG22,A1
+0000202C  6100 0EEA               1021      BSR DISPLAY
+00002030  6100 0EB6               1022      BSR ENTER
+00002034                          1023      
+00002034  6100 0EBA               1024      BSR CLRSCRN
+00002038                          1025      
+00002038  43F9 000055C1           1026      LEA OSG23,A1
+0000203E  6100 0E8A               1027      BSR DNOLINE
+00002042  6100 0EF0               1028      BSR REDTEXT
+00002046  43F9 000055EA           1029      LEA OSG24,A1
+0000204C  6100 0E7C               1030      BSR DNOLINE
+00002050  6100 0EF6               1031      BSR WHITEXT
+00002054  43F9 000055FD           1032      LEA OSG25,A1
+0000205A  6100 0EBC               1033      BSR DISPLAY
+0000205E  43F9 00005604           1034      LEA OSG26,A1
+00002064  6100 0EB2               1035      BSR DISPLAY
+00002068  43F9 00005642           1036      LEA OSG27,A1
+0000206E  6100 0E5A               1037      BSR DNOLINE
+00002072  6100 0EC0               1038      BSR REDTEXT
+00002076  43F9 0000564D           1039      LEA OSG28,A1
+0000207C  6100 0E4C               1040      BSR DNOLINE
+00002080  6100 0EC6               1041      BSR WHITEXT
+00002084  43F9 00005679           1042      LEA OSG29,A1
+0000208A  6100 0E8C               1043      BSR DISPLAY
+0000208E  43F9 00005683           1044      LEA OSG30,A1
+00002094  6100 0E34               1045      BSR DNOLINE
+00002098  6100 0E9A               1046      BSR REDTEXT
+0000209C  43F9 000056A4           1047      LEA OSG31,A1
+000020A2  6100 0E26               1048      BSR DNOLINE
+000020A6  6100 0EA0               1049      BSR WHITEXT
+000020AA  43F9 000056C0           1050      LEA OSG32,A1
+000020B0  6100 0E66               1051      BSR DISPLAY
+000020B4  43F9 000056C2           1052      LEA OSG33,A1
+000020BA  6100 0E5C               1053      BSR DISPLAY
+000020BE  6100 0E12               1054      BSR NEWLINE
+000020C2  6100 0E24               1055      BSR ENTER
+000020C6                          1056      
+000020C6  6100 0E6C               1057      BSR REDTEXT
+000020CA  43F9 000056D7           1058      LEA OSG34,A1
+000020D0  6100 0DF8               1059      BSR DNOLINE
+000020D4  6100 0E72               1060      BSR WHITEXT
+000020D8  43F9 000056E6           1061      LEA OSG35,A1
+000020DE  6100 0E38               1062      BSR DISPLAY
+000020E2  43F9 00005719           1063      LEA OSG36,A1
+000020E8  6100 0DE0               1064      BSR DNOLINE
+000020EC  6100 0E46               1065      BSR REDTEXT
+000020F0  43F9 00005732           1066      LEA OSG37,A1
+000020F6  6100 0DD2               1067      BSR DNOLINE
+000020FA  6100 0E4C               1068      BSR WHITEXT
+000020FE  43F9 0000574B           1069      LEA OSG38,A1
+00002104  6100 0E12               1070      BSR DISPLAY
+00002108  6100 0DC8               1071      BSR NEWLINE
+0000210C  6100 0DDA               1072      BSR ENTER
+00002110                          1073      
+00002110  43F9 00005754           1074      LEA OSG39,A1
+00002116  6100 0DB2               1075      BSR DNOLINE
+0000211A  6100 0E18               1076      BSR REDTEXT
+0000211E  43F9 00005790           1077      LEA OSG40,A1
+00002124  6100 0DF2               1078      BSR DISPLAY
+00002128  43F9 00005793           1079      LEA OSG41,A1
+0000212E  6100 0D9A               1080      BSR DNOLINE
+00002132  6100 0E14               1081      BSR WHITEXT
+00002136  43F9 000057B1           1082      LEA OSG42,A1
+0000213C  6100 0D8C               1083      BSR DNOLINE
+00002140  6100 0DF2               1084      BSR REDTEXT
+00002144  43F9 000057C6           1085      LEA OSG43,A1
+0000214A  6100 0DCC               1086      BSR DISPLAY
+0000214E  6100 0DF8               1087      BSR WHITEXT
+00002152  43F9 000057D2           1088      LEA OSG44,A1
+00002158  6100 0DBE               1089      BSR DISPLAY
+0000215C  43F9 0000580E           1090      LEA OSG45,A1
+00002162  6100 0DB4               1091      BSR DISPLAY
+00002166  43F9 0000584B           1092      LEA OSG46,A1
+0000216C  6100 0D5C               1093      BSR DNOLINE
+00002170  6100 0DC2               1094      BSR REDTEXT
+00002174  43F9 00005860           1095      LEA OSG47,A1
+0000217A  6100 0D4E               1096      BSR DNOLINE
+0000217E  6100 0DC8               1097      BSR WHITEXT
+00002182  43F9 0000586D           1098      LEA OSG48,A1
+00002188  6100 0D40               1099      BSR DNOLINE
+0000218C  6100 0DA6               1100      BSR REDTEXT
+00002190  43F9 00005881           1101      LEA OSG49,A1
+00002196  6100 0D32               1102      BSR DNOLINE
+0000219A  6100 0DAC               1103      BSR WHITEXT
+0000219E  43F9 0000588D           1104      LEA OSG50,A1
+000021A4  6100 0D72               1105      BSR DISPLAY
+000021A8  43F9 00005890           1106      LEA OSG51,A1
+000021AE  6100 0D1A               1107      BSR DNOLINE
+000021B2  6100 0D80               1108      BSR REDTEXT
+000021B6  43F9 000058AB           1109      LEA OSG52,A1
+000021BC  6100 0D0C               1110      BSR DNOLINE
+000021C0  6100 0D86               1111      BSR WHITEXT
+000021C4  43F9 000058B0           1112      LEA OSG53,A1
+000021CA  6100 0D4C               1113      BSR DISPLAY
+000021CE  6100 0D18               1114      BSR ENTER
+000021D2  6000 0AC0               1115      BRA SUP
+000021D6                          1116  
+000021D6                          1117  
+000021D6                          1118  *OUTSIDE BRANCH STICK BAD---------------------------------
+000021D6  6100 0D18               1119  OUTSB   BSR CLRSCRN
+000021DA  43F9 000058B2           1120      LEA OSB1,A1
+000021E0  6100 0D36               1121      BSR DISPLAY
+000021E4  43F9 000058F3           1122      LEA OSB2,A1
+000021EA  6100 0D2C               1123      BSR DISPLAY
+000021EE  6100 0D44               1124      BSR REDTEXT
+000021F2  43F9 00005931           1125      LEA OSB3,A1
+000021F8  6100 0CD0               1126      BSR DNOLINE
+000021FC  6100 0D4A               1127      BSR WHITEXT
+00002200  43F9 00005950           1128      LEA OSB4,A1
+00002206  6100 0D10               1129      BSR DISPLAY
+0000220A  6100 0CC6               1130      BSR NEWLINE
+0000220E  6100 0CD8               1131      BSR ENTER
+00002212                          1132      
+00002212  43F9 00005952           1133      LEA OSB5,A1
+00002218  6100 0CB0               1134      BSR DNOLINE
+0000221C  6100 0D16               1135      BSR REDTEXT
+00002220  43F9 00005982           1136      LEA OSB6,A1
+00002226  6100 0CF0               1137      BSR DISPLAY
+0000222A  43F9 00005990           1138      LEA OSB7,A1
+00002230  6100 0C98               1139      BSR DNOLINE
+00002234  6100 0D12               1140      BSR WHITEXT
+00002238  43F9 000059AB           1141      LEA OSB8,A1
+0000223E  6100 0C8A               1142      BSR DNOLINE
+00002242  6100 0CF0               1143      BSR REDTEXT
+00002246  43F9 000059B8           1144      LEA OSB9,A1
+0000224C  6100 0C7C               1145      BSR DNOLINE
+00002250  6100 0CF6               1146      BSR WHITEXT
+00002254  43F9 000059C1           1147      LEA OSB10,A1
+0000225A  6100 0CBC               1148      BSR DISPLAY
+0000225E  6100 0CD4               1149      BSR REDTEXT
+00002262  43F9 000059CE           1150      LEA OSB11,A1
+00002268  6100 0C60               1151      BSR DNOLINE
+0000226C  6100 0CDA               1152      BSR WHITEXT
+00002270  6100 0CA6               1153      BSR DISPLAY
+00002274  6100 0C5C               1154      BSR NEWLINE
+00002278  6100 0C6E               1155      BSR ENTER
+0000227C                          1156      
+0000227C  43F9 000059F4           1157      LEA OSB13,A1
+00002282  6100 0C46               1158      BSR DNOLINE
+00002286  6100 0CAC               1159      BSR REDTEXT
+0000228A  43F9 00005A03           1160      LEA OSB14,A1
+00002290  6100 0C38               1161      BSR DNOLINE
+00002294  6100 0CB2               1162      BSR WHITEXT
+00002298  43F9 00005A22           1163      LEA OSB15,A1
+0000229E  6100 0C78               1164      BSR DISPLAY
+000022A2  43F9 00005A32           1165      LEA OSB16,A1
+000022A8  6100 0C20               1166      BSR DNOLINE
+000022AC  6100 0C86               1167      BSR REDTEXT
+000022B0  43F9 00005A5A           1168      LEA OSB17,A1
+000022B6  6100 0C12               1169      BSR DNOLINE
+000022BA  6100 0C8C               1170      BSR WHITEXT
+000022BE  43F9 00005A6D           1171      LEA OSB18,A1
+000022C4  6100 0C52               1172      BSR DISPLAY
+000022C8  43F9 00005A74           1173      LEA OSB19,A1
+000022CE  6100 0C48               1174      BSR DISPLAY
+000022D2  6100 0C60               1175      BSR REDTEXT
+000022D6  43F9 00005AB4           1176      LEA OSB20,A1
+000022DC  6100 0BEC               1177      BSR DNOLINE
+000022E0  6100 0C66               1178      BSR WHITEXT
+000022E4  43F9 00005AC0           1179      LEA OSB21,A1
+000022EA  6100 0C2C               1180      BSR DISPLAY
+000022EE  6100 0BF8               1181      BSR ENTER
+000022F2                          1182      
+000022F2  6100 0BFC               1183      BSR CLRSCRN
+000022F6                          1184      
+000022F6  43F9 00005ACF           1185      LEA OSB22,A1
+000022FC  6100 0BCC               1186      BSR DNOLINE
+00002300  6100 0C32               1187      BSR REDTEXT
+00002304  43F9 00005B0B           1188      LEA OSB23,A1
+0000230A  6100 0C0C               1189      BSR DISPLAY
+0000230E  43F9 00005B11           1190      LEA OSB24,A1
+00002314  6100 0BB4               1191      BSR DNOLINE
+00002318  6100 0C2E               1192      BSR WHITEXT
+0000231C  43F9 00005B1E           1193      LEA OSB25,A1
+00002322  6100 0BA6               1194      BSR DNOLINE
+00002326  6100 0C0C               1195      BSR REDTEXT
+0000232A  43F9 00005B3B           1196      LEA OSB26,A1
+00002330  6100 0B98               1197      BSR DNOLINE
+00002334  6100 0C12               1198      BSR WHITEXT
+00002338  43F9 00005B42           1199      LEA OSB27,A1
+0000233E  6100 0B8A               1200      BSR DNOLINE
+00002342  6100 0BF0               1201      BSR REDTEXT
+00002346  43F9 00005B4D           1202      LEA OSB28,A1
+0000234C  6100 0B7C               1203      BSR DNOLINE
+00002350  6100 0BF6               1204      BSR WHITEXT
+00002354  43F9 00005B52           1205      LEA OSB29,A1
+0000235A  6100 0BBC               1206      BSR DISPLAY
+0000235E  43F9 00005B54           1207      LEA OSB30,A1
+00002364  6100 0B64               1208      BSR DNOLINE
+00002368  6100 0BCA               1209      BSR REDTEXT
+0000236C  43F9 00005B7B           1210      LEA OSB31,A1
+00002372  6100 0BA4               1211      BSR DISPLAY
+00002376  6100 0BD0               1212      BSR WHITEXT
+0000237A  6100 0B56               1213      BSR NEWLINE
+0000237E  6100 0B68               1214      BSR ENTER
+00002382                          1215      
+00002382  6100 0B6C               1216      BSR CLRSCRN
+00002386                          1217      
+00002386                          1218      *POSSIBLE DELAY HERE
+00002386                          1219      
+00002386  43F9 00005B9B           1220      LEA OSB32,A1
+0000238C  6100 0B3C               1221      BSR DNOLINE
+00002390  6100 0BA2               1222      BSR REDTEXT
+00002394  43F9 00005BB8           1223      LEA OSB33,A1
+0000239A  6100 0B2E               1224      BSR DNOLINE
+0000239E  6100 0BA8               1225      BSR WHITEXT
+000023A2  43F9 00005BC0           1226      LEA OSB34,A1
+000023A8  6100 0B20               1227      BSR DNOLINE
+000023AC  6100 0B86               1228      BSR REDTEXT
+000023B0  43F9 00005BD5           1229      LEA OSB35,A1
+000023B6  6100 0B12               1230      BSR DNOLINE
+000023BA  6100 0B8C               1231      BSR WHITEXT
+000023BE  43F9 00005BDA           1232      LEA OSB36,A1
+000023C4  6100 0B52               1233      BSR DISPLAY
+000023C8  43F9 00005BE0           1234      LEA OSB37,A1
+000023CE  6100 0AFA               1235      BSR DNOLINE
+000023D2  6100 0B60               1236      BSR REDTEXT
+000023D6  43F9 00005BE4           1237      LEA OSB38,A1
+000023DC  6100 0AEC               1238      BSR DNOLINE
+000023E0  6100 0B66               1239      BSR WHITEXT
+000023E4  43F9 00005BF0           1240      LEA OSB39,A1
+000023EA  6100 0B2C               1241      BSR DISPLAY
+000023EE  6100 0AF8               1242      BSR ENTER
+000023F2  6000 08A0               1243      BRA SUP
+000023F6                          1244  *INSIDE INTRO---------------------------------------------
+000023F6  6100 0AF8               1245  IN  BSR CLRSCRN
+000023FA  43F9 00005BF7           1246      LEA II1,A1
+00002400  6100 0B16               1247      BSR DISPLAY
+00002404  43F9 00005C3A           1248      LEA II2,A1
+0000240A  6100 0ABE               1249      BSR DNOLINE
+0000240E  6100 0B24               1250      BSR REDTEXT
+00002412  43F9 00005C4B           1251      LEA II3,A1
+00002418  6100 0AB0               1252      BSR DNOLINE
+0000241C  6100 0B2A               1253      BSR WHITEXT
+00002420  43F9 00005C57           1254      LEA II4,A1
+00002426  6100 0AF0               1255      BSR DISPLAY
+0000242A  43F9 00005C81           1256      LEA II5,A1
+00002430  6100 0AE6               1257      BSR DISPLAY
+00002434  6100 0A9C               1258      BSR NEWLINE
+00002438  6100 0AAE               1259      BSR ENTER
+0000243C                          1260      
+0000243C  43F9 00005C89           1261      LEA II6,A1
+00002442  6100 0AD4               1262      BSR DISPLAY
+00002446  43F9 00005CD2           1263      LEA II7,A1
+0000244C  6100 0A7C               1264      BSR DNOLINE
+00002450  6100 0AE2               1265      BSR REDTEXT
+00002454  43F9 00005CD8           1266      LEA II8,A1
+0000245A  6100 0A6E               1267      BSR DNOLINE
+0000245E  6100 0AE8               1268      BSR WHITEXT
+00002462  43F9 00005D19           1269      LEA II9,A1
+00002468  6100 0AAE               1270      BSR DISPLAY
+0000246C  43F9 00005D1A           1271      LEA II10,A1
+00002472  6100 0A56               1272      BSR DNOLINE
+00002476  6100 0ABC               1273      BSR REDTEXT
+0000247A  43F9 00005D2E           1274      LEA II11,A1
+00002480  6100 0A48               1275      BSR DNOLINE
+00002484  6100 0AC2               1276      BSR WHITEXT
+00002488  43F9 00005D37           1277      LEA II12,A1
+0000248E  6100 0A3A               1278      BSR DNOLINE
+00002492  6100 0AA0               1279      BSR REDTEXT
+00002496  43F9 00005D51           1280      LEA II13,A1
+0000249C  6100 0A2C               1281      BSR DNOLINE
+000024A0  6100 0AA6               1282      BSR WHITEXT
+000024A4  43F9 00005D56           1283      LEA II14,A1
+000024AA  6100 0A6C               1284      BSR DISPLAY
+000024AE  43F9 00005D66           1285      LEA II15,A1
+000024B4  6100 0A14               1286      BSR DNOLINE
+000024B8  6100 0A7A               1287      BSR REDTEXT
+000024BC  43F9 00005D77           1288      LEA II16,A1
+000024C2  6100 0A06               1289      BSR DNOLINE
+000024C6  6100 0A80               1290      BSR WHITEXT
+000024CA  43F9 00005D88           1291      LEA II17,A1
+000024D0  6100 0A46               1292      BSR DISPLAY
+000024D4  6100 09FC               1293      BSR NEWLINE
+000024D8  6100 0A0E               1294      BSR ENTER
+000024DC                          1295      
+000024DC  43F9 00005DA2           1296  LOOP7   LEA II18,A1
+000024E2  6100 0A34               1297      BSR DISPLAY
+000024E6  43F9 00005DDA           1298      LEA II19,A1
+000024EC  6100 0A2A               1299      BSR DISPLAY
+000024F0  6100 09E0               1300      BSR NEWLINE
+000024F4                          1301      
+000024F4  103C 0005               1302      MOVE.B  #5,D0
+000024F8  4E4F                    1303      TRAP    #15
+000024FA                          1304      
+000024FA  B23C 0031               1305      CMP.B   #$31,D1
+000024FE  6700 09A2               1306      BEQ SUI
+00002502  B23C 0032               1307      CMP.B   #$32,D1
+00002506  6700 0012               1308      BEQ IN2
+0000250A                          1309      
+0000250A  6100 09C6               1310      BSR NEWLINE
+0000250E  43F9 000032A2           1311      LEA EMSG,A1
+00002514  6100 0A02               1312      BSR DISPLAY
+00002518  60C2                    1313      BRA LOOP7
+0000251A                          1314      
+0000251A  6100 09D4               1315  IN2 BSR CLRSCRN
+0000251E  6100 0A14               1316      BSR REDTEXT
+00002522  43F9 00005DFB           1317      LEA II20,A1
+00002528  6100 09A0               1318      BSR DNOLINE
+0000252C  6100 0A1A               1319      BSR WHITEXT
+00002530  43F9 00005E01           1320      LEA II21,A1
+00002536  6100 0992               1321      BSR DNOLINE
+0000253A  6100 09F8               1322      BSR REDTEXT
+0000253E  43F9 00005E34           1323      LEA II22,A1
+00002544  6100 0984               1324      BSR DNOLINE
+00002548  6100 09FE               1325      BSR WHITEXT
+0000254C  43F9 00005E3A           1326      LEA II23,A1
+00002552  6100 09C4               1327      BSR DISPLAY
+00002556  43F9 00005E42           1328      LEA II24,A1
+0000255C  6100 09BA               1329      BSR DISPLAY
+00002560  6100 0970               1330      BSR NEWLINE
+00002564  6100 0982               1331      BSR ENTER
+00002568                          1332      
+00002568  43F9 00005E83           1333      LEA II25,A1
+0000256E  6100 095A               1334      BSR DNOLINE
+00002572  6100 09C0               1335      BSR REDTEXT
+00002576  43F9 00005EB1           1336      LEA II26,A1
+0000257C  6100 094C               1337      BSR DNOLINE
+00002580  6100 09C6               1338      BSR WHITEXT
+00002584  43F9 00005EB6           1339      LEA II27,A1
+0000258A  6100 098C               1340      BSR DISPLAY
+0000258E  43F9 00005ECC           1341      LEA II28,A1
+00002594  6100 0934               1342      BSR DNOLINE
+00002598  6100 099A               1343      BSR REDTEXT
+0000259C  43F9 00005EDD           1344      LEA II29,A1
+000025A2  6100 0926               1345      BSR DNOLINE
+000025A6  6100 09A0               1346      BSR WHITEXT
+000025AA  43F9 00005EE5           1347      LEA II30,A1
+000025B0  6100 0966               1348      BSR DISPLAY
+000025B4  6100 091C               1349      BSR NEWLINE
+000025B8  6100 092E               1350      BSR ENTER
+000025BC                          1351      
+000025BC  43F9 00005F03           1352  LOOP8   LEA II31,A1
+000025C2  6100 0954               1353      BSR DISPLAY
+000025C6  43F9 00005F23           1354      LEA II32,A1
+000025CC  6100 094A               1355      BSR DISPLAY
+000025D0  6100 0900               1356      BSR NEWLINE
+000025D4                          1357      
+000025D4  103C 0005               1358      MOVE.B  #5,D0
+000025D8  4E4F                    1359      TRAP    #15
+000025DA                          1360      
+000025DA  B23C 0031               1361      CMP.B   #$31,D1
+000025DE  6700 048E               1362      BEQ INV
+000025E2  B23C 0032               1363      CMP.B   #$32,D1
+000025E6  6700 0012               1364      BEQ INL
+000025EA                          1365      
+000025EA  6100 08E6               1366      BSR NEWLINE
+000025EE  43F9 000032A2           1367      LEA EMSG,A1
+000025F4  6100 0922               1368      BSR DISPLAY
+000025F8  60C2                    1369      BRA LOOP8
+000025FA                          1370      
+000025FA                          1371  
+000025FA                          1372  *INSIDE LEGO----------------------------------------------
+000025FA  6100 08F4               1373  INL BSR CLRSCRN
+000025FE  43F9 00003166           1374      LEA PASS3,A1
+00002604  6100 0912               1375      BSR DISPLAY
+00002608  6100 08DE               1376      BSR ENTER
+0000260C                          1377      
+0000260C  6100 08E2               1378      BSR CLRSCRN
+00002610                          1379  
+00002610                          1380  
+00002610  43F9 00005F43           1381      LEA IL1,A1
+00002616  6100 0900               1382      BSR DISPLAY
+0000261A  6100 08B6               1383      BSR NEWLINE
+0000261E  6100 08C8               1384      BSR ENTER
+00002622                          1385      
+00002622  43F9 00005F7A           1386      LEA IL2,A1
+00002628  6100 08A0               1387      BSR DNOLINE
+0000262C  6100 0906               1388      BSR REDTEXT
+00002630  43F9 00005FB2           1389      LEA IL3,A1
+00002636  6100 0892               1390      BSR DNOLINE
+0000263A  6100 090C               1391      BSR WHITEXT
+0000263E  43F9 00005FB8           1392      LEA IL4,A1
+00002644  6100 08D2               1393      BSR DISPLAY
+00002648  43F9 00005FBA           1394      LEA IL5,A1
+0000264E  6100 087A               1395      BSR DNOLINE
+00002652  6100 08E0               1396      BSR REDTEXT
+00002656  43F9 00005FD6           1397      LEA IL6,A1
+0000265C  6100 086C               1398      BSR DNOLINE
+00002660  6100 08E6               1399      BSR WHITEXT
+00002664  43F9 00005FDC           1400      LEA IL7,A1
+0000266A  6100 08AC               1401      BSR DISPLAY
+0000266E  43F9 00005FDE           1402      LEA IL8,A1
+00002674  6100 0854               1403      BSR DNOLINE
+00002678  43F9 00005FF9           1404      LEA IL9,A1
+0000267E  6100 0898               1405      BSR DISPLAY
+00002682  43F9 0000603A           1406      LEA IL10,A1
+00002688  6100 0840               1407      BSR DNOLINE
+0000268C  6100 08A6               1408      BSR REDTEXT
+00002690  43F9 0000604E           1409      LEA IL11,A1
+00002696  6100 0832               1410      BSR DNOLINE
+0000269A  6100 08AC               1411      BSR WHITEXT
+0000269E  43F9 0000605A           1412      LEA IL12,A1
+000026A4  6100 0872               1413      BSR DISPLAY
+000026A8  6100 0828               1414      BSR NEWLINE
+000026AC  6100 083A               1415      BSR ENTER
+000026B0                          1416      
+000026B0  43F9 00006064           1417      LEA IL13,A1
+000026B6  6100 0860               1418      BSR DISPLAY
+000026BA  43F9 000060A4           1419      LEA IL14,A1
+000026C0  6100 0856               1420      BSR DISPLAY
+000026C4  43F9 000060E3           1421      LEA IL15,A1
+000026CA  6100 07FE               1422      BSR DNOLINE
+000026CE  6100 0864               1423      BSR REDTEXT
+000026D2  43F9 000060F3           1424      LEA IL16,A1
+000026D8  6100 07F0               1425      BSR DNOLINE
+000026DC  6100 086A               1426      BSR WHITEXT
+000026E0  43F9 000060F7           1427      LEA IL17,A1
+000026E6  6100 0830               1428      BSR DISPLAY
+000026EA  6100 07E6               1429      BSR NEWLINE
+000026EE  6100 07F8               1430      BSR ENTER
+000026F2                          1431      
+000026F2  43F9 000060F9           1432      LEA IL18,A1
+000026F8  6100 081E               1433      BSR DISPLAY
+000026FC  6100 07D4               1434      BSR NEWLINE
+00002700  6100 07E6               1435      BSR ENTER
+00002704                          1436      
+00002704  6100 07EA               1437      BSR CLRSCRN
+00002708                          1438      
+00002708  43F9 0000610C           1439  IMPORT  LEA IL19,A1
+0000270E  6100 0808               1440      BSR DISPLAY
+00002712  43F9 00006146           1441      LEA IL20,A1
+00002718  6100 07B0               1442      BSR DNOLINE
+0000271C  6100 0816               1443      BSR REDTEXT
+00002720  43F9 00006158           1444      LEA IL21,A1
+00002726  6100 07A2               1445      BSR DNOLINE
+0000272A  6100 081C               1446      BSR WHITEXT
+0000272E  43F9 0000615E           1447      LEA IL22,A1
+00002734  6100 0794               1448      BSR DNOLINE
+00002738  6100 07FA               1449      BSR REDTEXT
+0000273C  43F9 00006162           1450      LEA IL23,A1
+00002742  6100 0786               1451      BSR DNOLINE
+00002746  6100 0800               1452      BSR WHITEXT
+0000274A  43F9 00006167           1453      LEA IL24,A1
+00002750  6100 0778               1454      BSR DNOLINE
+00002754  6100 07DE               1455      BSR REDTEXT
+00002758  43F9 00006179           1456      LEA IL25,A1
+0000275E  6100 076A               1457      BSR DNOLINE
+00002762  6100 07E4               1458      BSR WHITEXT
+00002766  43F9 00006181           1459      LEA IL26,A1
+0000276C  6100 075C               1460      BSR DNOLINE
+00002770  6100 07C2               1461      BSR REDTEXT
+00002774  43F9 00006184           1462      LEA IL27,A1
+0000277A  6100 079C               1463      BSR DISPLAY
+0000277E  43F9 0000618B           1464      LEA IL28,A1
+00002784  6100 0744               1465      BSR DNOLINE
+00002788  6100 07BE               1466      BSR WHITEXT
+0000278C  43F9 00006191           1467      LEA IL29,A1
+00002792  6100 0736               1468      BSR DNOLINE
+00002796  6100 079C               1469      BSR REDTEXT
+0000279A  43F9 00006197           1470      LEA IL30,A1
+000027A0  6100 0728               1471      BSR DNOLINE
+000027A4  6100 07A2               1472      BSR WHITEXT
+000027A8  43F9 000061B1           1473      LEA IL31,A1
+000027AE  6100 0768               1474      BSR DISPLAY
+000027B2  6100 071E               1475      BSR NEWLINE
+000027B6  6100 0730               1476      BSR ENTER
+000027BA                          1477      
+000027BA  43F9 000061B3           1478      LEA IL32,A1
+000027C0  6100 0756               1479      BSR DISPLAY
+000027C4  43F9 000061EE           1480      LEA IL33,A1
+000027CA  6100 074C               1481      BSR DISPLAY
+000027CE  6100 0702               1482      BSR NEWLINE
+000027D2  6100 0714               1483      BSR ENTER
+000027D6                          1484      
+000027D6  43F9 00006215           1485      LEA IL34,A1
+000027DC  6100 073A               1486      BSR DISPLAY
+000027E0  43F9 00006254           1487      LEA IL35,A1
+000027E6  6100 0730               1488      BSR DISPLAY
+000027EA  6100 0748               1489      BSR REDTEXT
+000027EE  43F9 0000628C           1490      LEA IL36,A1
+000027F4  6100 06D4               1491      BSR DNOLINE
+000027F8  6100 074E               1492      BSR WHITEXT
+000027FC  43F9 00006299           1493      LEA IL37,A1
+00002802  6100 0714               1494      BSR DISPLAY
+00002806  43F9 000062CC           1495      LEA IL38,A1
+0000280C  6100 070A               1496      BSR DISPLAY
+00002810  6100 06C0               1497      BSR NEWLINE
+00002814  6100 06D2               1498      BSR ENTER
+00002818                          1499      
+00002818  43F9 000062D4           1500      LEA IL39,A1
+0000281E  6100 06F8               1501      BSR DISPLAY
+00002822  6100 06AE               1502      BSR NEWLINE
+00002826  6100 06C0               1503      BSR ENTER
+0000282A                          1504      
+0000282A  43F9 000062E8           1505  LOOP9   LEA IL40,A1
+00002830  6100 06E6               1506      BSR DISPLAY
+00002834  43F9 0000630F           1507      LEA IL41,A1
+0000283A  6100 06DC               1508      BSR DISPLAY
+0000283E  6100 0692               1509      BSR NEWLINE
+00002842                          1510      
+00002842  103C 0005               1511      MOVE.B  #5,D0
+00002846  4E4F                    1512      TRAP    #15
+00002848                          1513      
+00002848  B23C 0031               1514      CMP.B   #$31,D1
+0000284C  6700 001E               1515      BEQ INLG
+00002850  B23C 0032               1516      CMP.B   #$32,D1
+00002854  6700 0150               1517      BEQ INLB
+00002858                          1518      
+00002858  6100 0678               1519      BSR NEWLINE
+0000285C  43F9 000032A2           1520      LEA EMSG,A1
+00002862  6100 06B4               1521      BSR DISPLAY
+00002866  6100 066A               1522      BSR NEWLINE
+0000286A  60BE                    1523      BRA LOOP9
+0000286C                          1524  
+0000286C                          1525  
+0000286C                          1526  *INSIDE LEGO GOOD-----------------------------------------
+0000286C  6100 0682               1527  INLG    BSR CLRSCRN
+00002870  43F9 0000632A           1528      LEA ILG1,A1
+00002876  6100 06A0               1529      BSR DISPLAY
+0000287A  43F9 00006369           1530      LEA ILG2,A1
+00002880  6100 0648               1531      BSR DNOLINE
+00002884  6100 06AE               1532      BSR REDTEXT
+00002888  43F9 000063A3           1533      LEA ILG3,A1
+0000288E  6100 0688               1534      BSR DISPLAY
+00002892  6100 06B4               1535      BSR WHITEXT
+00002896  43F9 000063A9           1536      LEA ILG4,A1
+0000289C  6100 067A               1537      BSR DISPLAY
+000028A0  43F9 000063EA           1538      LEA ILG5,A1
+000028A6  6100 0670               1539      BSR DISPLAY
+000028AA  43F9 0000642B           1540      LEA ILG6,A1
+000028B0  6100 0666               1541      BSR DISPLAY
+000028B4  6100 061C               1542      BSR NEWLINE
+000028B8  6100 062E               1543      BSR ENTER
+000028BC                          1544      
+000028BC  43F9 00006435           1545      LEA ILG7,A1
+000028C2  6100 0654               1546      BSR DISPLAY
+000028C6  43F9 00006473           1547      LEA ILG8,A1
+000028CC  6100 064A               1548      BSR DISPLAY
+000028D0  6100 0600               1549      BSR NEWLINE
+000028D4  6100 0612               1550      BSR ENTER
+000028D8                          1551      
+000028D8  43F9 000064A1           1552      LEA ILG9,A1
+000028DE  6100 05EA               1553      BSR DNOLINE
+000028E2  6100 0650               1554      BSR REDTEXT
+000028E6  43F9 000064B2           1555      LEA ILG10,A1
+000028EC  6100 05DC               1556      BSR DNOLINE
+000028F0  6100 0656               1557      BSR WHITEXT
+000028F4  43F9 000064B9           1558      LEA ILG11,A1
+000028FA  6100 05CE               1559      BSR DNOLINE
+000028FE  6100 0634               1560      BSR REDTEXT
+00002902  43F9 000064D9           1561      LEA ILG12,A1
+00002908  6100 060E               1562      BSR DISPLAY
+0000290C  43F9 000064E4           1563      LEA ILG13,A1
+00002912  6100 05B6               1564      BSR DNOLINE
+00002916  6100 0630               1565      BSR WHITEXT
+0000291A  43F9 000064EA           1566      LEA ILG14,A1
+00002920  6100 05F6               1567      BSR DISPLAY
+00002924  43F9 00006523           1568      LEA ILG15,A1
+0000292A  6100 059E               1569      BSR DNOLINE
+0000292E  6100 0604               1570      BSR REDTEXT
+00002932  43F9 00006528           1571      LEA ILG16,A1
+00002938  6100 0590               1572      BSR DNOLINE
+0000293C  6100 060A               1573      BSR WHITEXT
+00002940  43F9 00006538           1574      LEA ILG17,A1
+00002946  6100 05D0               1575      BSR DISPLAY
+0000294A  6100 0586               1576      BSR NEWLINE
+0000294E  6100 0598               1577      BSR ENTER
+00002952                          1578      
+00002952  43F9 00006556           1579      LEA ILG18,A1
+00002958  6100 05BE               1580      BSR DISPLAY
+0000295C  6100 058A               1581      BSR ENTER
+00002960  6100 0570               1582      BSR NEWLINE
+00002964                          1583      
+00002964  43F9 0000656A           1584  LOOP10  LEA ILG19,A1
+0000296A  6100 05AC               1585      BSR DISPLAY
+0000296E  43F9 00006577           1586      LEA ILG20,A1
+00002974  6100 05A2               1587      BSR DISPLAY
+00002978  6100 0558               1588      BSR NEWLINE
+0000297C                          1589      
+0000297C  103C 0005               1590      MOVE.B  #5,D0
+00002980  4E4F                    1591      TRAP    #15
+00002982  6100 054E               1592      BSR NEWLINE
+00002986                          1593      
+00002986  B23C 0031               1594      CMP.B   #$31,D1
+0000298A  6700 0516               1595      BEQ SUI
+0000298E  B23C 0032               1596      CMP.B   #$32,D1
+00002992  6700 0300               1597      BEQ SUP
+00002996                          1598      
+00002996  43F9 000032A2           1599      LEA EMSG,A1
+0000299C  6100 057A               1600      BSR DISPLAY
+000029A0  6100 0530               1601      BSR NEWLINE
+000029A4  60BE                    1602      BRA LOOP10
+000029A6                          1603  
+000029A6                          1604  
+000029A6                          1605  *INSIDE LEGO BAD------------------------------------------
+000029A6  6100 0548               1606  INLB    BSR CLRSCRN
+000029AA  43F9 000065CB           1607      LEA ILB1,A1
+000029B0  6100 0518               1608      BSR DNOLINE
+000029B4  6100 057E               1609      BSR REDTEXT
+000029B8  43F9 000065F1           1610      LEA ILB2,A1
+000029BE  6100 050A               1611      BSR DNOLINE
+000029C2  6100 0584               1612      BSR WHITEXT
+000029C6  43F9 000065F9           1613      LEA ILB3,A1
+000029CC  6100 054A               1614      BSR DISPLAY
+000029D0  43F9 0000660C           1615      LEA ILB4,A1
+000029D6  6100 0540               1616      BSR DISPLAY
+000029DA  6100 04F6               1617      BSR NEWLINE
+000029DE  6100 0508               1618      BSR ENTER
+000029E2                          1619      
+000029E2  6100 0550               1620      BSR REDTEXT
+000029E6  43F9 0000662E           1621      LEA ILB5,A1
+000029EC  6100 04DC               1622      BSR DNOLINE
+000029F0  6100 0556               1623      BSR WHITEXT
+000029F4  43F9 00006635           1624      LEA ILB6,A1
+000029FA  6100 04CE               1625      BSR DNOLINE
+000029FE  6100 0534               1626      BSR REDTEXT
+00002A02  43F9 00006660           1627      LEA ILB7,A1
+00002A08  6100 050E               1628      BSR DISPLAY
+00002A0C  6100 053A               1629      BSR WHITEXT
+00002A10  43F9 00006670           1630      LEA ILB8,A1
+00002A16  6100 0500               1631      BSR DISPLAY
+00002A1A  43F9 000066B2           1632      LEA ILB9,A1
+00002A20  6100 04A8               1633      BSR DNOLINE
+00002A24  6100 050E               1634      BSR REDTEXT
+00002A28  43F9 000066BF           1635      LEA ILB10,A1
+00002A2E  6100 049A               1636      BSR DNOLINE
+00002A32  6100 0514               1637      BSR WHITEXT
+00002A36  43F9 000066D8           1638      LEA ILB11,A1
+00002A3C  6100 04DA               1639      BSR DISPLAY
+00002A40  43F9 000066F2           1640      LEA ILB12,A1
+00002A46  6100 0482               1641      BSR DNOLINE
+00002A4A  6100 04E8               1642      BSR REDTEXT
+00002A4E  43F9 000066FC           1643      LEA ILB13,A1
+00002A54  6100 0474               1644      BSR DNOLINE
+00002A58  6100 04EE               1645      BSR WHITEXT
+00002A5C  43F9 00006726           1646      LEA ILB14,A1
+00002A62  6100 04B4               1647      BSR DISPLAY
+00002A66  6100 0480               1648      BSR ENTER
+00002A6A  6000 0228               1649      BRA SUP
+00002A6E                          1650      
+00002A6E                          1651      
+00002A6E                          1652  
+00002A6E                          1653  
+00002A6E                          1654  *INSIDE VELOCIRAPTOR--------------------------------------
+00002A6E  6100 0480               1655  INV BSR CLRSCRN
+00002A72                          1656  
+00002A72  43F9 000031A2           1657      LEA PASS4,A1
+00002A78  6100 049E               1658      BSR DISPLAY
+00002A7C  6100 046A               1659      BSR ENTER
+00002A80                          1660  
+00002A80  6100 046E               1661      BSR CLRSCRN
+00002A84  43F9 00006728           1662      LEA IV1,A1
+00002A8A  6100 048C               1663      BSR DISPLAY
+00002A8E  6100 0442               1664      BSR NEWLINE
+00002A92  6100 0454               1665      BSR ENTER
+00002A96                          1666      
+00002A96  6100 049C               1667      BSR REDTEXT
+00002A9A  43F9 00006768           1668      LEA IV2,A1
+00002AA0  6100 0428               1669      BSR DNOLINE
+00002AA4  6100 04A2               1670      BSR WHITEXT
+00002AA8  43F9 0000678D           1671      LEA IV3,A1
+00002AAE  6100 0468               1672      BSR DISPLAY
+00002AB2  43F9 000067A9           1673      LEA IV4,A1
+00002AB8  6100 045E               1674      BSR DISPLAY
+00002ABC  6100 0476               1675      BSR REDTEXT
+00002AC0  43F9 000067E5           1676      LEA IV5,A1
+00002AC6  6100 0402               1677      BSR DNOLINE
+00002ACA  6100 047C               1678      BSR WHITEXT
+00002ACE  43F9 000067F6           1679      LEA IV6,A1
+00002AD4  6100 03F4               1680      BSR DNOLINE
+00002AD8  6100 045A               1681      BSR REDTEXT
+00002ADC  43F9 00006800           1682      LEA IV7,A1
+00002AE2  6100 03E6               1683      BSR DNOLINE
+00002AE6  6100 0460               1684      BSR WHITEXT
+00002AEA  43F9 0000680F           1685      LEA IV8,A1
+00002AF0  6100 0426               1686      BSR DISPLAY
+00002AF4  43F9 00006827           1687      LEA IV9,A1
+00002AFA  6100 041C               1688      BSR DISPLAY
+00002AFE  6100 03D2               1689      BSR NEWLINE
+00002B02  6100 03E4               1690      BSR ENTER
+00002B06                          1691      
+00002B06  43F9 00006860           1692      LEA IV10,A1
+00002B0C  6100 040A               1693      BSR DISPLAY
+00002B10  43F9 0000689F           1694      LEA IV11,A1
+00002B16  6100 03B2               1695      BSR DNOLINE
+00002B1A  6100 0418               1696      BSR REDTEXT
+00002B1E  43F9 000068B0           1697      LEA IV12,A1
+00002B24  6100 03A4               1698      BSR DNOLINE
+00002B28  6100 041E               1699      BSR WHITEXT
+00002B2C  43F9 000068B5           1700      LEA IV13,A1
+00002B32  6100 03E4               1701      BSR DISPLAY
+00002B36  43F9 000068E2           1702      LEA IV14,A1
+00002B3C  6100 038C               1703      BSR DNOLINE
+00002B40  6100 03F2               1704      BSR REDTEXT
+00002B44  43F9 000068FB           1705      LEA IV15,A1
+00002B4A  6100 037E               1706      BSR DNOLINE
+00002B4E  6100 03F8               1707      BSR WHITEXT
+00002B52  43F9 00006908           1708      LEA IV16,A1
+00002B58  6100 0370               1709      BSR DNOLINE
+00002B5C  6100 03D6               1710      BSR REDTEXT
+00002B60  43F9 00006916           1711      LEA IV17,A1
+00002B66  6100 03B0               1712      BSR DISPLAY
+00002B6A  43F9 00006920           1713      LEA IV18,A1
+00002B70  6100 0358               1714      BSR DNOLINE
+00002B74  6100 03D2               1715      BSR WHITEXT
+00002B78  43F9 00006928           1716      LEA IV19,A1
+00002B7E  6100 034A               1717      BSR DNOLINE
+00002B82  6100 03B0               1718      BSR REDTEXT
+00002B86  43F9 00006957           1719      LEA IV20,A1
+00002B8C  6100 033C               1720      BSR DNOLINE
+00002B90  6100 03B6               1721      BSR WHITEXT
+00002B94  43F9 0000695D           1722      LEA IV21,A1
+00002B9A  6100 037C               1723      BSR DISPLAY
+00002B9E  6100 0332               1724      BSR NEWLINE
+00002BA2  6100 0344               1725      BSR ENTER
+00002BA6                          1726      
+00002BA6  6100 0348               1727      BSR CLRSCRN
+00002BAA                          1728      
+00002BAA  43F9 0000695F           1729      LEA IV22,A1
+00002BB0  6100 0318               1730      BSR DNOLINE
+00002BB4  6100 037E               1731      BSR REDTEXT
+00002BB8  43F9 00006994           1732      LEA IV23,A1
+00002BBE  6100 0358               1733      BSR DISPLAY
+00002BC2  43F9 000069A1           1734      LEA IV24,A1
+00002BC8  6100 0300               1735      BSR DNOLINE
+00002BCC  6100 037A               1736      BSR WHITEXT
+00002BD0  43F9 000069B2           1737      LEA IV25,A1
+00002BD6  6100 0340               1738      BSR DISPLAY
+00002BDA  6100 02F6               1739      BSR NEWLINE
+00002BDE  6100 0308               1740      BSR ENTER
+00002BE2                          1741      
+00002BE2  43F9 000069D7           1742      LEA IV26,A1
+00002BE8  6100 02E0               1743      BSR DNOLINE
+00002BEC  6100 0346               1744      BSR REDTEXT
+00002BF0  43F9 000069DC           1745      LEA IV27,A1
+00002BF6  6100 02D2               1746      BSR DNOLINE
+00002BFA  6100 034C               1747      BSR WHITEXT
+00002BFE  43F9 000069EA           1748      LEA IV28,A1
+00002C04  6100 0312               1749      BSR DISPLAY
+00002C08  43F9 00006A16           1750      LEA IV29,A1
+00002C0E  6100 02BA               1751      BSR DNOLINE
+00002C12  6100 0320               1752      BSR REDTEXT
+00002C16  43F9 00006A2A           1753      LEA IV30,A1
+00002C1C  6100 02AC               1754      BSR DNOLINE
+00002C20  6100 0326               1755      BSR WHITEXT
+00002C24  43F9 00006A3C           1756      LEA IV31,A1
+00002C2A  6100 02EC               1757      BSR DISPLAY
+00002C2E  43F9 00006A57           1758      LEA IV32,A1
+00002C34  6100 02E2               1759      BSR DISPLAY
+00002C38  6100 0298               1760      BSR NEWLINE
+00002C3C  6100 02AA               1761      BSR ENTER
+00002C40                          1762      
+00002C40  43F9 00006A60           1763      LEA IV33,A1
+00002C46  6100 0282               1764      BSR DNOLINE
+00002C4A  6100 02E8               1765      BSR REDTEXT
+00002C4E  43F9 00006A65           1766      LEA IV34,A1
+00002C54  6100 0274               1767      BSR DNOLINE
+00002C58  6100 02EE               1768      BSR WHITEXT
+00002C5C  43F9 00006A6D           1769      LEA IV35,A1
+00002C62  6100 02B4               1770      BSR DISPLAY
+00002C66  43F9 00006AA5           1771      LEA IV36,A1
+00002C6C  6100 025C               1772      BSR DNOLINE
+00002C70  6100 02C2               1773      BSR REDTEXT
+00002C74  43F9 00006AB1           1774      LEA IV37,A1
+00002C7A  6100 024E               1775      BSR DNOLINE
+00002C7E  6100 02C8               1776      BSR WHITEXT
+00002C82  43F9 00006AB1           1777      LEA IV37,A1
+00002C88  6100 028E               1778      BSR DISPLAY
+00002C8C  6100 025A               1779      BSR ENTER
+00002C90                          1780      
+00002C90  6000 0002               1781      BRA SUP
+00002C94                          1782  
+00002C94                          1783  *SUPERMARKET GOOD-----------------------------------------
+00002C94  6100 025A               1784  SUP BSR CLRSCRN
+00002C98  43F9 00006AB3           1785      LEA SUP1,A1
+00002C9E  6100 022A               1786      BSR DNOLINE
+00002CA2  6100 0290               1787      BSR REDTEXT
+00002CA6  43F9 00006ACC           1788      LEA SUP2,A1
+00002CAC  6100 021C               1789      BSR DNOLINE
+00002CB0  6100 0296               1790      BSR WHITEXT
+00002CB4  43F9 00006AD7           1791      LEA SUP3,A1
+00002CBA  6100 020E               1792      BSR DNOLINE
+00002CBE  6100 0274               1793      BSR REDTEXT
+00002CC2  43F9 00006ADD           1794      LEA SUP4,A1
+00002CC8  6100 0200               1795      BSR DNOLINE
+00002CCC  6100 027A               1796      BSR WHITEXT
+00002CD0  43F9 00006AF0           1797      LEA SUP5,A1
+00002CD6  6100 0240               1798      BSR DISPLAY
+00002CDA  43F9 00006AF7           1799      LEA SUP6,A1
+00002CE0  6100 0236               1800      BSR DISPLAY
+00002CE4  6100 01EC               1801      BSR NEWLINE
+00002CE8  6100 01FE               1802      BSR ENTER
+00002CEC                          1803      
+00002CEC  43F9 00006B23           1804      LEA SUP7,A1
+00002CF2  6100 01D6               1805      BSR DNOLINE
+00002CF6  6100 023C               1806      BSR REDTEXT
+00002CFA  43F9 00006B45           1807      LEA SUP8,A1
+00002D00  6100 0216               1808      BSR DISPLAY
+00002D04  6100 0242               1809      BSR WHITEXT
+00002D08  43F9 00006B63           1810      LEA SUP9,A1
+00002D0E  6100 0208               1811      BSR DISPLAY
+00002D12  43F9 00006BA0           1812      LEA SUP10,A1
+00002D18  6100 01B0               1813      BSR DNOLINE
+00002D1C  6100 0216               1814      BSR REDTEXT
+00002D20  43F9 00006BAB           1815      LEA SUP11,A1
+00002D26  6100 01A2               1816      BSR DNOLINE
+00002D2A  6100 021C               1817      BSR WHITEXT
+00002D2E  43F9 00006BC8           1818      LEA SUP12,A1
+00002D34  6100 01E2               1819      BSR DISPLAY
+00002D38  6100 0198               1820      BSR NEWLINE
+00002D3C  6100 01AA               1821      BSR ENTER
+00002D40                          1822      
+00002D40  43F9 00006BCA           1823      LEA SUP13,A1
+00002D46  6100 01D0               1824      BSR DISPLAY
+00002D4A  6100 019C               1825      BSR ENTER
+00002D4E  6100 0182               1826      BSR NEWLINE
+00002D52                          1827      
+00002D52  43F9 00006BED           1828  LOOP11  LEA SUP14,A1
+00002D58  6100 01BE               1829      BSR DISPLAY
+00002D5C  43F9 00006C05           1830      LEA SUP15,A1
+00002D62  6100 01B4               1831      BSR DISPLAY
+00002D66  6100 016A               1832      BSR NEWLINE
+00002D6A                          1833      
+00002D6A  103C 0005               1834      MOVE.B  #5,D0
+00002D6E  4E4F                    1835      TRAP    #15
+00002D70                          1836      
+00002D70  B23C 0031               1837      CMP.B   #$31,D1
+00002D74  6700 012C               1838      BEQ SUI
+00002D78  B23C 0032               1839      CMP.B   #$32,D1
+00002D7C  6700 0016               1840      BEQ SUPS
+00002D80                          1841      
+00002D80  43F9 000032A2           1842      LEA EMSG,A1
+00002D86  6100 0190               1843      BSR DISPLAY
+00002D8A  6100 0146               1844      BSR NEWLINE
+00002D8E  6100 0158               1845      BSR ENTER
+00002D92  60BE                    1846      BRA LOOP11
+00002D94                          1847      
+00002D94  6100 015A               1848  SUPS    BSR CLRSCRN
+00002D98  43F9 00006C19           1849      LEA SUP16,A1
+00002D9E  6100 0178               1850      BSR DISPLAY
+00002DA2  6100 012E               1851      BSR NEWLINE
+00002DA6  6100 0140               1852      BSR ENTER
+00002DAA                          1853      
+00002DAA  43F9 00006C3D           1854      LEA SUP17,A1
+00002DB0  6100 0166               1855      BSR DISPLAY
+00002DB4  43F9 00006C7F           1856      LEA SUP18,A1
+00002DBA  6100 015C               1857      BSR DISPLAY
+00002DBE  6100 0112               1858      BSR NEWLINE
+00002DC2  6100 0124               1859      BSR ENTER
+00002DC6                          1860      
+00002DC6  43F9 00006CB3           1861      LEA SUP19,A1
+00002DCC  6100 00FC               1862      BSR DNOLINE
+00002DD0  6100 0162               1863      BSR REDTEXT
+00002DD4  43F9 00006CE2           1864      LEA SUP20,A1
+00002DDA  6100 00EE               1865      BSR DNOLINE
+00002DDE  6100 0168               1866      BSR WHITEXT
+00002DE2  43F9 00006CEC           1867      LEA SUP21,A1
+00002DE8  6100 012E               1868      BSR DISPLAY
+00002DEC  43F9 00006CF4           1869      LEA SUP22,A1
+00002DF2  6100 0124               1870      BSR DISPLAY
+00002DF6  43F9 00006D32           1871      LEA SUP23,A1
+00002DFC  6100 011A               1872      BSR DISPLAY
+00002E00  6100 00D0               1873      BSR NEWLINE
+00002E04  6100 00E2               1874      BSR ENTER
+00002E08                          1875      
+00002E08  43F9 00006D5C           1876      LEA SUP24,A1
+00002E0E  6100 00BA               1877      BSR DNOLINE
+00002E12  6100 0120               1878      BSR REDTEXT
+00002E16  43F9 00006D61           1879      LEA SUP25,A1
+00002E1C  6100 00AC               1880      BSR DNOLINE
+00002E20  6100 0126               1881      BSR WHITEXT
+00002E24  43F9 00006D76           1882      LEA SUP26,A1
+00002E2A  6100 00EC               1883      BSR DISPLAY
+00002E2E  43F9 00006D9C           1884      LEA SUP27,A1
+00002E34  6100 0094               1885      BSR DNOLINE
+00002E38  6100 00FA               1886      BSR REDTEXT
+00002E3C  43F9 00006DB6           1887      LEA SUP28,A1
+00002E42  6100 0086               1888      BSR DNOLINE
+00002E46  6100 0100               1889      BSR WHITEXT
+00002E4A  43F9 00006DC9           1890      LEA SUP29,A1
+00002E50  6100 00C6               1891      BSR DISPLAY
+00002E54  43F9 00006DD7           1892      LEA SUP30,A1
+00002E5A  6100 00BC               1893      BSR DISPLAY
+00002E5E  6100 0072               1894      BSR NEWLINE
+00002E62  6100 0084               1895      BSR ENTER
+00002E66                          1896      
+00002E66  6100 0088               1897      BSR CLRSCRN
+00002E6A                          1898      
+00002E6A  43F9 00006E17           1899      LEA SUP31,A1
+00002E70  6100 00A6               1900      BSR DISPLAY
+00002E74  43F9 00006E59           1901      LEA SUP32,A1
+00002E7A  6100 004E               1902      BSR DNOLINE
+00002E7E  6100 00B4               1903      BSR REDTEXT
+00002E82  43F9 00006E7A           1904      LEA SUP33,A1
+00002E88  6100 0040               1905      BSR DNOLINE
+00002E8C  6100 00BA               1906      BSR WHITEXT
+00002E90  43F9 00006E82           1907      LEA SUP34,A1
+00002E96  6100 0080               1908      BSR DISPLAY
+00002E9A                          1909      
+00002E9A  6100 004C               1910      BSR ENTER
+00002E9E                          1911      
+00002E9E  4E72 2700               1912      STOP    #$2700
+00002EA2                          1913  
+00002EA2                          1914  
+00002EA2                          1915  *SUICIDE ENDING-------------------------------------------
+00002EA2  6100 004C               1916  SUI BSR CLRSCRN
+00002EA6  43F9 00006E84           1917      LEA SUI1,A1
+00002EAC  6100 006A               1918      BSR DISPLAY
+00002EB0  43F9 00006EC5           1919      LEA SUI2,A1
+00002EB6  6100 0060               1920      BSR DISPLAY
+00002EBA  6100 002C               1921      BSR ENTER
+00002EBE                          1922      
+00002EBE  4E72 2700               1923      STOP    #$2700
+00002EC2                          1924  
+00002EC2                          1925  *SUBROUTINES~
+00002EC2                          1926  
+00002EC2  103C 000F               1927  KEY MOVE.B  #15,D0
+00002EC6  4E4F                    1928      TRAP    #15
+00002EC8  4E75                    1929      RTS
+00002ECA                          1930      
+00002ECA  103C 000E               1931  DNOLINE MOVE.B  #14,D0
+00002ECE  4E4F                    1932      TRAP    #15
+00002ED0  4E75                    1933      RTS
+00002ED2                          1934      
+00002ED2  48E7 8040               1935  newLine MOVEM.L D0/A1,-(A7)
+00002ED6  303C 000E               1936      MOVE    #14,D0
+00002EDA  43F9 00002F62           1937      LEA crlf,A1
+00002EE0  4E4F                    1938      TRAP    #15
+00002EE2  4CDF 0201               1939      MOVEM.L (A7)+,D0/A1
+00002EE6  4E75                    1940      RTS
+00002EE8                          1941      
+00002EE8  103C 0002               1942  ENTER   MOVE.B  #2,D0
+00002EEC  4E4F                    1943      TRAP    #15
+00002EEE  4E75                    1944      RTS
+00002EF0                          1945      
+00002EF0  323C FF00               1946  CLRSCRN MOVE.W      #$FF00,d1       * clear screen
+00002EF4  700B                    1947      MOVEQ       #11,d0          * position cursor
+00002EF6  4E4F                    1948      TRAP        #15
+00002EF8  4E75                    1949      RTS
+00002EFA                          1950      
+00002EFA  7200                    1951  ECHOOFF MOVEQ       #0,d1               * echo off
+00002EFC  700C                    1952      MOVEQ       #12,d0          * set keyboard echo
+00002EFE  4E4F                    1953      TRAP        #15
+00002F00  4E75                    1954      RTS
+00002F02  72FF                    1955  ECHOON  MOVEQ       #-1,d1          * echo on
+00002F04  700C                    1956      MOVEQ       #12,d0          * set keyboard echo
+00002F06  4E4F                    1957      TRAP        #15
+00002F08  4E75                    1958      RTS
+00002F0A                          1959  
+00002F0A  43F9 000032A2           1960  ERROR   LEA EMSG,A1
+00002F10  103C 000E               1961      MOVE.B  #14,D0
+00002F14  4E4F                    1962      TRAP    #15
+00002F16  4E75                    1963      RTS
+00002F18  303C 000E               1964  DISPLAY MOVE    #14,D0
+00002F1C  4E4F                    1965      TRAP    #15
+00002F1E  48E7 8040               1966      MOVEM.L D0/A1,-(A7)
+00002F22  303C 000E               1967      MOVE    #14,D0
+00002F26  43F9 00002F62           1968      LEA crlf,A1
+00002F2C  4E4F                    1969      TRAP    #15
+00002F2E  4CDF 0201               1970      MOVEM.L (A7)+,D0/A1
+00002F32  4E75                    1971      RTS 
+00002F34                          1972      
+00002F34  223C 000000FF           1973  REDTEXT MOVE.L  #RED,D1
+00002F3A  243C 01090000           1974      MOVE.L  #FONT,D2
+00002F40  103C 0015               1975      MOVE.B  #21,D0
+00002F44  4E4F                    1976      TRAP    #15
+00002F46  4E75                    1977      RTS
+00002F48                          1978      
+00002F48  223C 00FFFFFF           1979  WHITEXT MOVE.L  #WHITE,D1
+00002F4E  243C 01090000           1980      MOVE.L  #FONT,D2
+00002F54  103C 0015               1981      MOVE.B  #21,D0
+00002F58  4E4F                    1982      TRAP    #15
+00002F5A  4E75                    1983      RTS
+00002F5C                          1984  
+00002F5C                          1985  
+00002F5C                          1986  
+00002F5C  103C 0009               1987      MOVE.B  #9,D0
+00002F60  4E4F                    1988      TRAP    #15     ; halt simulator
+00002F62                          1989      
+00002F62                          1990  
+00002F62                          1991  * Variables and Strings
+00002F62= 0D 0A 00                1992  crlf    DC.B    $d,$a,0
+00002F65                          1993     
+00002F65                          1994     
+00002F65                          1995     
+00002F65                          1996  *PASSWORD STUFFS------------------------------------------
+00002F66  43F9 00003056           1997  PROMPT  LEA PWASK,A1
+00002F6C  103C 000E               1998      MOVE.B  #14,D0
+00002F70  4E4F                    1999      TRAP    #15
+00002F72  6100 FF5E               2000      BSR newLine
+00002F76  6100 FF5A               2001      BSR newLine
+00002F7A  103C 0002               2002      MOVE.B  #2,D0
+00002F7E  43F9 0000309E           2003      LEA BUFF2,A1
+00002F84  4E4F                    2004      TRAP    #15
+00002F86                          2005  
+00002F86  45F9 000031DE           2006      LEA PW1,A2
+00002F8C  47F9 000031E7           2007      LEA PW2,A3
+00002F92  49F9 000031F0           2008      LEA PW3,A4
+00002F98  4BF9 000031F9           2009      LEA PW4,A5  
+00002F9E                          2010      
+00002F9E  1219                    2011      MOVE.B  (A1)+,D1
+00002FA0  141A                    2012      MOVE.B  (A2)+,D2
+00002FA2  161B                    2013      MOVE.B  (A3)+,D3
+00002FA4  181C                    2014      MOVE.B  (A4)+,D4
+00002FA6  1A1D                    2015      MOVE.B  (A5)+,D5
+00002FA8                          2016          
+00002FA8  B401                    2017      CMP.B   D1,D2
+00002FAA  6700 0018               2018      BEQ PW1L
+00002FAE  B601                    2019      CMP.B   D1,D3
+00002FB0  6700 0026               2020      BEQ PW2L
+00002FB4  B841                    2021      CMP D1,D4
+00002FB6  6700 0034               2022      BEQ PW3L
+00002FBA  BA41                    2023      CMP D1,D5
+00002FBC  6700 0042               2024      BEQ PW4L
+00002FC0  6000 0052               2025      BRA WRONG
+00002FC4  1219                    2026  PW1L    MOVE.B  (A1)+,D1
+00002FC6  141A                    2027      MOVE.B  (A2)+,D2
+00002FC8  B43C 000D               2028      CMP.B   #$0D,D2
+00002FCC  6700 E6CC               2029      BEQ OUTP
+00002FD0  B401                    2030      CMP.B   D1,D2
+00002FD2  67F0                    2031      BEQ PW1L
+00002FD4  6600 003E               2032      BNE WRONG
+00002FD8  1219                    2033  PW2L    MOVE.B  (A1)+,D1
+00002FDA  161B                    2034      MOVE.B  (A3)+,D3
+00002FDC  B63C 000D               2035      CMP.B   #$0D,D3
+00002FE0  6700 ED14               2036      BEQ OUTS
+00002FE4  B601                    2037      CMP.B   D1,D3
+00002FE6  67F0                    2038      BEQ PW2L
+00002FE8  6600 002A               2039      BNE WRONG
+00002FEC  1219                    2040  PW3L    MOVE.B  (A1)+,D1
+00002FEE  181C                    2041      MOVE.B  (A4)+,D4
+00002FF0  B83C 000D               2042      CMP.B   #$0D,D4
+00002FF4  6700 F604               2043      BEQ INL
+00002FF8  B801                    2044      CMP.B   D1,D4
+00002FFA  67F0                    2045      BEQ PW3L
+00002FFC  6600 0016               2046      BNE WRONG
+00003000  1219                    2047  PW4L    MOVE.B  (A1)+,D1
+00003002  1A1D                    2048      MOVE.B  (A5)+,D5
+00003004  BA3C 000D               2049      CMP.B   #$0D,D5
+00003008  6700 FA64               2050      BEQ INV
+0000300C  BA01                    2051      CMP.B   D1,D5
+0000300E  67F0                    2052      BEQ PW4L
+00003010  6600 0002               2053      BNE WRONG
+00003014                          2054      
+00003014                          2055      
+00003014  43F9 00003072           2056  WRONG   LEA PWWRONG,A1
+0000301A  103C 000E               2057      MOVE.B  #14,D0
+0000301E  4E4F                    2058      TRAP    #15
+00003020                          2059  
+00003020  103C 0005               2060      MOVE.B  #5,D0
+00003024  4E4F                    2061      TRAP    #15
+00003026                          2062      
+00003026  B23C 0059               2063      CMP.B   #$59,D1
+0000302A  6700 FF3A               2064      BEQ PROMPT
+0000302E  B23C 0079               2065      CMP.B   #$79,D1
+00003032  6700 FF32               2066      BEQ PROMPT
+00003036  B23C 004E               2067      CMP.B   #$4E,D1
+0000303A  6700 DFC4               2068      BEQ OPEN
+0000303E  B23C 006E               2069      CMP.B   #$6E,D1
+00003042  6700 DFBC               2070      BEQ OPEN
+00003046                          2071      
+00003046  43F9 000032A2           2072      LEA EMSG,A1
+0000304C  6100 FECA               2073      BSR DISPLAY
+00003050  6100 FE80               2074      BSR newLine
+00003054  60BE                    2075      BRA WRONG
+00003056                          2076  
+00003056                          2077  *PASSWORD VARIABLES AND STRINGS---------------------------
+00003056                          2078  
+00003056= 50 6C 65 61 73 65 ...   2079  PWASK   DC.B    'Please enter the password: ',0
+00003072= 50 61 73 73 77 6F ...   2080  PWWRONG DC.B    'Password not recognized. Try again? (Y) (N)',0
+0000309E                          2081  BUFF2   DS.B    80
+000030EE                          2082      DS.W    0
+000030EE= 54 6F 20 63 6F 6E ...   2083  PASS1   DC.B    'To continue your game from here use the password "vGr25HFz"',0
+0000312A= 54 6F 20 63 6F 6E ...   2084  PASS2   DC.B    'To continue your game from here use the password "GhTTqP9X"',0
+00003166= 54 6F 20 63 6F 6E ...   2085  PASS3   DC.B    'To continue your game from here use the password "R6Z21K4p"',0
+000031A2= 54 6F 20 63 6F 6E ...   2086  PASS4   DC.B    'To continue your game from here use the password "QZ6vw5yb"',0
+000031DE                          2087  
+000031DE                          2088      
+000031DE= 76 47 72 32 35 48 ...   2089  PW1 DC.B    'vGr25HFz',$0D
+000031E7= 47 68 54 54 71 50 ...   2090  PW2 DC.B    'GhTTqP9X',$0D
+000031F0= 52 36 5A 32 31 4B ...   2091  PW3 DC.B    'R6Z21K4p',$0D
+000031F9= 51 5A 36 76 77 35 ...   2092  PW4 DC.B    'QZ6vw5yb',$0D
+00003202                          2093                      
+00003202                          2094  
+00003202                          2095  * FONT STUFFS---------------------------------------------
+00003202  =000000FF               2096  RED EQU $000000FF
+00003202  =00FFFFFF               2097  WHITE   EQU $00FFFFFF
+00003202  =01090000               2098  FONT    EQU $01090000
+00003202                          2099  
+00003202                          2100  *USER INPUT STUFF-----------------------------------------
+00003202                          2101  NAME    DS.B    80
+00003252                          2102      DS.W    0
+00003252                          2103  FOOD    DS.B    80
+000032A2                          2104      DS.W    0
+000032A2                          2105      
+000032A2                          2106  *OTHER MESSAGES-------------------------------------------
+000032A2= 4B 65 79 20 65 6E ...   2107  EMSG    DC.B    'Key entered not recognized',0
+000032BD= 41 6C 65 78 20 00       2108  ALEXRED DC.B    'Alex ',0
+000032C3= 50 45 54 41 20 00       2109  PETARED DC.B    'PETA ',0
+000032C9= 65 67 67 73 20 00       2110  EGGSRED DC.B    'eggs ',0
+000032CF                          2111  
+000032CF                          2112  *TITLE SCREEN --------------------------------------------
+000032CF= 20 5F 5F 5F 5F 20 ...   2113  TITLE1  DC.B    ' ____ ____ ____ _________ ____ ____ ____ ____ _________ ____ ____ ____ ____ ____',0
+00003320= 7C 7C 54 20 7C 7C ...   2114  TITLE2  DC.B    '||T |||h |||e |||       |||B |||e |||s |||t |||       |||G |||a |||m |||e |||! ||',0
+00003372= 7C 7C 5F 5F 7C 7C ...   2115  TITLE3  DC.B    '||__|||__|||__|||_______|||__|||__|||__|||__|||_______|||__|||__|||__|||__|||__||',0
+000033C4= 7C 2F 5F 5F 5C 7C ...   2116  TITLE4  DC.B    '|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|/__\|',0
+00003416= 44 6F 20 79 6F 75 ...   2117  TITLE5  DC.B    'Do you want to begin or use a password?',0
+0000343E= 54 6F 20 62 65 67 ...   2118  TITLE6  DC.B    'To begin type "start" to use a password type "password"',0
+00003476= 73 74 61 72 74 0D       2119  NG  DC.B    'start',$0D
+0000347C= 70 61 73 73 77 6F ...   2120  PWS DC.B    'password',$0D
+00003485                          2121  BUFF    DS.B    80
+000034D6                          2122      DS.W    0
+000034D6= 49 20 64 6F 6E 27 ...   2123  WRCHAR  DC.B    'I don''t understand. Would you mind telling me again?',0
+0000350B                          2124  
+0000350B                          2125  
+0000350B                          2126  
+0000350B                          2127  *STORY LINE TEXT------------------------------------------
+0000350B                          2128  
+0000350B                          2129  *INTRODUCTION 
+0000350B= 57 65 6C 63 6F 6D ...   2130  Welcome DC.B    'Welcome! To get things started, you are going to have to give me your name.',0
+00003557= 20 69 73 20 69 74 ...   2131  NChange DC.B    ' is it? Well, that''s too complicated. How about I call you Alex instead.',0
+000035A0= 4E 6F 77 20 74 68 ...   2132  NOWTHAT DC.B    'Now that we got that out of the way, let''s start going over the introduction.',0
+000035EE= 54 6F 64 61 79 2C ...   2133  TODAY   DC.B    'Today, video games are full of these new fancy graphics. These graphics are',0
+0000363A= 73 6F 20 66 61 6E ...   2134  SOFANCY DC.B    'so fancy that players never seem to have to rely on their imagination for ',0
+00003685= 61 6E 79 74 68 69 ...   2135  WHYIMAG DC.B    'anything. Why imagine a fantasy world when you can pop in one of those super ',0
+000036D3= 65 78 70 65 6E 73 ...   2136  PLAYBOX DC.B    'expensive games into your Playbox 3000?',0
+000036FB                          2137  
+000036FB= 57 65 6C 6C 2C 20 ...   2138  WELLTHA DC.B    'Well, that doesn''t seem like much fun. Humans have the awesome ability to ',0
+00003746= 70 69 63 74 75 72 ...   2139  PICTURE DC.B    'picture entire worlds in their own minds, so that''s what we are going to ',0
+00003790= 64 6F 20 74 6F 64 ...   2140  DOTODAY DC.B    'do today. No pictures are allowed here, YOU have to create the scene in ',0
+000037D9= 79 6F 75 72 20 6F ...   2141  YOURMIN DC.B    'your own mind, I will merely provide the atmosphere and some basic ',0
+0000381D= 69 6E 66 6F 72 6D ...   2142  INFORMA DC.B    'information to get the ball rolling. How does that sound? Good or bad?',0
+00003864                          2143  
+00003864= 31 2E 20 47 4F 4F ...   2144  CGOOD   DC.B    '1. GOOD',0
+0000386C= 32 2E 20 42 41 44 00    2145  CBAD    DC.B    '2. BAD',0
+00003873                          2146  
+00003873= 49 20 6C 69 6B 65 ...   2147  IFGOOD  DC.B    'I like the enthusiasm, it seems as if good people really do still exist.',0
+000038BC= 57 68 69 6C 65 20 ...   2148  IFBAD   DC.B    'While your tenacity and rebellion is refreshing, you really have no choice',0
+00003907= 20 69 6E 20 74 68 ...   2149  IFBAD2  DC.B    ' in the matter, unless you quit now. It really doesn''t bother me.',0
+00003949                          2150  
+00003949= 41 6E 79 77 61 79 ...   2151  ANYWAYS DC.B    'Anyways, now that we have that cleared up, let''s finish this up and start.',0
+00003994                          2152  
+00003994= 41 73 20 74 68 65 ...   2153  ASTHEGA DC.B    'As the game progresses, there will be certain words that may play well into',0
+000039E0= 79 6F 75 72 20 69 ...   2154  YOURIMA DC.B    'your imagination, and those words I will highlight in this pretty color',0
+00003A28= 20 68 65 72 65 2E 00    2155  HERERED DC.B    ' here.',0
+00003A2F= 49 20 72 65 61 6C ...   2156  IREALLY DC.B    'I really hope you are not colorblind at this moment.',0
+00003A64                          2157  
+00003A64= 54 68 65 20 6F 62 ...   2158  THEOBJE DC.B    'The object of the game is simple. You are hungry and poor. You hear of an',0
+00003AAE= 61 77 65 73 6F 6D ...   2159  AWESOMS DC.B    'awesome sale on your favorite food at the supermarket in town that just',0
+00003AF6= 66 69 74 73 20 79 ...   2160  FITSBUG DC.B    'fits your budget. This is awesome, but as a poor teenager a hard task.',0
+00003B3D= 59 6F 75 20 6E 65 ...   2161  YOUNEED DC.B    'You need to figure out how to get there, and are determined in time.',0
+00003B82= 45 73 70 65 63 69 ...   2162  CRAZYMO DC.B    'Especially since it is almost time for those crazy mothers to charge.',0
+00003BC8                          2163  
+00003BC8= 4E 6F 77 20 74 65 ...   2164  NOWFOOD DC.B    'Now tell me, what is your favorite food?',0
+00003BF1                          2165  
+00003BF1= 20 79 6F 75 20 73 ...   2166  NOWFOD2 DC.B    ' you say? That''s a terrible food. I think ',0 ;ALEXRED
+00003C1C= 77 6F 75 6C 64 20 ...   2167  NOWFOD3 DC.B    'would love some ',0 ;EGGSRED
+00003C2D= 69 6E 73 74 65 61 ...   2168  INSTEAD DC.B    'instead.',0
+00003C36                          2169  
+00003C36                          2170  *VIDEO GAME INTRO-----------------------------------------
+00003C36                          2171  
+00003C36= 49 74 27 73 20 61 ...   2172  VI1 DC.B    'It''s about ',0
+00003C42= 6E 6F 6F 6E 20 00       2173  VI2 DC.B    'noon ',0
+00003C48= 6E 6F 77 2C 20 61 ...   2174  VI3 DC.B    'now, and it seems like you''re fnally awake. It seems like',0
+00003C82= 79 6F 75 27 72 65 ...   2175  VI4 DC.B    'you''re up earlier than usual! This is a great thing, except for why you are',0
+00003CCE= 61 77 61 6B 65 20 ...   2176  VI5 DC.B    'awake so early. Your ',0
+00003CE4= 73 74 6F 6D 61 63 ...   2177  VI6 DC.B    'stomach ',0
+00003CED= 69 73 20 6B 69 6C ...   2178  VI7 DC.B    'is killing you, ',0
+00003CFE= 68 75 6E 67 65 72 ...   2179  VI8 DC.B    'hunger pangs ',0
+00003D0C= 61 72 65 20 73 65 ...   2180  VI9 DC.B    'are sending',0
+00003D18= 73 74 72 61 6E 67 ...   2181  VI10    DC.B    'strange signals and you want nothing more than to put ',0
+00003D4F= 66 6F 6F 64 20 00       2182  VI11    DC.B    'food ',0
+00003D55= 69 6E 20 79 6F 75 ...   2183  VI12    DC.B    'in your',0
+00003D5D= 6D 6F 75 74 68 2E ...   2184  VI13    DC.B    'mouth. Oh why did you skip dinner last night? Was last night''s raid that',0
+00003DA6= 69 6D 70 6F 72 74 ...   2185  VI14    DC.B    'important? What am I saying, of course it was.',0
+00003DD5                          2186  
+00003DD5= 49 6E 73 74 65 61 ...   2187  VI15    DC.B    'Instead of immediately running to find food though, you walk straight to',0
+00003E1E= 79 6F 75 72 20 63 ...   2188  VI16    DC.B    'your computer to check your messages. We live in a digital age, right?',0
+00003E65= 54 68 65 20 77 68 ...   2189  VI17    DC.B    'The whole world needs to know ',0
+00003E84= 68 6F 77 20 68 75 ...   2190  VI18    DC.B    'how hungry you really are',0
+00003E9E= 2E 00                   2191  VI19    DC.B    '.',0
+00003EA0                          2192  
+00003EA0= 22 53 4F 4F 4F 20 ...   2193  VI20    DC.B    '"SOOO HUNGRY! I WOULD KICK A KITTEN FOR SOME ',0
+00003ECE= 45 47 47 53 00          2194  VI21    DC.B    'EGGS',0
+00003ED3= 52 49 47 48 54 20 ...   2195  VI22    DC.B    'RIGHT NOW!" you post on facespace plus, the best social networking',0
+00003F16= 73 69 74 65 20 75 ...   2196  VI23    DC.B    'site up this week.',0
+00003F29                          2197  
+00003F29= 42 65 66 6F 72 65 ...   2198  VI24    DC.B    'Before you can even clos the window, messages start popping up left',0
+00003F6D= 61 6E 64 20 72 69 ...   2199  VI25    DC.B    'and right. You are immediately unaware of the world around you until',0
+00003FB2= 79 6F 75 20 63 68 ...   2200  VI26    DC.B    'you check these notifications.',0
+00003FD1                          2201  
+00003FD1= 49 74 20 73 65 65 ...   2202  VI27    DC.B    'It seems like your friends have your back as about a dozen of them',0
+00004014= 6D 65 6E 74 69 6F ...   2203  VI28    DC.B    'mention a ',0
+0000401F= 73 75 70 65 72 20 ...   2204  VI29    DC.B    'super sale ',0
+0000402B= 68 61 70 70 65 6E ...   2205  VI30    DC.B    'happening ',0
+00004036= 61 74 20 31 3A 33 ...   2206  VI31    DC.B    'at 1:30PM ',0
+00004041= 61 74 20 74 68 65 ...   2207  VI32    DC.B    'at the new fancy',0
+00004052= 73 75 70 65 72 6D ...   2208  VI33    DC.B    'supermarket ',0
+0000405F= 4C 65 20 50 69 65 ...   2209  VI34    DC.B    'Le Pieuvre',0
+0000406A= 2E 20 54 68 65 20 ...   2210  VI35    DC.B    '. The owner, Jaques, is having his ',0
+0000408E= 67 72 61 6E 64 00       2211  VI36    DC.B    'grand',0
+00004094= 6F 70 65 6E 69 6E ...   2212  VI37    DC.B    'opening',0
+0000409C= 2C 20 61 6E 64 20 00    2213  VI38    DC.B    ', and ',0
+000040A3= 61 20 64 6F 7A 65 ...   2214  VI39    DC.B    'a dozen eggs is only $0.99',0
+000040BE= 21 00                   2215  VI40    DC.B    '!',0
+000040C0                          2216  
+000040C0= 54 68 69 73 20 69 ...   2217  VI41    DC.B    'This is almost perfect timing, but it is already ',0
+000040F2= 31 32 3A 31 30 50 ...   2218  VI42    DC.B    '12:10PM ',0
+000040FB= 61 6E 64 20 79 6F ...   2219  VI43    DC.B    'and you aren''t sure',0
+0000410F= 77 68 65 74 68 65 ...   2220  VI44    DC.B    'whether or not you can make it. What should you do?',0
+00004143                          2221  
+00004143= 31 2E 20 4A 75 6D ...   2222  VI45    DC.B    '1. Jump out the window It saves time',0
+00004168= 32 2E 20 43 68 65 ...   2223  VI46    DC.B    '2. Check the kitchen for alternatives',0
+0000418E                          2224  
+0000418E                          2225  
+0000418E                          2226  *OUTSIDE INTRO--------------------------------------------
+0000418E= 59 6F 75 27 72 65 ...   2227  OI1 DC.B    'You''re really going to brave that jump? I never even said how high',0
+000041D1= 20 79 6F 75 20 77 ...   2228  OI2 DC.B    ' you were. Then again, this is ',0
+000041F1= 79 6F 75 72 20 69 ...   2229  OI3R    DC.B    'your imagination ',0
+00004203= 77 65 27 72 65 20 ...   2230  OI4 DC.B    'we''re playing with.',0
+00004217                          2231  
+00004217= 49 6E 20 64 65 73 ...   2232  OI5 DC.B    'In desperation, you seem to jump out of the window and make a ',0
+00004256= 72 6F 75 67 68 20 ...   2233  OI6R    DC.B    'rough landing,',0
+00004265= 74 61 6B 69 6E 67 ...   2234  OI7 DC.B    'taking a part of the tree outside your window with you.',0
+0000429D= 59 6F 75 72 20 73 ...   2235  OI8 DC.B    'Your scream summons an enemy!',0
+000042BB                          2236  
+000042BB= 49 74 20 73 65 65 ...   2237  OI9 DC.B    'It seems as if ',0
+000042CB= 4D 72 2E 20 50 65 ...   2238  OI10R   DC.B    'Mr. Peebles',0
+000042D7= 2C 20 74 68 65 20 ...   2239  OI11    DC.B    ', the neighbor''s ',0
+000042E9= 66 65 72 6F 63 69 ...   2240  OI12R   DC.B    'ferocious poodle ',0
+000042FB= 68 61 73 20 62 72 ...   2241  OI13    DC.B    'has broken',0
+00004306= 6C 6F 6F 73 65 20 ...   2242  OI14    DC.B    'loose again and snarles at you as you hang desperately onto',0
+00004342= 61 20 74 72 65 65 ...   2243  OI15    DC.B    'a tree. You look around and in your quick scan, realize you have',0
+00004383= 74 77 6F 20 6F 70 ...   2244  OI16    DC.B    'two options: ',0
+00004391= 31 2E 20 43 61 6C ...   2245  OI17    DC.B    '1. Call for help!',0
+000043A3= 32 2E 20 47 72 61 ...   2246  OI18    DC.B    '2. Grab that super awesome magical wild stick thingy',0
+000043D8                          2247  
+000043D8                          2248  
+000043D8                          2249  *OUTSIDE BRANCH PETA--------------------------------------
+000043D8= 57 65 6C 6C 20 69 ...   2250  OP1 DC.B    'Well it seems as if you did the humane thing, so to reward you, ',0
+00004419= 50 45 54 41 00          2251  OP2 DC.B    'PETA',0
+0000441E= 20 63 6F 6D 65 73 ...   2252  OP3 DC.B    ' comes running off from the distance. Yes, all of ',0
+00004451= 50 45 54 41 00          2253  OP4 DC.B    'PETA',0
+00004456= 2C 00                   2254  OP5 DC.B    ',',0
+00004458= 69 74 20 69 73 20 ...   2255  OP6 DC.B    'it is just a ',0
+00004466= 67 69 61 6E 74 20 ...   2256  OP7 DC.B    'giant mob',0
+00004470= 2E 20 00                2257  OP8 DC.B    '. ',0
+00004473= 41 70 70 61 72 65 ...   2258  OP9 DC.B    'Apparently just last week, ',0
+0000448F= 50 45 54 41 20 00       2259  OP10    DC.B    'PETA ',0
+00004495= 64 65 63 69 64 65 ...   2260  OP11    DC.B    'decided',0
+0000449D= 74 68 61 74 20 68 ...   2261  OP12    DC.B    'that humans are animals too, and they will do all they can to',0
+000044DB= 70 72 6F 74 65 63 ...   2262  OP13    DC.B    'protect you.',0
+000044E8                          2263  
+000044E8= 49 74 27 73 20 61 ...   2264  OP14    DC.B    'It''s a bit of a conundrum you think, to harm an animal to save ',0
+00004528= 61 6E 20 61 6E 69 ...   2265  OP15    DC.B    'an animal. But ',0
+00004538= 50 45 54 41 20 00       2266  OP16    DC.B    'PETA ',0
+0000453E= 68 61 73 20 74 68 ...   2267  OP17    DC.B    'has this covered, grabbing a bucket of ',0
+00004566= 72 65 64 00             2268  OP18    DC.B    'red',0
+0000456A= 2C 00                   2269  OP19    DC.B    ',',0
+0000456C= 20 6E 6F 6E 2D 74 ...   2270  OP20    DC.B    ' non-toxic finger paint ',0
+00004585= 28 74 68 61 74 20 ...   2271  OP21    DC.B    '(that is also surprisingly environmentally',0
+000045B0= 66 72 69 65 6E 64 ...   2272  OP22    DC.B    'friendly as well!) and throwing it on the ',0
+000045DB= 70 75 72 65 20 77 ...   2273  OP23    DC.B    'pure white poodle',0
+000045ED= 2E 00                   2274  OP24    DC.B    '.',0
+000045EF                          2275  
+000045EF= 4D 72 2E 20 50 65 ...   2276  OP25    DC.B    'Mr. Peebles ',0
+000045FC= 69 6D 6D 65 64 69 ...   2277  OP26    DC.B    'immediately runs off.',0
+00004612                          2278  
+00004612= 41 6E 79 77 61 79 ...   2279  OP27    DC.B    'Anyways, now that we''ve gotten that out of the way, let''s continue',0
+00004655= 77 61 6C 6B 69 6E ...   2280  OP28    DC.B    'walking. Time is ticking, remember?',0
+00004679                          2281  
+00004679= 49 6D 61 67 69 6E ...   2282  OP29    DC.B    'Imagine your neighborhood. Is it ',0
+0000469B= 73 6D 61 6C 6C 20 00    2283  OP30    DC.B    'small ',0
+000046A2= 6F 72 20 00             2284  OP31    DC.B    'or ',0
+000046A6= 62 69 67 00             2285  OP32    DC.B    'big',0
+000046AA= 3F 20 41 72 65 20 ...   2286  OP33    DC.B    '? Are you in a ',0
+000046BA= 63 69 74 79 00          2287  OP34    DC.B    'city',0
+000046BF= 2C 00                   2288  OP35    DC.B    ',',0
+000046C1= 73 75 62 75 72 62 00    2289  OP36    DC.B    'suburb',0
+000046C8= 2C 20 6F 72 20 00       2290  OP37    DC.B    ', or ',0
+000046CE= 6D 69 64 64 6C 65 ...   2291  OP38    DC.B    'middle of nowhere',0
+000046E0= 3F 20 4E 6F 77 20 ...   2292  OP39    DC.B    '? Now imagine an old ',0
+000046F6= 62 75 6C 6C 79 20 00    2293  OP40    DC.B    'bully ',0
+000046FD= 6F 66 20 79 6F 75 ...   2294  OP41    DC.B    'of yours.',0
+00004707= 54 68 61 74 20 6F ...   2295  OP42    DC.B    'That one you hated more than anything as a kid, unless you yourself, ',0
+0000474D= 77 65 72 65 20 74 ...   2296  OP43    DC.B    'were the bully. In that case, just imagine yourself.',0
+00004782                          2297  
+00004782= 47 6F 74 20 69 74 ...   2298  OP44    DC.B    'Got it? Good, now that you see them in your mind, ',0
+000047B5= 74 68 65 79 27 72 ...   2299  OP45    DC.B    'they''re right',0
+000047C3= 69 6E 20 66 72 6F ...   2300  OP46    DC.B    'in front of you',0
+000047D3= 2C 20 61 74 74 61 ...   2301  OP47    DC.B    ', attacking a poor child in order to steal their bike.',0
+0000480A                          2302  
+0000480A= 41 72 65 20 79 6F ...   2303  OP48    DC.B    'Are you going to let that happen? Really?',0
+00004834                          2304  
+00004834= 31 2E 20 45 67 67 ...   2305  OP49    DC.B    '1. Eggs are far more important! This is a perfect opportunity to steal',0
+0000487B= 20 20 20 68 69 73 ...   2306  OP50    DC.B    '   his bike!',0
+00004888= 32 2E 20 49 20 63 ...   2307  OP51    DC.B    '2. I can''t...not even for eggs...',0
+000048AA                          2308  
+000048AA                          2309  *OUTSIDE BRANCH PETA BAD----------------------------------
+000048AA                          2310  
+000048AA= 45 67 67 73 20 61 ...   2311  OPB1    DC.B    'Eggs are the most important thing in your life, aren''t they? Nothing is',0
+000048F2= 67 6F 69 6E 67 20 ...   2312  OPB2    DC.B    'going to get in your way of finally obtaining the ',0
+00004925= 73 77 65 65 74 00       2313  OPB3    DC.B    'sweet',0
+0000492B= 2C 20 00                2314  OPB4    DC.B    ', ',0
+0000492E= 73 77 65 65 74 20 ...   2315  OPB5    DC.B    'sweet cholesterol balls',0
+00004946= 2E 00                   2316  OPB6    DC.B    '.',0
+00004948                          2317  
+00004948= 4E 6F 74 68 69 6E ...   2318  OPB7    DC.B    'Nothing except for ',0
+0000495C= 50 45 54 41 00          2319  OPB8    DC.B    'PETA',0
+00004961= 21 20 52 65 6D 65 ...   2320  OPB9    DC.B    '! Remember, ',0
+0000496E= 68 75 6D 61 6E 73 ...   2321  OPB10   DC.B    'humans are animas too',0
+00004984= 2C 20 61 6E 64 20 ...   2322  OPB11   DC.B    ', and they',0
+0000498F= 63 61 6E 27 74 20 ...   2323  OPB12   DC.B    'can''t let anyone ignore or personally attack another animal like that,',0
+000049D6= 73 6F 20 74 68 65 ...   2324  OPB13   DC.B    'so they form a human barrier',0
+000049F3= 2C 20 64 72 61 77 ...   2325  OPB14   DC.B    ', drawing attention towards you.',0
+00004A14                          2326  
+00004A14= 54 68 69 73 20 69 ...   2327  OPB15   DC.B    'This is bad for you. ',0
+00004A2A= 4E 6F 77 20 74 68 ...   2328  OPB16   DC.B    'Now there''s an entire mass organization surrounding',0
+00004A5E= 79 6F 75 20 00          2329  OPB17   DC.B    'you ',0
+00004A63= 6E 6F 77 20 61 73 ...   2330  OPB18   DC.B    'now as a large bully comes charging at you like a ',0
+00004A96= 62 75 6C 6C 00          2331  OPB19   DC.B    'bull',0
+00004A9B= 2E 20 57 68 61 74 ...   2332  OPB20   DC.B    '. What should',0
+00004AA9= 79 6F 75 20 64 6F ...   2333  OPB21   DC.B    'you do?',0
+00004AB1                          2334  
+00004AB1= 31 2E 20 41 64 6D ...   2335  OPB22   DC.B    '1. Admit defeat, take the beating and go home.',0
+00004AE0= 32 2E 20 53 63 72 ...   2336  OPB23   DC.B    '2. Scream for help!',0
+00004AF4                          2337  
+00004AF4= 53 6F 20 79 6F 75 ...   2338  OPB24   DC.B    'So you scream for help, which summons a ',0
+00004B1D= 77 69 6C 64 20 68 ...   2339  OPB25   DC.B    'wild hippy',0
+00004B28= 21 00                   2340  OPB26   DC.B    '!',0
+00004B2A                          2341  
+00004B2A= 54 68 69 73 20 68 ...   2342  OPB27   DC.B    'This hippy is the most ',0
+00004B42= 6E 65 75 74 72 61 ...   2343  OPB28   DC.B    'neutral hippy ',0
+00004B51= 79 6F 75 20 63 6F ...   2344  OPB29   DC.B    'you could ever imagine, he''s like',0
+00004B73= 53 77 69 74 7A 65 ...   2345  OPB30   DC.B    'Switzerland',0
+00004B7F= 21 20 57 69 74 68 ...   2346  OPB31   DC.B    '! Without learning about the situation he snatches you while',0
+00004BBC= 72 69 64 69 6E 67 ...   2347  OPB32   DC.B    'riding a ',0
+00004BC6= 6D 61 67 69 63 61 ...   2348  OPB33   DC.B    'magical questadilla ',0
+00004BDB= 61 6E 64 20 77 68 ...   2349  OPB34   DC.B    'and whisks you away to ',0
+00004BF3= 4C 65 20 50 69 65 ...   2350  OPB35   DC.B    'Le Pieuvre ',0
+00004BFF= 74 6F 20 6F 62 74 ...   2351  OPB36   DC.B    'to obtain',0
+00004C09= 74 68 6F 73 65 20 ...   2352  OPB37   DC.B    'those mouth-watering ',0
+00004C1F= 65 67 67 73 00          2353  OPB38   DC.B    'eggs',0
+00004C24= 2E 00                   2354  OPB39   DC.B    '.',0
+00004C26                          2355  
+00004C26                          2356  *OUTSIDE BRANCH PETA GOOD---------------------------------
+00004C26= 57 65 6C 6C 20 6C ...   2357  OPG1    DC.B    'Well look at you, being all nice and stuff. ',0
+00004C53= 4D 61 79 62 65 20 ...   2358  OPG2    DC.B    'Maybe nice guys don''t',0
+00004C69= 61 6C 77 61 79 73 ...   2359  OPG3    DC.B    'always finish last',0
+00004C7C= 2C 20 68 6D 3F 00       2360  OPG4    DC.B    ', hm?',0
+00004C82                          2361  
+00004C82= 49 67 6E 6F 72 69 ...   2362  OPG5    DC.B    'Ignoring me, you immediately shout at the bully in attempts to,',0
+00004CC2= 73 74 6F 70 20 68 ...   2363  OPG6    DC.B    'stop him from crushing the small boy for noting more than a ',0
+00004CFF= 72 75 73 74 79 00       2364  OPG7    DC.B    'rusty',0
+00004D05= 6F 6C 64 20 62 69 ...   2365  OPG8    DC.B    'old bike',0
+00004D0E= 2E 00                   2366  OPG9    DC.B    '.',0
+00004D10                          2367  
+00004D10= 4E 6F 77 20 74 68 ...   2368  OPG10   DC.B    'Now this bully can''t possibly be a small kid, and you know it. They',0
+00004D54= 63 6F 6D 65 20 63 ...   2369  OPG11   DC.B    'come charging at you ',0
+00004D6A= 6C 69 6B 65 20 61 ...   2370  OPG12   DC.B    'like a bull',0
+00004D76= 2C 20 61 6E 64 20 ...   2371  OPG13   DC.B    ', and you immediately realize you',0
+00004D98= 68 61 76 65 20 6E ...   2372  OPG14   DC.B    'have no defense, except...',0
+00004DB3                          2373  
+00004DB3= 50 45 54 41 00          2374  OPG15   DC.B    'PETA',0
+00004DB8= 20 63 6F 6D 65 73 ...   2375  OPG16   DC.B    ' comes to the rescue once again! Like a flash of lightning,',0
+00004DF4= 74 68 65 20 6D 6F ...   2376  OPG17   DC.B    'the mob sweeps the boy away, perhaps to put him in one of their',0
+00004E34= 6E 65 61 74 20 6C ...   2377  OPG18   DC.B    'neat little shelters in hopes of finding him a home. I believe',0
+00004E73= 74 68 65 79 20 00       2378  OPG19   DC.B    'they ',0
+00004E79= 6D 69 73 74 61 6B ...   2379  OPG20   DC.B    'mistake the bully as another animal',0
+00004E9D= 2E 20 57 68 69 63 ...   2380  OPG21   DC.B    '. Which one I''ll let you',0
+00004EB6= 64 65 63 69 64 65 ...   2381  OPG22   DC.B    'decide...',0
+00004EC0                          2382  
+00004EC0= 54 68 65 20 62 6F ...   2383  OPG23   DC.B    'The boy you saved approaches you, stunned a bit by the acts of',0
+00004EFF= 50 45 54 41 00          2384  OPG24   DC.B    'PETA',0
+00004F04= 2C 20 62 75 74 20 ...   2385  OPG25   DC.B    ', but happy nonetheless. ',0
+00004F1E= 41 20 62 69 74 20 ...   2386  OPG26   DC.B    'A bit battered',0
+00004F2D= 2C 20 68 65 20 74 ...   2387  OPG27   DC.B    ', he thanks you very',0
+00004F42= 71 75 69 65 74 6C ...   2388  OPG28   DC.B    'quietly, and offers his bike, somehow knowing you''re in a rush.',0
+00004F82                          2389  
+00004F82= 51 75 69 63 6B 6C ...   2390  OPG29   DC.B    'Quickly you thank him, and speed off to finish your quest.',0
+00004FBD                          2391  
+00004FBD                          2392  *OUTSIDE STICK--------------------------------------------
+00004FBD                          2393  
+00004FBD= 57 65 27 6C 6C 20 ...   2394  OS1 DC.B    'We''ll be nice here and not actually attack the dog. For now',0
+00004FF9= 73 6D 61 63 6B 69 ...   2395  OS2 DC.B    'smacking the ground is sufficient as dogs really don''t like',0
+00005035= 70 61 69 6E 20 6D ...   2396  OS3 DC.B    'pain much like humans. Poor dog, scared out of his mind just',0
+00005072= 66 6F 72 20 70 72 ...   2397  OS4 DC.B    'for protecting the world around him.',0
+00005097                          2398  
+00005097= 41 6E 79 77 61 79 ...   2399  OS5 DC.B    'Anyways, now that we''ve gotten that out of the way, let''s',0
+000050D1= 63 6F 6E 74 69 6E ...   2400  OS6 DC.B    'continue walking. Time is ticking, remember?',0
+000050FE                          2401  
+000050FE= 49 6D 61 67 69 6E ...   2402  OS7 DC.B    'Imagine your neighborhood, is it ',0
+00005120= 73 6D 61 6C 6C 20 00    2403  OS8 DC.B    'small ',0
+00005127= 6F 72 20 00             2404  OS9 DC.B    'or ',0
+0000512B= 62 69 67 00             2405  OS10    DC.B    'big',0
+0000512F= 3F 20 41 72 65 20 ...   2406  OS11    DC.B    '? Are you in a',0
+0000513E= 63 69 74 79 00          2407  OS12    DC.B    'city',0
+00005143= 2C 20 00                2408  OS13    DC.B    ', ',0
+00005146= 73 75 62 75 72 62 00    2409  OS14    DC.B    'suburb',0
+0000514D= 2C 20 6F 72 20 00       2410  OS15    DC.B    ', or ',0
+00005153= 6D 69 64 64 6C 65 ...   2411  OS16    DC.B    'middle of nowhere',0
+00005165= 3F 20 4E 6F 77 20 ...   2412  OS17    DC.B    '? Now imagine an old ',0
+0000517B= 62 75 6C 6C 79 20 00    2413  OS18    DC.B    'bully ',0
+00005182= 6F 66 20 00             2414  OS19    DC.B    'of ',0
+00005186= 79 6F 75 72 73 2C ...   2415  OS20    DC.B    'yours, that one that you hated more than anything as a kid,',0
+000051C2= 75 6E 6C 65 73 73 ...   2416  OS21    DC.B    'unless you yourself, were the bully. In that case, just imagine',0
+00005202= 79 6F 75 72 73 65 ...   2417  OS22    DC.B    'yourself.',0
+0000520C                          2418  
+0000520C= 47 6F 74 20 69 74 ...   2419  OS23    DC.B    'Got it? Good, now that you see them in your mind, ',0
+0000523F= 74 68 65 79 27 72 ...   2420  OS24    DC.B    'they''re right',0
+0000524D= 69 6E 20 66 72 6F ...   2421  OS25    DC.B    'in front of you',0
+0000525D= 2C 20 61 74 74 61 ...   2422  OS26    DC.B    ', attacking a poor child in order to steal their',0
+0000528E= 62 69 6B 65 2E 00       2423  OS27    DC.B    'bike.',0
+00005294                          2424  
+00005294= 41 72 65 20 79 6F ...   2425  OS28    DC.B    'Are you going to let that happen? Really?',0
+000052BE                          2426  
+000052BE= 31 2E 20 00             2427  OS29    DC.B    '1. ',0
+000052C2= 45 67 67 73 20 00       2428  OS30    DC.B    'Eggs ',0
+000052C8= 61 72 65 20 66 61 ...   2429  OS31    DC.B    'are far more important! This is a perfect opportunity to',0
+00005301= 73 74 65 61 6C 20 ...   2430  OS32    DC.B    'steal his ',0
+0000530C= 62 69 6B 65 00          2431  OS33    DC.B    'bike',0
+00005311= 21 00                   2432  OS34    DC.B    '!',0
+00005313                          2433  
+00005313= 32 2E 20 49 20 63 ...   2434  OS35    DC.B    '2. I can''t... not even for ',0
+0000532F= 65 67 67 73 00          2435  OS36    DC.B    'eggs',0
+00005334                          2436  
+00005334                          2437  
+00005334                          2438  *OUTSIDE BRANCH STICK GOOD--------------------------------
+00005334                          2439  
+00005334= 53 6F 20 79 6F 75 ...   2440  OSG1    DC.B    'So you do have a heart, eh? Even if you did scare that poor dog.',0
+00005375= 57 65 6C 6C 2C 20 ...   2441  OSG2    DC.B    'Well, all you really have is that ',0
+00005398= 73 75 70 65 72 20 ...   2442  OSG3    DC.B    'super awesome magical wild',0
+000053B3= 73 74 69 63 6B 20 ...   2443  OSG4    DC.B    'stick thingy',0
+000053C0= 2C 20 73 6F 20 79 ...   2444  OSG5    DC.B    ', so you throw it at the bully!',0
+000053E0                          2445  
+000053E0= 49 74 27 73 20 6E ...   2446  OSG6    DC.B    'It''s no good! ',0
+000053EF= 43 6C 65 61 72 6C ...   2447  OSG7    DC.B    'Clearly your worst enemy in grade school was a',0
+0000541E= 74 65 72 72 69 62 ...   2448  OSG8    DC.B    'terribly big person',0
+00005432= 2C 20 62 65 63 61 ...   2449  OSG9    DC.B    ', because your ',0
+00005442= 73 75 70 65 72 20 ...   2450  OSG10   DC.B    'super awesome magical wild',0
+0000545D= 73 74 69 63 6B 20 ...   2451  OSG11   DC.B    'stick thingy ',0
+0000546B= 69 73 20 6A 75 73 ...   2452  OSG12   DC.B    'is just irritating the bully and sending them',0
+00005499= 74 6F 77 61 72 64 ...   2453  OSG13   DC.B    'towards you!',0
+000054A6                          2454  
+000054A6= 59 6F 75 20 64 6F ...   2455  OSG14   DC.B    'You don''t quite know what to do other than scream for help at',0
+000054E4= 74 68 69 73 20 70 ...   2456  OSG15   DC.B    'this point. It''s your ',0
+000054FB= 77 6F 72 73 74 20 ...   2457  OSG16   DC.B    'worst nightmare ',0
+0000550C= 72 65 76 69 73 69 ...   2458  OSG17   DC.B    'revisited, and for some',0
+00005524= 72 65 61 73 6F 6E ...   2459  OSG18   DC.B    'reason the years were not good enough for you to overcome your',0
+00005563= 62 75 6C 6C 79 20 ...   2460  OSG19   DC.B    'bully problems. Yet your screams aren''t all in vain as ',0
+0000559B= 61 20 77 69 6C 64 00    2461  OSG20   DC.B    'a wild',0
+000055A2= 68 69 70 70 79 20 ...   2462  OSG21   DC.B    'hippy appears ',0
+000055B1= 6F 75 74 20 6F 66 ...   2463  OSG22   DC.B    'out of nowhere!',0
+000055C1                          2464  
+000055C1= 54 68 65 20 61 77 ...   2465  OSG23   DC.B    'The awesome thing about hippies is that ',0
+000055EA= 74 68 65 79 20 68 ...   2466  OSG24   DC.B    'they have no fears',0
+000055FD= 2E 20 53 6F 6D 65 00    2467  OSG25   DC.B    '. Some',0
+00005604= 68 61 76 65 20 65 ...   2468  OSG26   DC.B    'have even stood in front of massive bulldozers and police and',0
+00005642= 73 75 63 68 2C 20 ...   2469  OSG27   DC.B    'such, and ',0
+0000564D= 79 6F 75 72 20 62 ...   2470  OSG28   DC.B    'your bully is just deeply afraid of hippies',0
+00005679= 2E 20 54 68 65 79 ...   2471  OSG29   DC.B    '. They''re',0
+00005683= 72 65 61 6C 6C 79 ...   2472  OSG30   DC.B    'really scary to them, much like ',0
+000056A4= 79 6F 75 72 20 6D ...   2473  OSG31   DC.B    'your massive fear of clowns',0
+000056C0= 2E 00                   2474  OSG32   DC.B    '.',0
+000056C2= 44 61 6D 6E 20 74 ...   2475  OSG33   DC.B    'Damn those clowns...',0
+000056D7                          2476  
+000056D7= 49 74 27 73 20 61 ...   2477  OSG34   DC.B    'It''s a success',0
+000056E6= 21 20 42 75 74 20 ...   2478  OSG35   DC.B    '! But now there''s a problem, how do you get there?',0
+00005719= 54 68 61 74 20 73 ...   2479  OSG36   DC.B    'That small boy ran off, ',0
+00005732= 74 61 6B 69 6E 67 ...   2480  OSG37   DC.B    'taking his bike with him',0
+0000574B= 2C 20 73 61 64 6C ...   2481  OSG38   DC.B    ', sadly.',0
+00005754                          2482  
+00005754= 54 68 65 20 68 69 ...   2483  OSG39   DC.B    'The hippy senses your sadness, and has a perfect solution! ',0
+00005790= 48 65 00                2484  OSG40   DC.B    'He',0
+00005793= 73 75 6D 6D 6F 6E ...   2485  OSG41   DC.B    'summons a magical questadilla',0
+000057B1= 21 20 57 68 79 20 ...   2486  OSG42   DC.B    '! Why a hippy has a ',0
+000057C6= 71 75 65 73 74 61 ...   2487  OSG43   DC.B    'questadilla',0
+000057D2= 6E 6F 62 6F 64 79 ...   2488  OSG44   DC.B    'nobody is sure about, but the convenience is too awesome to',0
+0000580E= 69 67 6E 6F 72 65 ...   2489  OSG45   DC.B    'ignore, and you jump on it without hesitaton (you can always',0
+0000584B= 74 72 75 73 74 20 ...   2490  OSG46   DC.B    'trust a hippy). The ',0
+00005860= 71 75 65 73 74 61 ...   2491  OSG47   DC.B    'questadilla ',0
+0000586D= 77 68 69 73 6B 73 ...   2492  OSG48   DC.B    'whisks you away to ',0
+00005881= 4C 65 20 50 69 65 ...   2493  OSG49   DC.B    'Le Pieuvre ',0
+0000588D= 74 6F 00                2494  OSG50   DC.B    'to',0
+00005890= 6F 62 74 61 69 6E ...   2495  OSG51   DC.B    'obtain those sweet, sweet ',0
+000058AB= 65 67 67 73 00          2496  OSG52   DC.B    'eggs',0
+000058B0= 2E 00                   2497  OSG53   DC.B    '.',0
+000058B2                          2498  
+000058B2                          2499  *OUTSIDE BRANCH STICK BAD---------------------------------
+000058B2                          2500  
+000058B2= 57 65 20 63 61 6E ...   2501  OSB1    DC.B    'We can''t be wasting our time trying to save people we don''t even',0
+000058F3= 6B 6E 6F 77 2C 20 ...   2502  OSB2    DC.B    'know, right!?! Nothing is more important than obtaining those',0
+00005931= 73 77 65 65 74 2C ...   2503  OSB3    DC.B    'sweet, sweet cholesterol balls',0
+00005950= 2E 00                   2504  OSB4    DC.B    '.',0
+00005952                          2505  
+00005952= 49 74 20 73 65 65 ...   2506  OSB5    DC.B    'It seems like luck is on your side! You have a ',0
+00005982= 73 75 70 65 72 20 ...   2507  OSB6    DC.B    'super awesome',0
+00005990= 6D 61 67 69 63 61 ...   2508  OSB7    DC.B    'magical wild stick thingy ',0
+000059AB= 74 68 61 74 20 63 ...   2509  OSB8    DC.B    'that can do ',0
+000059B8= 61 6E 79 74 68 69 ...   2510  OSB9    DC.B    'anything',0
+000059C1= 2C 20 61 6E 64 20 ...   2511  OSB10   DC.B    ', and I mean',0
+000059CE= 61 6E 79 74 68 69 ...   2512  OSB11   DC.B    'anything a large tree branch can do',0
+000059F2= 21 00                   2513  OSB12   DC.B    '!',0
+000059F4                          2514  
+000059F4= 4E 6F 77 20 72 65 ...   2515  OSB13   DC.B    'Now remember, ',0
+00005A03= 62 75 6C 6C 69 65 ...   2516  OSB14   DC.B    'bullies aren''t too intelligent',0
+00005A22= 2C 20 61 6E 64 20 ...   2517  OSB15   DC.B    ', and this is a',0
+00005A32= 70 65 72 66 65 63 ...   2518  OSB16   DC.B    'perfect time to use all of those sweet ',0
+00005A5A= 76 69 64 65 6F 20 ...   2519  OSB17   DC.B    'video game skills ',0
+00005A6D= 79 6F 75 27 76 65 00    2520  OSB18   DC.B    'you''ve',0
+00005A74= 61 71 75 69 72 65 ...   2521  OSB19   DC.B    'aquired throughout the years! This time you decide to test your',0
+00005AB4= 63 61 6D 6F 75 66 ...   2522  OSB20   DC.B    'camouflage ',0
+00005AC0= 73 6B 69 6C 6C 73 ...   2523  OSB21   DC.B    'skills, and...',0
+00005ACF                          2524  
+00005ACF= 53 75 63 63 65 73 ...   2525  OSB22   DC.B    'Success! You''ve gotten past the bully, and as a bonus your ',0
+00005B0B= 73 77 65 65 74 00       2526  OSB23   DC.B    'sweet',0
+00005B11= 63 61 6D 6F 20 73 ...   2527  OSB24   DC.B    'camo skills ',0
+00005B1E= 67 61 76 65 20 79 ...   2528  OSB25   DC.B    'gave you the opportunity to ',0
+00005B3B= 73 74 65 61 6C 20 00    2529  OSB26   DC.B    'steal ',0
+00005B42= 74 68 61 74 20 6B ...   2530  OSB27   DC.B    'that kid''s',0
+00005B4D= 62 69 6B 65 00          2531  OSB28   DC.B    'bike',0
+00005B52= 2C 00                   2532  OSB29   DC.B    ',',0
+00005B54= 74 68 65 20 6F 6E ...   2533  OSB30   DC.B    'the one the bully wants so badly, and ',0
+00005B7B= 79 6F 75 20 72 69 ...   2534  OSB31   DC.B    'you ride off into the sunset...',0
+00005B9B                          2535  
+00005B9B= 57 68 61 74 20 61 ...   2536  OSB32   DC.B    'What am I saying? It''s only ',0
+00005BB8= 31 32 3A 31 35 50 ...   2537  OSB33   DC.B    '12:15PM',0
+00005BC0= 20 61 6E 64 20 79 ...   2538  OSB34   DC.B    ' and you need those ',0
+00005BD5= 65 67 67 73 00          2539  OSB35   DC.B    'eggs',0
+00005BDA= 21 20 4F 66 66 00       2540  OSB36   DC.B    '! Off',0
+00005BE0= 74 6F 20 00             2541  OSB37   DC.B    'to ',0
+00005BE4= 4C 65 20 50 69 65 ...   2542  OSB38   DC.B    'Le Pieuvre ',0
+00005BF0= 69 74 20 69 73 21 00    2543  OSB39   DC.B    'it is!',0
+00005BF7                          2544  
+00005BF7                          2545  *INSIDE INTRO---------------------------------------------
+00005BF7                          2546  
+00005BF7= 53 6F 20 69 6E 73 ...   2547  II1 DC.B    'So inside we are. In this scenario the house is going to be rather',0
+00005C3A= 6C 61 72 67 65 2C ...   2548  II2 DC.B    'large, at least ',0
+00005C4B= 74 77 6F 20 73 74 ...   2549  II3 DC.B    'two stories',0
+00005C57= 2E 20 4E 6F 77 20 ...   2550  II4 DC.B    '. Now be glad you didn''t jump out of that',0
+00005C81= 77 69 6E 64 6F 77 ...   2551  II5 DC.B    'window!',0
+00005C89                          2552  
+00005C89= 41 6E 79 77 61 79 ...   2553  II6 DC.B    'Anyways, you head downstairs and decide to check the fridge before going',0
+00005CD2= 6F 75 74 2E 20 00       2554  II7 DC.B    'out. ',0
+00005CD8= 4D 61 79 62 65 20 ...   2555  II8 DC.B    'Maybe you don''t have to go through all of that trouble after all',0
+00005D19= 2E                      2556  II9 DC.B    '.'
+00005D1A= 42 75 74 20 75 6E ...   2557  II10    DC.B    'But unfortunately, ',0
+00005D2E= 6E 6F 20 65 67 67 ...   2558  II11    DC.B    'no eggs ',0
+00005D37= 61 72 65 20 74 6F ...   2559  II12    DC.B    'are to be f ound. It''s a ',0
+00005D51= 73 61 64 20 00          2560  II13    DC.B    'sad ',0
+00005D56= 64 61 79 2E 2E 2E ...   2561  II14    DC.B    'day... All that',0
+00005D66= 73 69 74 73 20 74 ...   2562  II15    DC.B    'sits there is a ',0
+00005D77= 68 65 61 64 20 6F ...   2563  II16    DC.B    'head of broccoli',0
+00005D88= 2E 20 44 65 63 69 ...   2564  II17    DC.B    '. Decisions, decisions...',0
+00005DA2                          2565  
+00005DA2= 31 2E 20 53 65 74 ...   2566  II18    DC.B    '1. Settle on the broccoli. Eggs will always be there...',0
+00005DDA= 32 2E 20 49 20 6E ...   2567  II19    DC.B    '2. I need those eggs in my life.',0
+00005DFB                          2568  
+00005DFB= 45 67 67 73 20 00       2569  II20    DC.B    'Eggs ',0
+00005E01= 69 74 20 69 73 21 ...   2570  II21    DC.B    'it is! You really couldn''t imagine a life without ',0
+00005E34= 65 67 67 73 20 00       2571  II22    DC.B    'eggs ',0
+00005E3A= 61 74 20 74 68 69 ...   2572  II23    DC.B    'at this',0
+00005E42= 6D 6F 6D 65 6E 74 ...   2573  II24    DC.B    'moment. Nothing else could make your day even remotely complete.',0
+00005E83                          2574  
+00005E83= 4E 6F 77 20 74 68 ...   2575  II25    DC.B    'Now the question is, how do you obtain these ',0
+00005EB1= 65 67 67 73 00          2576  II26    DC.B    'eggs',0
+00005EB6= 3F 20 57 68 69 6C ...   2577  II27    DC.B    '? While pondering the',0
+00005ECC= 73 69 74 75 61 74 ...   2578  II28    DC.B    'situation, your ',0
+00005EDD= 6D 6F 74 68 65 72 ...   2579  II29    DC.B    'mother ',0
+00005EE5= 77 61 6C 6B 73 20 ...   2580  II30    DC.B    'walks in. What should you do?',0
+00005F03                          2581  
+00005F03= 31 2E 20 41 73 6B ...   2582  II31    DC.B    '1. Ask for a ride to the store!',0
+00005F23= 32 2E 20 46 69 6E ...   2583  II32    DC.B    '2. Find a distraction to escape',0
+00005F43                          2584  
+00005F43                          2585  *INSIDE LEGO----------------------------------------------
+00005F43                          2586  
+00005F43= 41 20 64 69 73 74 ...   2587  IL1 DC.B    'A distraction! Perfect! But what tools are around you?',0
+00005F7A                          2588  
+00005F7A= 57 65 6C 6C 2C 20 ...   2589  IL2 DC.B    'Well, it turns out you have a little sibling who loves ',0
+00005FB2= 6C 65 67 6F 73 00       2590  IL3 DC.B    'legos',0
+00005FB8= 2E 00                   2591  IL4 DC.B    '.',0
+00005FBA= 41 63 74 75 61 6C ...   2592  IL5 DC.B    'Actually, who doesn''t love ',0
+00005FD6= 6C 65 67 6F 73 00       2593  IL6 DC.B    'legos',0
+00005FDC= 3F 00                   2594  IL7 dc.b    '?',0
+00005FDE= 20 54 68 65 79 27 ...   2595  il8 dc.b    ' They''re perfect for every',0
+00005FF9= 73 69 74 75 61 74 ...   2596  il9 dc.b    'situation, such as now. A mother can''t leave a mess lying around',0
+0000603A= 65 76 65 72 79 77 ...   2597  il10    dc.b    'everywhere, so you ',0
+0000604E= 74 68 72 6F 77 20 ...   2598  il11    dc.b    'throw them ',0
+0000605A= 61 6C 6C 20 6F 76 ...   2599  il12    dc.b    'all over.',0
+00006064                          2600  
+00006064= 49 6E 73 74 61 6E ...   2601  il13    dc.b    'Instantly the nagging switches to a complete scolding, but your',0
+000060A4= 69 73 20 73 6F 20 ...   2602  il14    dc.b    'is so focused on the legos on the floor, you have the perfect ',0
+000060E3= 6F 70 70 6F 72 74 ...   2603  il15    dc.b    'opportunity to ',0
+000060F3= 72 75 6E 00             2604  il16    dc.b    'run',0
+000060F7= 21 00                   2605  il17    dc.b    '!',0
+000060F9                          2606  
+000060F9= 41 6E 64 20 72 75 ...   2607  il18    dc.b    'And run you did...',0
+0000610C                          2608  
+0000610C= 49 27 6D 20 6E 6F ...   2609  il19    dc.b    'I''m not too sure how big your house is supposed to be. So',0
+00006146= 69 6D 61 67 69 6E ...   2610  il20    dc.b    'imagine, is Alex ',0
+00006158= 72 69 63 68 20 00       2611  il21    dc.b    'rich ',0
+0000615E= 6F 72 20 00             2612  il22    dc.b    'or ',0
+00006162= 70 6F 6F 72 00          2613  il23    dc.b    'poor',0
+00006167= 3F 20 49 73 20 74 ...   2614  il24    dc.b    '? Is the house a ',0
+00006179= 6D 61 6E 73 69 6F ...   2615  il25    dc.b    'mansion',0
+00006181= 2C 20 00                2616  il26    dc.b    ', ',0
+00006184= 6D 65 64 69 75 6D 00    2617  il27    dc.b    'medium',0
+0000618B= 73 69 7A 65 64 00       2618  il28    dc.b    'sized',0
+00006191= 2C 20 6F 72 20 00       2619  il29    dc.b    ', or ',0
+00006197= 74 6F 6F 20 73 6D ...   2620  il30    dc.b    'too small for your family',0
+000061B1= 3F 00                   2621  il31    dc.b    '?',0
+000061B3                          2622  
+000061B3= 57 65 6C 6C 2C 20 ...   2623  il32    dc.b    'Well, whatever it is, it''s not really important to me. The',0
+000061EE= 61 74 6D 6F 73 70 ...   2624  il33    dc.b    'atmosphere was just nice for a moment.',0
+00006215                          2625  
+00006215= 41 6E 79 77 61 79 ...   2626  il34    dc.b    'Anyways, it seems like throughout the time I was chatting, you',0
+00006254= 72 65 61 63 68 65 ...   2627  il35    dc.b    'reached the front of your house, but it looks like your',0
+0000628C= 67 72 61 6E 64 6D ...   2628  il36    dc.b    'grandmother ',0
+00006299= 68 61 73 20 73 74 ...   2629  il37    dc.b    'has stopped by and you kow how chatty grandparents',0
+000062CC= 63 61 6E 20 62 65 ...   2630  il38    dc.b    'can be.',0
+000062D4                          2631  
+000062D4= 57 68 61 74 20 73 ...   2632  il39    dc.b    'What should you do?',0
+000062E8= 31 2E 20 54 72 79 ...   2633  il40    dc.b    '1. Try to break away with a disraction',0
+0000630F= 32 2E 20 4B 6E 6F ...   2634  il41    dc.b    '2. Knock her down and run!',0
+0000632A                          2635  
+0000632A                          2636  *INSIDE LEGO GOOD-----------------------------------------
+0000632A                          2637  
+0000632A= 41 6E 6F 74 68 65 ...   2638  ilg1    dc.b    'Another distraction, huh? Well, it is the simplest solution to',0
+00006369= 61 6C 6C 20 6F 66 ...   2639  ilg2    dc.b    'all of these problems. You also just have a large bag of ',0
+000063A3= 6C 65 67 6F 73 00       2640  ilg3    dc.b    'legos',0
+000063A9= 73 74 69 6C 6C 2E ...   2641  ilg4    dc.b    'still. It seems like no matter how many you lose you always have',0
+000063EA= 73 6F 6D 65 20 6C ...   2642  ilg5    dc.b    'some left. I guess all you can do is drop them on the ground and',0
+0000642B= 74 72 79 20 61 67 ...   2643  ilg6    dc.b    'try again.'
+00006435                          2644  
+00006435= 49 74 27 73 20 6E ...   2645  ilg7    dc.b    'It''s not terribly successful in distracting your grandmother,',0
+00006473= 73 68 65 20 6A 75 ...   2646  ilg8    dc.b    'she just seems upset at the mess you''ve made.',0
+000064A1                          2647  
+000064A1= 42 75 74 20 77 61 ...   2648  ilg9    dc.b    'But wait... the ',0
+000064B2= 6C 65 67 6F 73 20 00    2649  ilg10   dc.b    'legos ',0
+000064B9= 68 61 76 65 20 61 ...   2650  ilg11   dc.b    'have another purpose, to cause ',0
+000064D9= 75 6E 62 65 61 72 ...   2651  ilg12   dc.b    'unbearable',0
+000064E4= 70 61 69 6E 20 00       2652  ilg13   dc.b    'pain ',0
+000064EA= 74 6F 20 77 68 6F ...   2653  ilg14   dc.b    'to whoever steps on them. It seems like your grandmother',0
+00006523= 68 61 73 20 00          2654  ilg15   dc.b    'has ',0
+00006528= 62 72 6F 6B 65 6E ...   2655  ilg16   dc.b    'broken her hip ',0
+00006538= 74 72 79 69 6E 67 ...   2656  ilg17   dc.b    'trying to get through to you!',0
+00006556                          2657  
+00006556= 57 68 61 74 20 73 ...   2658  ilg18   dc.b    'What should you do?',0
+0000656A                          2659  
+0000656A= 31 2E 20 48 65 6C ...   2660  ilg19   dc.b    '1. Help her!',0
+00006577= 32 2E 20 52 55 4E ...   2661  ilg20   dc.b    '2. RUN!',0
+0000657F                          2662  
+0000657F= 4E 6F 74 68 69 6E ...   2663  ilg21   dc.b    'Nothing is stopping you now, and you start running towards the',0
+000065BE= 73 75 70 65 72 6D ...   2664  ilg22   dc.b    'supermarket!',0
+000065CB                          2665  
+000065CB                          2666  *INSIDE LEGO BAD------------------------------------------
+000065CB                          2667  
+000065CB= 4B 6E 6F 63 6B 20 ...   2668  ilb1    dc.b    'Knock her down and run, eh? You''re a ',0
+000065F1= 67 72 65 65 64 79 ...   2669  ilb2    dc.b    'greedy ',0
+000065F9= 63 68 69 6C 64 2C ...   2670  ilb3    dc.b    'child, aren''t you?',0
+0000660C= 57 65 6C 6C 2C 20 ...   2671  ilb4    dc.b    'Well, it''s your choice I guess...',0
+0000662E                          2672  
+0000662E= 4C 65 67 6F 73 20 00    2673  ilb5    dc.b    'Legos ',0
+00006635= 73 65 72 76 65 20 ...   2674  ilb6    dc.b    'serve a special purpose in life, to cause ',0
+00006660= 75 6E 62 65 61 72 ...   2675  ilb7    dc.b    'unbearable pain',0
+00006670= 74 6F 20 74 68 6F ...   2676  ilb8    dc.b    'to those who run them down. This works perfectly for you, as your',0
+000066B2= 67 72 61 6E 64 6D ...   2677  ilb9    dc.b    'grandmother ',0
+000066BF= 66 61 6C 6C 73 20 ...   2678  ilb10   dc.b    'falls and breaks her hip',0
+000066D8= 21 20 4E 6F 74 68 ...   2679  ilb11   dc.b    '! Nothing is stopping you',0
+000066F2= 6E 6F 77 2C 20 61 ...   2680  ilb12   dc.b    'now, and ',0
+000066FC= 79 6F 75 20 73 74 ...   2681  ilb13   dc.b    'you start running towards the supermarket',0
+00006726= 21 00                   2682  ilb14   dc.b    '!',0
+00006728                          2683  
+00006728                          2684  *INSIDE VELOCIRAPTOR--------------------------------------
+00006728                          2685  
+00006728= 53 6F 20 79 6F 75 ...   2686  iv1 dc.b    'So you decided to ask your mother for a ride to the store, huh?',0
+00006768                          2687  
+00006768= 54 68 61 74 20 6D ...   2688  iv2 dc.b    'That may not have been the best idea',0
+0000678D= 2E 20 59 6F 75 20 ...   2689  iv3 dc.b    '. You see, mothers are good',0
+000067A9= 61 74 20 62 61 6C ...   2690  iv4 dc.b    'at balancing the finances in the home quite often, at least',0
+000067E5= 41 6C 65 78 27 73 ...   2691  iv5 dc.b    'Alex''s mother is',0
+000067F6= 2E 20 53 68 65 20 ...   2692  iv6 dc.b    '. She is ',0
+00006800= 63 6C 65 61 72 6C ...   2693  iv7 dc.b    'clearly irate ',0
+0000680F= 61 62 6F 75 74 20 ...   2694  iv8 dc.b    'about the fact that you',0
+00006827= 77 6F 6E 27 74 20 ...   2695  iv9 dc.b    'won''t enjoy any of the other wonderful food in the home.',0
+00006860                          2696  
+00006860= 54 68 65 20 6E 61 ...   2697  iv10    dc.b    'The nagging doesn''t seem to end and all you can do is focus on',0
+0000689F= 6F 62 74 61 69 6E ...   2698  iv11    dc.b    'obtaining those ',0
+000068B0= 65 67 67 73 00          2699  iv12    dc.b    'eggs',0
+000068B5= 21 20 59 6F 75 20 ...   2700  iv13    dc.b    '! You need a distraction, so you look around',0
+000068E2= 74 68 65 20 72 6F ...   2701  iv14    dc.b    'the room and discover a ',0
+000068FB= 64 6F 67 20 77 68 ...   2702  iv15    dc.b    'dog whistle ',0
+00006908= 75 73 65 64 20 74 ...   2703  iv16    dc.b    'used to call ',0
+00006916= 4E 79 61 70 79 20 ...   2704  iv17    dc.b    'Nyapy the',0
+00006920= 66 61 6D 69 6C 79 ...   2705  iv18    dc.b    'family ',0
+00006928= 64 6F 67 20 61 6E ...   2706  iv19    dc.b    'dog and blow it hoping to summon some sort of ',0
+00006957= 63 68 61 6F 73 00       2707  iv20    dc.b    'chaos',0
+0000695D= 2E 00                   2708  iv21    dc.b    '.',0
+0000695F                          2709  
+0000695F= 59 6F 75 20 64 69 ...   2710  iv22    dc.b    'You didn''t expect to find what you did though, as a ',0
+00006994= 76 65 6C 6F 63 69 ...   2711  iv23    dc.b    'velociraptor',0
+000069A1= 77 69 74 68 20 61 ...   2712  iv24    dc.b    'with a sombrero ',0
+000069B2= 63 6F 6D 65 73 20 ...   2713  iv25    dc.b    'comes charging towards you! Perfect!',0
+000069D7                          2714  
+000069D7= 54 68 65 20 00          2715  iv26    dc.b    'The ',0
+000069DC= 76 65 6C 6F 63 69 ...   2716  iv27    dc.b    'velociraptor ',0
+000069EA= 63 6F 75 6C 64 6E ...   2717  iv28    dc.b    'couldn''t have come at a better time as your',0
+00006A16= 6D 6F 74 68 65 72 ...   2718  iv29    dc.b    'mother immediately ',0
+00006A2A= 73 63 72 65 61 6D ...   2719  iv30    dc.b    'screams in terror',0
+00006A3C= 2C 20 67 69 76 69 ...   2720  iv31    dc.b    ', giving you ample time to',0
+00006A57= 72 75 6E 20 6F 66 ...   2721  iv32    dc.b    'run off!',0
+00006A60                          2722  
+00006A60= 54 68 65 20 00          2723  iv33    dc.b    'The ',0
+00006A65= 72 61 70 74 6F 72 ...   2724  iv34    dc.b    'raptor ',0
+00006A6D= 67 6C 61 64 6C 79 ...   2725  iv35    dc.b    'gladly lets you hitch a ride and you both heads to the ',0
+00006AA5= 73 75 70 65 72 6D ...   2726  iv36    dc.b    'supermarket',0
+00006AB1= 21 00                   2727  iv37    dc.b    '!',0
+00006AB3                          2728  
+00006AB3                          2729  *SUPERMARKET GOOD-----------------------------------------
+00006AB3                          2730  
+00006AB3= 53 75 63 63 65 73 ...   2731  sup1    dc.b    'Success! You''ve reached ',0
+00006ACC= 4C 65 20 50 69 65 ...   2732  sup2    dc.b    'Le Pieuvre',0
+00006AD7= 2C 20 74 68 65 00       2733  sup3    dc.b    ', the',0
+00006ADD= 20 62 65 73 74 20 ...   2734  sup4    dc.b    ' best supermarket ',0
+00006AF0= 74 68 65 72 65 20 00    2735  sup5    dc.b    'there ',0
+00006AF7= 65 76 65 72 20 77 ...   2736  sup6    dc.b    'ever was !(seriously, there was a study...)',0
+00006B23                          2737  
+00006B23= 42 75 74 20 74 68 ...   2738  sup7    dc.b    'But there''s a problem! There''s a ',0
+00006B45= 73 74 61 6D 70 65 ...   2739  sup8    dc.b    'stampede of cheap housewives ',0
+00006B63= 63 68 61 72 67 69 ...   2740  sup9    dc.b    'charging towards the store. They''re suckers for any type of ',0
+00006BA0= 73 61 6C 65 2C 20 ...   2741  sup10   dc.b    'sale, and ',0
+00006BAB= 74 68 69 73 20 69 ...   2742  sup11   dc.b    'this is the sale of the year',0
+00006BC8= 21 00                   2743  sup12   dc.b    '!',0
+00006BCA                          2744  
+00006BCA= 57 68 61 74 20 61 ...   2745  sup13   dc.b    'What are you thinking about doing?',0
+00006BED                          2746  
+00006BED= 31 2E 20 49 74 27 ...   2747  sup14   dc.b    '1. It''s not worth it...',0
+00006C05= 32 2E 20 53 74 61 ...   2748  sup15   dc.b    '2. Stand and fight!',0
+00006C19                          2749  
+00006C19= 53 6F 20 79 6F 75 ...   2750  sup16   dc.b    'So you want to stand and fight, eh?',0
+00006C3D                          2751  
+00006C3D= 57 65 6C 6C 2C 20 ...   2752  sup17   dc.b    'Well, good luck... I can offer no more assistance, not that I was',0
+00006C7F= 6F 66 20 61 6E 79 ...   2753  sup18   dc.b    'of any help at any point in this game, but still...',0
+00006CB3                          2754  
+00006CB3= 41 73 20 79 6F 75 ...   2755  sup19   dc.b    'As you clench your eyes shut to hide from the ',0
+00006CE2= 73 74 61 6D 70 65 ...   2756  sup20   dc.b    'stampede ',0
+00006CEC= 28 49 66 20 79 6F ...   2757  sup21   dc.b    '(If you',0
+00006CF4= 63 61 6E 27 74 20 ...   2758  sup22   dc.b    'can''t see them you''re totally invisible, right?), you realize',0
+00006D32= 79 6F 75 27 72 65 ...   2759  sup23   dc.b    'you''re still in one piece. What happened?',0
+00006D5C                          2760  
+00006D5C= 54 68 65 20 00          2761  sup24   dc.b    'The ',0
+00006D61= 67 68 6F 73 74 20 ...   2762  sup25   dc.b    'ghost of Steve Jobs ',0
+00006D76= 68 61 73 20 63 6F ...   2763  sup26   dc.b    'has come to your rescue! No human can',0
+00006D9C= 72 65 73 69 73 74 ...   2764  sup27   dc.b    'resist the temptation of ',0
+00006DB6= 6E 65 77 20 41 70 ...   2765  sup28   dc.b    'new Apple products',0
+00006DC9= 2C 20 65 73 70 65 ...   2766  sup29   dc.b    ', especially ',0
+00006DD7= 68 6F 75 73 65 77 ...   2767  sup30   dc.b    'housewives with their iProducts that track these awesome sales.',0
+00006E17                          2768  
+00006E17= 59 6F 75 72 20 70 ...   2769  sup31   dc.b    'Your patience has paid off! You''re able to stomp off with a dozen',0
+00006E59= 66 72 65 73 68 20 ...   2770  sup32   dc.b    'fresh eggs and you head home in ',0
+00006E7A= 74 72 69 75 6D 70 ...   2771  sup33   dc.b    'triumph',0
+00006E82= 21 00                   2772  sup34   dc.b    '!',0 
+00006E84                          2773  
+00006E84                          2774  *SUICIDE ENDING-------------------------------------------
+00006E84                          2775  
+00006E84= 41 6C 65 78 20 73 ...   2776  sui1    dc.b    'Alex seems to have lost all hope... There''s nothing else you can',0
+00006EC5= 64 6F 20 73 6F 20 ...   2777  sui2    dc.b    'do so you head back to your room a little battered and broken...',0
+00006F06                          2778  
+00006F06                          2779  
+00006F06                          2780  
+00006F06                          2781      END START       ; last line of source
 
 No errors detected
 No warnings generated
@@ -122,28 +2791,618 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-CR                  D
-DISPEIG             11C4
-DISPFIV             1196
-DISPFOU             1189
-DISPNIN             11D4
-DISPONE             115D
-DISPSEV             11B5
-DISPSIX             11A6
-DISPTHR             117B
-DISPTWO             116D
-DONE                1106
-EIGHT               10CE
-FIVE                1086
-FOUR                106E
-INV                 113E
-INVALID             10F6
-LF                  A
-LOOP                1000
-MESSAGE             110C
-NINE                10E6
-SEVEN               10B6
-SIX                 109E
+ALEXRED             32BD
+ANYWAYS             3949
+ASTHEGA             3994
+AWESOMS             3AAE
+BCH1                11C0
+BUFF                3485
+BUFF2               309E
+CBAD                386C
+CGOOD               3864
+CLRSCRN             2EF0
+CRAZYMO             3B82
+CRLF                2F62
+DISPLAY             2F18
+DNOLINE             2ECA
+DOTODAY             3790
+ECHOOFF             2EFA
+ECHOON              2F02
+EGGSRED             32C9
+EMSG                32A2
+ENTER               2EE8
+ER1                 11D8
+ER2                 1566
+ER3                 168A
+ER4                 1960
+ER5                 1AC6
+ERROR               2F0A
+FITSBUG             3AF6
+FONT                1090000
+FOOD                3252
+GCH1                11B2
+HERERED             3A28
+IFBAD               38BC
+IFBAD2              3907
+IFGOOD              3873
+II1                 5BF7
+II10                5D1A
+II11                5D2E
+II12                5D37
+II13                5D51
+II14                5D56
+II15                5D66
+II16                5D77
+II17                5D88
+II18                5DA2
+II19                5DDA
+II2                 5C3A
+II20                5DFB
+II21                5E01
+II22                5E34
+II23                5E3A
+II24                5E42
+II25                5E83
+II26                5EB1
+II27                5EB6
+II28                5ECC
+II29                5EDD
+II3                 5C4B
+II30                5EE5
+II31                5F03
+II32                5F23
+II4                 5C57
+II5                 5C81
+II6                 5C89
+II7                 5CD2
+II8                 5CD8
+II9                 5D19
+IL1                 5F43
+IL10                603A
+IL11                604E
+IL12                605A
+IL13                6064
+IL14                60A4
+IL15                60E3
+IL16                60F3
+IL17                60F7
+IL18                60F9
+IL19                610C
+IL2                 5F7A
+IL20                6146
+IL21                6158
+IL22                615E
+IL23                6162
+IL24                6167
+IL25                6179
+IL26                6181
+IL27                6184
+IL28                618B
+IL29                6191
+IL3                 5FB2
+IL30                6197
+IL31                61B1
+IL32                61B3
+IL33                61EE
+IL34                6215
+IL35                6254
+IL36                628C
+IL37                6299
+IL38                62CC
+IL39                62D4
+IL4                 5FB8
+IL40                62E8
+IL41                630F
+IL5                 5FBA
+IL6                 5FD6
+IL7                 5FDC
+IL8                 5FDE
+IL9                 5FF9
+ILB1                65CB
+ILB10               66BF
+ILB11               66D8
+ILB12               66F2
+ILB13               66FC
+ILB14               6726
+ILB2                65F1
+ILB3                65F9
+ILB4                660C
+ILB5                662E
+ILB6                6635
+ILB7                6660
+ILB8                6670
+ILB9                66B2
+ILG1                632A
+ILG10               64B2
+ILG11               64B9
+ILG12               64D9
+ILG13               64E4
+ILG14               64EA
+ILG15               6523
+ILG16               6528
+ILG17               6538
+ILG18               6556
+ILG19               656A
+ILG2                6369
+ILG20               6577
+ILG21               657F
+ILG22               65BE
+ILG3                63A3
+ILG4                63A9
+ILG5                63EA
+ILG6                642B
+ILG7                6435
+ILG8                6473
+ILG9                64A1
+IMPORT              2708
+IN                  23F6
+IN2                 251A
+INFORMA             381D
+INL                 25FA
+INLB                29A6
+INLG                286C
+INSTEAD             3C2D
+INTRO               10C0
+INV                 2A6E
+IREALLY             3A2F
+IV1                 6728
+IV10                6860
+IV11                689F
+IV12                68B0
+IV13                68B5
+IV14                68E2
+IV15                68FB
+IV16                6908
+IV17                6916
+IV18                6920
+IV19                6928
+IV2                 6768
+IV20                6957
+IV21                695D
+IV22                695F
+IV23                6994
+IV24                69A1
+IV25                69B2
+IV26                69D7
+IV27                69DC
+IV28                69EA
+IV29                6A16
+IV3                 678D
+IV30                6A2A
+IV31                6A3C
+IV32                6A57
+IV33                6A60
+IV34                6A65
+IV35                6A6D
+IV36                6AA5
+IV37                6AB1
+IV4                 67A9
+IV5                 67E5
+IV6                 67F6
+IV7                 6800
+IV8                 680F
+IV9                 6827
+KEY                 2EC2
+LOOP1               1180
+LOOP10              2964
+LOOP11              2D52
+LOOP2               1534
+LOOP3               1658
+LOOP4               1924
+LOOP5               1A98
+LOOP6               1E84
+LOOP7               24DC
+LOOP8               25BC
+LOOP9               282A
+NAME                3202
+NCHANGE             3557
+NEWLINE             2ED2
+NEXT1               11E4
+NG                  3476
+NGL                 1082
+NOWFOD2             3BF1
+NOWFOD3             3C1C
+NOWFOOD             3BC8
+NOWTHAT             35A0
+OI1                 418E
+OI10R               42CB
+OI11                42D7
+OI12R               42E9
+OI13                42FB
+OI14                4306
+OI15                4342
+OI16                4383
+OI17                4391
+OI18                43A3
+OI2                 41D1
+OI3R                41F1
+OI4                 4203
+OI5                 4217
+OI6R                4256
+OI7                 4265
+OI8                 429D
+OI9                 42BB
+OP1                 43D8
+OP10                448F
+OP11                4495
+OP12                449D
+OP13                44DB
+OP14                44E8
+OP15                4528
+OP16                4538
+OP17                453E
+OP18                4566
+OP19                456A
+OP2                 4419
+OP20                456C
+OP21                4585
+OP22                45B0
+OP23                45DB
+OP24                45ED
+OP25                45EF
+OP26                45FC
+OP27                4612
+OP28                4655
+OP29                4679
+OP3                 441E
+OP30                469B
+OP31                46A2
+OP32                46A6
+OP33                46AA
+OP34                46BA
+OP35                46BF
+OP36                46C1
+OP37                46C8
+OP38                46CE
+OP39                46E0
+OP4                 4451
+OP40                46F6
+OP41                46FD
+OP42                4707
+OP43                474D
+OP44                4782
+OP45                47B5
+OP46                47C3
+OP47                47D3
+OP48                480A
+OP49                4834
+OP5                 4456
+OP50                487B
+OP51                4888
+OP6                 4458
+OP7                 4466
+OP8                 4470
+OP9                 4473
+OPB1                48AA
+OPB10               496E
+OPB11               4984
+OPB12               498F
+OPB13               49D6
+OPB14               49F3
+OPB15               4A14
+OPB16               4A2A
+OPB17               4A5E
+OPB18               4A63
+OPB19               4A96
+OPB2                48F2
+OPB20               4A9B
+OPB21               4AA9
+OPB22               4AB1
+OPB23               4AE0
+OPB24               4AF4
+OPB25               4B1D
+OPB26               4B28
+OPB27               4B2A
+OPB28               4B42
+OPB29               4B51
+OPB3                4925
+OPB30               4B73
+OPB31               4B7F
+OPB32               4BBC
+OPB33               4BC6
+OPB34               4BDB
+OPB35               4BF3
+OPB36               4BFF
+OPB37               4C09
+OPB38               4C1F
+OPB39               4C24
+OPB4                492B
+OPB5                492E
+OPB6                4946
+OPB7                4948
+OPB8                495C
+OPB9                4961
+OPEN                1000
+OPG1                4C26
+OPG10               4D10
+OPG11               4D54
+OPG12               4D6A
+OPG13               4D76
+OPG14               4D98
+OPG15               4DB3
+OPG16               4DB8
+OPG17               4DF4
+OPG18               4E34
+OPG19               4E73
+OPG2                4C53
+OPG20               4E79
+OPG21               4E9D
+OPG22               4EB6
+OPG23               4EC0
+OPG24               4EFF
+OPG25               4F04
+OPG26               4F1E
+OPG27               4F2D
+OPG28               4F42
+OPG29               4F82
+OPG3                4C69
+OPG4                4C7C
+OPG5                4C82
+OPG6                4CC2
+OPG7                4CFF
+OPG8                4D05
+OPG9                4D0E
+OS1                 4FBD
+OS10                512B
+OS11                512F
+OS12                513E
+OS13                5143
+OS14                5146
+OS15                514D
+OS16                5153
+OS17                5165
+OS18                517B
+OS19                5182
+OS2                 4FF9
+OS20                5186
+OS21                51C2
+OS22                5202
+OS23                520C
+OS24                523F
+OS25                524D
+OS26                525D
+OS27                528E
+OS28                5294
+OS29                52BE
+OS3                 5035
+OS30                52C2
+OS31                52C8
+OS32                5301
+OS33                530C
+OS34                5311
+OS35                5313
+OS36                532F
+OS4                 5072
+OS5                 5097
+OS6                 50D1
+OS7                 50FE
+OS8                 5120
+OS9                 5127
+OSB1                58B2
+OSB10               59C1
+OSB11               59CE
+OSB12               59F2
+OSB13               59F4
+OSB14               5A03
+OSB15               5A22
+OSB16               5A32
+OSB17               5A5A
+OSB18               5A6D
+OSB19               5A74
+OSB2                58F3
+OSB20               5AB4
+OSB21               5AC0
+OSB22               5ACF
+OSB23               5B0B
+OSB24               5B11
+OSB25               5B1E
+OSB26               5B3B
+OSB27               5B42
+OSB28               5B4D
+OSB29               5B52
+OSB3                5931
+OSB30               5B54
+OSB31               5B7B
+OSB32               5B9B
+OSB33               5BB8
+OSB34               5BC0
+OSB35               5BD5
+OSB36               5BDA
+OSB37               5BE0
+OSB38               5BE4
+OSB39               5BF0
+OSB4                5950
+OSB5                5952
+OSB6                5982
+OSB7                5990
+OSB8                59AB
+OSB9                59B8
+OSG1                5334
+OSG10               5442
+OSG11               545D
+OSG12               546B
+OSG13               5499
+OSG14               54A6
+OSG15               54E4
+OSG16               54FB
+OSG17               550C
+OSG18               5524
+OSG19               5563
+OSG2                5375
+OSG20               559B
+OSG21               55A2
+OSG22               55B1
+OSG23               55C1
+OSG24               55EA
+OSG25               55FD
+OSG26               5604
+OSG27               5642
+OSG28               564D
+OSG29               5679
+OSG3                5398
+OSG30               5683
+OSG31               56A4
+OSG32               56C0
+OSG33               56C2
+OSG34               56D7
+OSG35               56E6
+OSG36               5719
+OSG37               5732
+OSG38               574B
+OSG39               5754
+OSG4                53B3
+OSG40               5790
+OSG41               5793
+OSG42               57B1
+OSG43               57C6
+OSG44               57D2
+OSG45               580E
+OSG46               584B
+OSG47               5860
+OSG48               586D
+OSG49               5881
+OSG5                53C0
+OSG50               588D
+OSG51               5890
+OSG52               58AB
+OSG53               58B0
+OSG6                53E0
+OSG7                53EF
+OSG8                541E
+OSG9                5432
+OUT                 157C
+OUTP                169A
+OUTPB               1972
+OUTPB2              1AD4
+OUTPG               1BBC
+OUTS                1CF6
+OUTSB               21D6
+OUTSG               1F18
+PASS1               30EE
+PASS2               312A
+PASS3               3166
+PASS4               31A2
+PETARED             32C3
+PICTURE             3746
+PLAYBOX             36D3
+PROMPT              2F66
+PW1                 31DE
+PW1L                2FC4
+PW2                 31E7
+PW2L                2FD8
+PW3                 31F0
+PW3L                2FEC
+PW4                 31F9
+PW4L                3000
+PWASK               3056
+PWS                 347C
+PWSL                1096
+PWWRONG             3072
+RED                 FF
+REDTEXT             2F34
+SOFANCY             363A
 START               1000
-THREE               1058
-TWO                 1042
+SUI                 2EA2
+SUI1                6E84
+SUI2                6EC5
+SUP                 2C94
+SUP1                6AB3
+SUP10               6BA0
+SUP11               6BAB
+SUP12               6BC8
+SUP13               6BCA
+SUP14               6BED
+SUP15               6C05
+SUP16               6C19
+SUP17               6C3D
+SUP18               6C7F
+SUP19               6CB3
+SUP2                6ACC
+SUP20               6CE2
+SUP21               6CEC
+SUP22               6CF4
+SUP23               6D32
+SUP24               6D5C
+SUP25               6D61
+SUP26               6D76
+SUP27               6D9C
+SUP28               6DB6
+SUP29               6DC9
+SUP3                6AD7
+SUP30               6DD7
+SUP31               6E17
+SUP32               6E59
+SUP33               6E7A
+SUP34               6E82
+SUP4                6ADD
+SUP5                6AF0
+SUP6                6AF7
+SUP7                6B23
+SUP8                6B45
+SUP9                6B63
+SUPS                2D94
+THEOBJE             3A64
+TITLE1              32CF
+TITLE2              3320
+TITLE3              3372
+TITLE4              33C4
+TITLE5              3416
+TITLE6              343E
+TODAY               35EE
+VI1                 3C36
+VI10                3D18
+VI11                3D4F
+VI12                3D55
+VI13                3D5D
+VI14                3DA6
+VI15                3DD5
+VI16                3E1E
+VI17                3E65
+VI18                3E84
+VI19                3E9E
+VI2                 3C42
+VI20                3EA0
+VI21                3ECE
+VI22                3ED3
+VI23                3F16
+VI24                3F29
+VI25                3F6D
+VI26                3FB2
+VI27                3FD1
+VI28                4014
+VI29                401F
+VI3                 3C48
+VI30                402B
+VI31                4036
+VI32                4041
+VI33                4052
+VI34                405F
+VI35                406A
+VI36                408E
+VI37                4094
+VI38                409C
+VI39                40A3
+VI4                 3C82
+VI40                40BE
+VI41                40C0
+VI42                40F2
+VI43                40FB
+VI44                410F
+VI45                4143
+VI46                4168
+VI5                 3CCE
+VI6                 3CE4
+VI7                 3CED
+VI8                 3CFE
+VI9                 3D0C
+WELCOME             350B
+WELLTHA             36FB
+WHITE               FFFFFF
+WHITEXT             2F48
+WHYIMAG             3685
+WRCHAR              34D6
+WRONG               3014
+WRONG2              10AA
+YOUNEED             3B3D
+YOURIMA             39E0
+YOURMIN             37D9
