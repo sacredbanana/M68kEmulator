@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <bitset>
 #include <windows.h>
+#include <string>
 
 //Status Register flags
 #define SR_CCR_CARRY 0
@@ -34,6 +35,7 @@
 #define MOVE_W 0x3000
 #define MOVE_L 0x2000
 #define MOVEQ 0x7000
+#define MOVEM 0x4880
 #define NOP 0x4E71
 #define RTS 0x4E75
 #define TRAP 0x4E40
@@ -143,7 +145,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	uint8_t indexSize = 0;
 
 	if (debugMode)
-		cout << hex << "The instruction is: " << instruction << " and PC is: " << PC << dec << endl;
+		cout << hex << uppercase << "The instruction is: " << instruction << " and PC is: " << PC << dec << endl;
 	
 	// CLR (Clear an Operand)
 	if ((instruction & 0xFF00) == CLR) {
@@ -913,8 +915,6 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	// TRAP
 	if ((instruction & 0xFFF0) == TRAP) {
 		uint8_t vector = instruction & 15;
-		uint16_t row = 0;
-		uint16_t column = 0;
 		if (debugMode)
 			cout << "TRAP" << endl;
 		char character = 0;
@@ -995,18 +995,43 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			Post: D1.B contains ASCII code of character.
 			*/
 			switch (D[0] & 0xFF) {
+			case 2:
+			{
+				string inputString;
+				cin >> inputString;
+
+				writeWordToDataRegister(inputString.length(), 1);
+
+				int index = 0;
+
+				for (char character : inputString) {
+					memory->writeByteToMemory(character, A[1], index);
+					index++;
+				}
+
+				memory->writeByteToMemory(0, A[1], index);
+				return true;
+				break;
+			}
 			case 4:
 				int number;
 				cin >> number;
 				writeLongToDataRegister(number, 1);
 				return true;
 				break;
+			case 5:
+				char character;
+				cin >> character;
+				writeByteToDataRegister(character, 1);
+				return true;
+				break;
 			case 9:
 				return false;
 				break;
 			case 11:
-				row = D[1] & 0xFF;
-				column = (D[1] >> 8) & 0xFF;
+			{
+				uint16_t row = D[1] & 0xFF;
+				uint16_t column = (D[1] >> 8) & 0xFF;
 				COORD coord;
 				coord.X = column;
 				coord.Y = row;
@@ -1016,6 +1041,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 					);
 				return true;
 				break;
+			}
 			case 13:
 				character = memory->readByteFromMemory(A[1]);
 				characterIndex = 0;
@@ -1208,7 +1234,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		switch (mode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
-			cout << "Data: " << data << endl;
+			if (debugMode)
+				cout << "Data: " << data << endl;
 			if (size == SIZE_BYTE || (size - 4) == SIZE_BYTE) {
 				data2 = (uint8_t)D[addressRegister];
 				result = data + data2;
@@ -1250,7 +1277,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			}
 			break;
 		case ADDRESS_MODE_ADDRESS_REGISTER_DIRECT:
-			cout << "Data: " << data << endl;
+			if (debugMode)
+				cout << "Data: " << data << endl;
 			if (size == SIZE_BYTE || (size - 4) == SIZE_BYTE) {
 				cout << "Invalid addressing mode." << endl;
 				return false;
@@ -1789,7 +1817,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		switch (mode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
-			cout << "Data: " << data << endl;
+			if (debugMode)
+				cout << "Data: " << data << endl;
 			if (size == SIZE_WORD) {
 				data2 = (uint16_t)D[addressRegister];
 				result = data + data2;
@@ -1802,7 +1831,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			}
 			break;
 		case ADDRESS_MODE_ADDRESS_REGISTER_DIRECT:
-			cout << "Data: " << data << endl;
+			if (debugMode)
+				cout << "Data: " << data << endl;
 			if (size == SIZE_WORD) {
 				data2 = (uint16_t)A[addressRegister];
 				result = data + data2;
@@ -2040,7 +2070,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		switch (mode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
-			cout << "Data: " << data << endl;
+			if (debugMode)
+				cout << "Data: " << data << endl;
 			if (size == SIZE_BYTE) {
 				data2 = (uint8_t)D[destinationReg];
 				mostSignificantBitDestination = (data2 >> 7) & 1;
@@ -2313,7 +2344,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		switch (mode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
-			cout << "Data: " << data << endl;
+			if (debugMode)
+				cout << "Data: " << data << endl;
 			if (size == SIZE_BYTE) {
 				data2 = (uint8_t)D[destinationReg];
 				mostSignificantBitDestination = (data2 >> 7) & 1;
@@ -2616,7 +2648,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		switch (mode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
-			cout << "Data: " << data << endl;
+			if (debugMode)
+				cout << "Data: " << data << endl;
 			if (size == SIZE_BYTE) {
 				data2 = (uint8_t)D[addressRegister];
 				result = data - data2;
@@ -2637,7 +2670,8 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			}
 			break;
 		case ADDRESS_MODE_ADDRESS_REGISTER_DIRECT:
-			cout << "Data: " << data << endl;
+			if (debugMode)
+				cout << "Data: " << data << endl;
 			if (size == SIZE_BYTE) {
 				cout << "Invalid addressing mode." << endl;
 				return false;
@@ -3141,8 +3175,6 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		return true;
 	}
 
-	
-
 	// RTS (Return from Subroutine)
 	if (instruction == RTS) {
 		uint16_t address = memory->readWordFromMemory(SP);
@@ -3153,8 +3185,560 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		return true;
 	}
 
+	// MOVEM (Move Multiple Registers)
+	if ((instruction & 0xFB80) == MOVEM) {
+		uint8_t direction = (instruction >> 10) & 1;
+		uint8_t size = (instruction >> 6) & 1;
+		size == 0 ? size = SIZE_WORD : size = SIZE_LONG;
+		int mode = (instruction >> 3) & 7;
+		int reg = instruction & 7;
+		PC += 2;
+		uint16_t registerListMask = memory->readWordFromMemory(PC);
+
+		if (debugMode) {
+			cout << "We have a MOVEM" << endl;
+			cout << "Direction: " << direction << " Size: " << size << hex << uppercase << endl << "Register list mask: " << registerListMask << endl;
+		}
+		
+		int offset = 0;
+
+		switch (mode) {
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT:
+			if (direction == 0) {
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> i) & 1) == 1) {
+						if (debugMode)
+							cout << "Uploading data register: " << i << endl;
+						if (size == SIZE_WORD) {
+							memory->writeWordToMemory((uint16_t)D[i], A[reg], offset);
+							offset += 2;
+						}
+						else {
+							memory->writeLongToMemory(D[i], A[reg], offset);
+							offset += 4;
+						}
+					}
+				}
+
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> (i + 8)) & 1) == 1) {
+						if (debugMode)
+							cout << "Uploading address register: " << i << endl;
+						if (size == SIZE_WORD) {
+							memory->writeWordToMemory((uint16_t)A[i], A[reg], offset);
+							offset += 2;
+						}
+						else {
+							memory->writeLongToMemory(A[i], A[reg], offset);
+							offset += 4;
+						}
+					}
+				}
+			}
+			else {
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> i) & 1) == 1) {
+						if (debugMode)
+							cout << "Downloading data register: " << i << endl;
+						if (size == SIZE_WORD) {
+							D[i] = memory->readWordFromMemory(A[reg], offset);
+							offset += 2;
+						}
+						else {
+							D[i] = memory->readLongFromMemory(A[reg], offset);
+							offset += 4;
+						}
+					}
+				}
+
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> i) & 1) == 1) {
+						if (debugMode)
+							cout << "Downloading address register: " << i << endl;
+						if (size == SIZE_WORD) {
+							A[i] = memory->readWordFromMemory(A[reg], offset);
+							offset += 2;
+						}
+						else {
+							A[i] = memory->readLongFromMemory(A[reg], offset);
+							offset += 4;
+						}
+					}
+				}
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_POSTINCREMENT:
+			if (direction == 0) {
+				cout << "Invalid addressing mode." << endl;
+				return false;
+			}
+
+			for (int i = 0; i < 8; i++) {
+				if (((registerListMask >> i) & 1) == 1) {
+					if (debugMode)
+						cout << "Uploading data register: " << i << endl;
+					if (size == SIZE_WORD) {
+						memory->writeWordToMemory((uint16_t)D[i], A[reg]);
+						A[reg] += 2;
+					}
+					else {
+						memory->writeLongToMemory(D[i], A[reg]);
+						A[reg] += 4;
+					}
+				}
+			}
+
+			for (int i = 0; i < 8; i++) {
+				if (((registerListMask >> (i + 8)) & 1) == 1) {
+					if (debugMode)
+						cout << "Uploading address register: " << i << endl;
+					if (size == SIZE_WORD) {
+						memory->writeWordToMemory((uint16_t)A[i], A[reg]);
+						A[reg] += 2;
+					}
+					else {
+						memory->writeLongToMemory(A[i], A[reg]);
+						A[reg] += 4;
+					}
+				}
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_PREDECREMENT:
+			if (direction == 1) {
+				cout << "Invalid addressing mode." << endl;
+				return false;
+			}
+
+			for (int i = 0; i < 8; i++) {
+				if (((registerListMask >> i) & 1) == 1) {
+					if (debugMode)
+						cout << "Downloading address register: " << i << endl;
+					if (size == SIZE_WORD) {
+						A[reg] -= 2;
+						A[7-i] = memory->readWordFromMemory(A[reg]);
+					}
+					else {
+						A[reg] -= 4;
+						A[7-i] = memory->readLongFromMemory(A[reg]);
+					}
+				}
+			}
+
+			for (int i = 0; i < 8; i++) {
+				if (((registerListMask >> i) & 1) == 1) {
+					if (debugMode)
+						cout << "Downloading data register: " << i << endl;
+					if (size == SIZE_WORD) {
+						A[reg] -= 2;
+						D[7-i] = memory->readWordFromMemory(A[reg]);
+					}
+					else {
+						A[reg] -= 4;
+						D[7-i] = memory->readLongFromMemory(A[reg]);
+					}
+				}
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
+			PC += 2;
+			displacement = memory->readWordFromMemory(PC);
+			if (debugMode)
+				cout << "Displacement: " << displacement << endl;
+
+			if (direction == 0) {
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> i) & 1) == 1) {
+						if (debugMode)
+							cout << "Uploading data register: " << i << endl;
+						if (size == SIZE_WORD) {
+							memory->writeWordToMemory((uint16_t)D[i], A[reg], offset + displacement);
+							offset += 2;
+						}
+						else {
+							memory->writeLongToMemory(D[i], A[reg], offset + displacement);
+							offset += 4;
+						}
+					}
+				}
+
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> (i + 8)) & 1) == 1) {
+						if (debugMode)
+							cout << "Uploading address register: " << i << endl;
+						if (size == SIZE_WORD) {
+							memory->writeWordToMemory((uint16_t)A[i], A[reg], offset + displacement);
+							offset += 2;
+						}
+						else {
+							memory->writeLongToMemory(A[i], A[reg], offset + displacement);
+							offset += 4;
+						}
+					}
+				}
+			}
+			else {
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> i) & 1) == 1) {
+						if (debugMode)
+							cout << "Downloading data register: " << i << endl;
+						if (size == SIZE_WORD) {
+							D[i] = memory->readWordFromMemory(A[reg], offset + displacement);
+							offset += 2;
+						}
+						else {
+							D[i] = memory->readLongFromMemory(A[reg], offset + displacement);
+							offset += 4;
+						}
+					}
+				}
+
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> i) & 1) == 1) {
+						if (debugMode)
+							cout << "Downloading address register: " << i << endl;
+						if (size == SIZE_WORD) {
+							A[i] = memory->readWordFromMemory(A[reg], offset + displacement);
+							offset += 2;
+						}
+						else {
+							A[i] = memory->readLongFromMemory(A[reg], offset + displacement);
+							offset += 4;
+						}
+					}
+				}
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_INDEX:
+			PC += 2;
+			indexRegister = (memory->readByteFromMemory(PC) >> 4) & 0x0F;
+			indexSize = memory->readByteFromMemory(PC) & 0x0F;
+			longDisplacement = memory->readByteFromMemory(PC + 1);
+			if (indexRegister <= 7) {
+				if (indexSize == INDEX_SIZE_WORD) {
+					longDisplacement += (int16_t)D[indexRegister];
+				}
+				else
+					longDisplacement += D[indexRegister];
+			}
+			else {
+				if (indexSize == INDEX_SIZE_WORD) {
+					longDisplacement += (int16_t)A[indexRegister - 8];
+				}
+				else
+					longDisplacement += D[indexRegister - 8];
+			}
+
+			if (direction == 0) {
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> i) & 1) == 1) {
+						if (debugMode)
+							cout << "Uploading data register: " << i << endl;
+						if (size == SIZE_WORD) {
+							memory->writeWordToMemory((uint16_t)D[i], A[reg], offset + longDisplacement);
+							offset += 2;
+						}
+						else {
+							memory->writeLongToMemory(D[i], A[reg], offset + longDisplacement);
+							offset += 4;
+						}
+					}
+				}
+
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> (i + 8)) & 1) == 1) {
+						if (debugMode)
+							cout << "Uploading address register: " << i << endl;
+						if (size == SIZE_WORD) {
+							memory->writeWordToMemory((uint16_t)A[i], A[reg], offset + longDisplacement);
+							offset += 2;
+						}
+						else {
+							memory->writeLongToMemory(A[i], A[reg], offset + longDisplacement);
+							offset += 4;
+						}
+					}
+				}
+			}
+			else {
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> i) & 1) == 1) {
+						if (debugMode)
+							cout << "Downloading data register: " << i << endl;
+						if (size == SIZE_WORD) {
+							D[i] = memory->readWordFromMemory(A[reg], offset + longDisplacement);
+							offset += 2;
+						}
+						else {
+							D[i] = memory->readLongFromMemory(A[reg], offset + longDisplacement);
+							offset += 4;
+						}
+					}
+				}
+
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> i) & 1) == 1) {
+						if (debugMode)
+							cout << "Downloading address register: " << i << endl;
+						if (size == SIZE_WORD) {
+							A[i] = memory->readWordFromMemory(A[reg], offset + longDisplacement);
+							offset += 2;
+						}
+						else {
+							A[i] = memory->readLongFromMemory(A[reg], offset + longDisplacement);
+							offset += 4;
+						}
+					}
+				}
+			}
+			break;
+		case ADDRESS_MODE_OTHERS:
+			switch (reg) {
+			case ADDRESS_MODE_ABSOLUTE_SHORT:
+				PC += 2;
+				absoluteAddress = memory->readWordFromMemory(PC);
+				if (direction == 0) {
+					for (int i = 0; i < 8; i++) {
+						if (((registerListMask >> i) & 1) == 1) {
+							if (debugMode)
+								cout << "Uploading data register: " << i << endl;
+							if (size == SIZE_WORD) {
+								memory->writeWordToMemory((uint16_t)D[i], absoluteAddress, offset);
+								offset += 2;
+							}
+							else {
+								memory->writeLongToMemory(D[i], absoluteAddress, offset);
+								offset += 4;
+							}
+						}
+					}
+
+					for (int i = 0; i < 8; i++) {
+						if (((registerListMask >> (i + 8)) & 1) == 1) {
+							if (debugMode)
+								cout << "Uploading address register: " << i << endl;
+							if (size == SIZE_WORD) {
+								memory->writeWordToMemory((uint16_t)A[i], absoluteAddress, offset);
+								offset += 2;
+							}
+							else {
+								memory->writeLongToMemory(A[i], absoluteAddress, offset);
+								offset += 4;
+							}
+						}
+					}
+				}
+				else {
+					for (int i = 0; i < 8; i++) {
+						if (((registerListMask >> i) & 1) == 1) {
+							if (debugMode)
+								cout << "Downloading data register: " << i << endl;
+							if (size == SIZE_WORD) {
+								D[i] = memory->readWordFromMemory(absoluteAddress, offset);
+								offset += 2;
+							}
+							else {
+								D[i] = memory->readLongFromMemory(absoluteAddress, offset);
+								offset += 4;
+							}
+						}
+					}
+
+					for (int i = 0; i < 8; i++) {
+						if (((registerListMask >> i) & 1) == 1) {
+							if (debugMode)
+								cout << "Downloading address register: " << i << endl;
+							if (size == SIZE_WORD) {
+								A[i] = memory->readWordFromMemory(absoluteAddress, offset);
+								offset += 2;
+							}
+							else {
+								A[i] = memory->readLongFromMemory(absoluteAddress, offset);
+								offset += 4;
+							}
+						}
+					}
+				}
+				break;
+			case ADDRESS_MODE_ABSOLUTE_LONG:
+				PC += 2;
+				absoluteAddress = memory->readLongFromMemory(PC);
+				if (direction == 0) {
+					for (int i = 0; i < 8; i++) {
+						if (((registerListMask >> i) & 1) == 1) {
+							if (debugMode)
+								cout << "Uploading data register: " << i << endl;
+							if (size == SIZE_WORD) {
+								memory->writeWordToMemory((uint16_t)D[i], absoluteAddress, offset);
+								offset += 2;
+							}
+							else {
+								memory->writeLongToMemory(D[i], absoluteAddress, offset);
+								offset += 4;
+							}
+						}
+					}
+
+					for (int i = 0; i < 8; i++) {
+						if (((registerListMask >> (i + 8)) & 1) == 1) {
+							if (debugMode)
+								cout << "Uploading address register: " << i << endl;
+							if (size == SIZE_WORD) {
+								memory->writeWordToMemory((uint16_t)A[i], absoluteAddress, offset);
+								offset += 2;
+							}
+							else {
+								memory->writeLongToMemory(A[i], absoluteAddress, offset);
+								offset += 4;
+							}
+						}
+					}
+				}
+				else {
+					for (int i = 0; i < 8; i++) {
+						if (((registerListMask >> i) & 1) == 1) {
+							if (debugMode)
+								cout << "Downloading data register: " << i << endl;
+							if (size == SIZE_WORD) {
+								D[i] = memory->readWordFromMemory(absoluteAddress, offset);
+								offset += 2;
+							}
+							else {
+								D[i] = memory->readLongFromMemory(absoluteAddress, offset);
+								offset += 4;
+							}
+						}
+					}
+
+					for (int i = 0; i < 8; i++) {
+						if (((registerListMask >> i) & 1) == 1) {
+							if (debugMode)
+								cout << "Downloading address register: " << i << endl;
+							if (size == SIZE_WORD) {
+								A[i] = memory->readWordFromMemory(absoluteAddress, offset);
+								offset += 2;
+							}
+							else {
+								A[i] = memory->readLongFromMemory(absoluteAddress, offset);
+								offset += 4;
+							}
+						}
+					}
+				}
+				PC += 2;
+				break;
+			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_DISPLACEMENT:
+				if (direction == 0) {
+					cout << "Invalid addressing mode." << endl;
+					return false;
+				}
+
+				PC += 2;
+				displacement = memory->readWordFromMemory(PC);
+				if (debugMode)
+					cout << "Displacement: " << displacement << endl;
+
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> i) & 1) == 1) {
+						if (debugMode)
+							cout << "Downloading data register: " << i << endl;
+						if (size == SIZE_WORD) {
+							D[i] = memory->readWordFromMemory(PC, offset + displacement);
+							offset += 2;
+						}
+						else {
+							D[i] = memory->readLongFromMemory(PC, offset + displacement);
+							offset += 4;
+						}
+					}
+				}
+
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> i) & 1) == 1) {
+						if (debugMode)
+							cout << "Downloading address register: " << i << endl;
+						if (size == SIZE_WORD) {
+							A[i] = memory->readWordFromMemory(PC, offset + displacement);
+							offset += 2;
+						}
+						else {
+							A[i] = memory->readLongFromMemory(PC, offset + displacement);
+							offset += 4;
+						}
+					}
+				}
+				break;
+			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_INDEX:
+				if (direction == 0) {
+					cout << "Invalid addressing mode." << endl;
+					return false;
+				}
+
+				PC += 2;
+				indexRegister = (memory->readByteFromMemory(PC) >> 4) & 0x0F;
+				indexSize = memory->readByteFromMemory(PC) & 0x0F;
+				longDisplacement = memory->readByteFromMemory(PC + 1);
+				if (indexRegister <= 7) {
+					if (indexSize == INDEX_SIZE_WORD) {
+						longDisplacement += (int16_t)D[indexRegister];
+					}
+					else
+						longDisplacement += D[indexRegister];
+				}
+				else {
+					if (indexSize == INDEX_SIZE_WORD) {
+						longDisplacement += (int16_t)A[indexRegister - 8];
+					}
+					else
+						longDisplacement += D[indexRegister - 8];
+				}
+
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> i) & 1) == 1) {
+						if (debugMode)
+							cout << "Downloading data register: " << i << endl;
+						if (size == SIZE_WORD) {
+							D[i] = memory->readWordFromMemory(PC, offset + displacement);
+							offset += 2;
+						}
+						else {
+							D[i] = memory->readLongFromMemory(PC, offset + displacement);
+							offset += 4;
+						}
+					}
+				}
+
+				for (int i = 0; i < 8; i++) {
+					if (((registerListMask >> i) & 1) == 1) {
+						if (debugMode)
+							cout << "Downloading address register: " << i << endl;
+						if (size == SIZE_WORD) {
+							A[i] = memory->readWordFromMemory(PC, offset + displacement);
+							offset += 2;
+						}
+						else {
+							A[i] = memory->readLongFromMemory(PC, offset + displacement);
+							offset += 4;
+						}
+					}
+				}
+				break;
+			default:
+				cout << "Invalid addressing mode." << endl;
+				return false;
+				break;
+			}
+			break;
+		default:
+			cout << "Invalid addressing mode." << endl;
+			return false;
+			break;
+		}
+
+		return true;
+	}
+
 	// Illegal instruction
-	cout << "Illegal instruction " << uppercase << hex << instruction << " at PC: " << PC << endl;
+	cout << "Illegal instruction " << uppercase << hex << instruction << " at address: " << PC << endl;
 	return false;
 }
 
@@ -3199,7 +3783,7 @@ void CPUCore::setProgramCounter(unsigned int memoryLocation)
 
 void CPUCore::displayInfo()
 {
-	cout << "Model: Motorola MC" << model << std::uppercase << endl << endl;
+	cout << dec << "Model: Motorola MC" << model << std::uppercase << endl << endl;
 	cout << setfill('-') << setw(83) << "-" << endl;
 	cout << setfill(' ') << std::left << setw(17) << "Register" << setw(17) << "Decimal" << setw(17) << "Hex" << setw(17) << "Binary" << endl;
 	cout << setfill('-') << setw(83) << "-" << endl;
