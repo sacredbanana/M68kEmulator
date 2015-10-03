@@ -34,6 +34,7 @@
 #define MOVE_B 0x1000
 #define MOVE_W 0x3000
 #define MOVE_L 0x2000
+#define MOVE_FROM_SR 0x40C0
 #define MOVEQ 0x7000
 #define MOVEM 0x4880
 #define NOP 0x4E71
@@ -3730,6 +3731,89 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			break;
 		default:
 			cout << "Invalid addressing mode." << endl;
+			return false;
+			break;
+		}
+
+		return true;
+	}
+
+	// MOVE_FROM_SR (Move from the Status Register)
+	if ((instruction & 0xFFC0) == MOVE_FROM_SR) {
+		int mode = ((instruction >> 3) & 7);
+		int reg = (instruction & 7);
+
+		if (debugMode) {
+			cout << "WE HAVE A MOVE BYTE" << endl;
+			cout << "Mode is: " << mode << endl;
+			cout << "Address register is: " << reg << endl;
+		}
+
+		switch (mode) {
+		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
+			D[reg] = SR;
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT:
+			memory->writeWordToMemory(SR, A[reg]);
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_POSTINCREMENT:
+			memory->writeWordToMemory(SR, A[reg]);
+			A[reg] += 2;
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_PREDECREMENT:
+			A[reg] -= 2;
+			memory->writeWordToMemory(SR, A[reg]);
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
+			PC += 2;
+			displacement = memory->readWordFromMemory(PC);
+			if (debugMode)
+				cout << "Displacement: " << displacement << endl;
+			memory->writeWordToMemory(SR, A[reg], displacement);
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_INDEX:
+			PC += 2;
+			indexRegister = (memory->readByteFromMemory(PC) >> 4) & 0x0F;
+			indexSize = memory->readByteFromMemory(PC) & 0x0F;
+			longDisplacement = memory->readByteFromMemory(PC + 1);
+			if (indexRegister <= 7) {
+				if (indexSize == INDEX_SIZE_WORD) {
+					longDisplacement += (int16_t)D[indexRegister];
+				}
+				else
+					longDisplacement += D[indexRegister];
+			}
+			else {
+				if (indexSize == INDEX_SIZE_WORD) {
+					longDisplacement += (int16_t)A[indexRegister - 8];
+				}
+				else
+					longDisplacement += D[indexRegister - 8];
+			}
+			memory->writeWordToMemory(SR, A[reg], longDisplacement);
+			break;
+		case ADDRESS_MODE_OTHERS:
+			switch (reg) {
+			case ADDRESS_MODE_ABSOLUTE_SHORT:
+				PC += 2;
+				absoluteAddress = memory->readWordFromMemory(PC);
+				memory->writeWordToMemory(SR, absoluteAddress);
+				break;
+			case ADDRESS_MODE_ABSOLUTE_LONG:
+				PC += 2;
+				absoluteAddress = memory->readLongFromMemory(PC);
+				memory->writeWordToMemory(SR, absoluteAddress);
+				PC += 2;
+				break;
+			default:
+				cout << "Invalid addressing mode" << endl;
+				return false;
+				break;
+			}
+			break;
+
+		default:
+			cout << "Unrecognised addressing mode" << endl;
 			return false;
 			break;
 		}
