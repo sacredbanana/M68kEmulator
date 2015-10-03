@@ -1045,6 +1045,33 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 				return true;
 				break;
 			}
+			case 12:
+#ifdef WIN32
+			{
+				HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
+				DWORD mode;
+				GetConsoleMode(hStdin, &mode);
+
+				if (D[1] == 0)
+					mode &= ~ENABLE_ECHO_INPUT;
+				else
+					mode |= ENABLE_ECHO_INPUT;
+
+				SetConsoleMode(hStdin, mode);
+			}
+
+#else
+				struct termios tty;
+				tcgetattr(STDIN_FILENO, &tty);
+				if (!enable)
+					tty.c_lflag &= ~ECHO;
+				else
+					tty.c_lflag |= ECHO;
+
+				(void)tcsetattr(STDIN_FILENO, TCSANOW, &tty);
+#endif
+				return true;
+				break;
 			case 13:
 				character = memory->readByteFromMemory(A[1]);
 				characterIndex = 0;
@@ -3008,7 +3035,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		int addressRegister = (instruction >> 9) & 7;
 		int reg = instruction & 7;
 
-		if (!debugMode) {
+		if (debugMode) {
 			cout << "WE HAVE A COMPARE ADDRESS" << endl;
 			cout << "Mode is: " << mode << endl;
 			cout << "Dest register is: " << reg << endl;
