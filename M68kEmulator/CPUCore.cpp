@@ -29,6 +29,8 @@
 #define CMP_B 0xB000
 #define CMP_W 0xB040
 #define CMP_L 0xB080
+#define CMPA_W 0xB0C0
+#define CMPA_L 0xB1C0
 #define JMP 0x4EC0
 #define LEA 0x41C0
 #define MOVE_B 0x1000
@@ -2995,6 +2997,283 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		if (mostSignificantBitSource != mostSignificantBitDestination)
 			mostSignificantBitDestination != mostSignificantBitResult ? SR |= 1 << SR_CCR_OVERFLOW : SR &= ~(1 << SR_CCR_OVERFLOW);
+
+		return true;
+	}
+
+	// CMPA (Compare Address)
+	if (((instruction & 0xF1C0) == CMPA_W) || ((instruction & 0xF1C0) == CMPA_L)) {
+		int size = (instruction >> 6) & 7;
+		int mode = (instruction >> 3) & 7;
+		int addressRegister = (instruction >> 9) & 7;
+		int reg = instruction & 7;
+
+		if (!debugMode) {
+			cout << "WE HAVE A COMPARE ADDRESS" << endl;
+			cout << "Mode is: " << mode << endl;
+			cout << "Dest register is: " << reg << endl;
+			cout << "Address register is: " << addressRegister << endl;
+		}
+
+		if (size == 3)
+			size = SIZE_WORD;
+		else
+			size = SIZE_LONG;
+
+		if (size == SIZE_WORD) {
+			data = (uint16_t)A[addressRegister];
+			mostSignificantBitDestination = (data >> 15) & 1;
+		}
+		else {
+			data = A[addressRegister];
+			mostSignificantBitDestination = (data >> 31) & 1;
+		}
+
+		switch (mode) {
+		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
+			if (debugMode)
+				cout << "Data: " << data << endl;
+			if (size == SIZE_WORD) {
+				data2 = (uint16_t)D[reg];
+				result = data - data2;
+				mostSignificantBitResult = (result >> 15) & 1;
+				mostSignificantBitSource = (data2 >> 15) & 1;
+			}
+			else {
+				data2 = D[reg];
+				result = data - data2;
+				mostSignificantBitResult = (result >> 31) & 1;
+				mostSignificantBitSource = (data2 >> 31) & 1;
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_DIRECT:
+			if (debugMode)
+				cout << "Data: " << data << endl;
+			if (size == SIZE_WORD) {
+				data2 = (uint16_t)A[reg];
+				result = data - data2;
+				mostSignificantBitResult = (result >> 15) & 1;
+				mostSignificantBitSource = (data2 >> 15) & 1;
+			}
+			else {
+				data2 = A[reg];
+				result = data - data2;
+				mostSignificantBitResult = (result >> 31) & 1;
+				mostSignificantBitSource = (data2 >> 31) & 1;
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT:
+			if (size == SIZE_WORD) {
+				data2 = memory->readWordFromMemory(A[reg]);
+				result = data - data2;
+				mostSignificantBitResult = (result >> 15) & 1;
+				mostSignificantBitSource = (data2 >> 15) & 1;
+			}
+			else {
+				data2 = memory->readLongFromMemory(A[reg]);
+				result = data - data2;
+				mostSignificantBitResult = (result >> 31) & 1;
+				mostSignificantBitSource = (data2 >> 31) & 1;
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_POSTINCREMENT:
+			if (size == SIZE_WORD) {
+				data2 = memory->readWordFromMemory(A[reg]);
+				result = data - data2;
+				mostSignificantBitResult = (result >> 15) & 1;
+				mostSignificantBitSource = (data2 >> 15) & 1;
+				A[reg] += 2;
+			}
+			else {
+				data2 = memory->readLongFromMemory(A[reg]);
+				result = data - data2;
+				mostSignificantBitResult = (result >> 31) & 1;
+				mostSignificantBitSource = (data2 >> 31) & 1;
+				A[reg] += 4;
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_PREDECREMENT:
+			if (size == SIZE_WORD) {
+				A[reg] -= 2;
+				data2 = memory->readWordFromMemory(A[reg]);
+				result = data - data2;
+				mostSignificantBitResult = (result >> 15) & 1;
+				mostSignificantBitSource = (data2 >> 15) & 1;
+			}
+			else {
+				A[reg] -= 4;
+				data2 = memory->readLongFromMemory(A[reg]);
+				result = data - data2;
+				mostSignificantBitResult = (result >> 31) & 1;
+				mostSignificantBitSource = (data2 >> 31) & 1;
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
+			PC += 2;
+			displacement = memory->readWordFromMemory(PC);
+			if (debugMode)
+				cout << "Displacement: " << displacement << endl;
+			if (size == SIZE_WORD) {
+				data2 = memory->readWordFromMemory(A[reg], displacement);
+				result = data - data2;
+				mostSignificantBitResult = (result >> 15) & 1;
+				mostSignificantBitSource = (data2 >> 15) & 1;
+			}
+			else {
+				data2 = memory->readLongFromMemory(A[reg], displacement);
+				result = data - data2;
+				mostSignificantBitResult = (result >> 31) & 1;
+				mostSignificantBitSource = (data2 >> 31) & 1;
+			}
+			break;
+		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_INDEX:
+			PC += 2;
+			indexRegister = (memory->readByteFromMemory(PC) >> 4) & 0x0F;
+			indexSize = memory->readByteFromMemory(PC) & 0x0F;
+			longDisplacement = memory->readByteFromMemory(PC + 1);
+			if (indexRegister <= 7) {
+				if (indexSize == INDEX_SIZE_WORD) {
+					longDisplacement += (int16_t)D[indexRegister];
+				}
+				else
+					longDisplacement += D[indexRegister];
+			}
+			else {
+				if (indexSize == INDEX_SIZE_WORD) {
+					longDisplacement += (int16_t)A[indexRegister - 8];
+				}
+				else
+					longDisplacement += D[indexRegister - 8];
+			}
+			if (size == SIZE_WORD) {
+				data2 = memory->readWordFromMemory(A[reg], longDisplacement);
+				result = data - data2;
+				mostSignificantBitResult = (result >> 15) & 1;
+				mostSignificantBitSource = (data2 >> 15) & 1;
+			}
+			else {
+				data2 = memory->readLongFromMemory(A[reg], longDisplacement);
+				result = data - data2;
+				mostSignificantBitResult = (result >> 31) & 1;
+				mostSignificantBitSource = (data2 >> 31) & 1;
+			}
+			break;
+		case ADDRESS_MODE_OTHERS:
+			switch (reg) {
+			case ADDRESS_MODE_ABSOLUTE_SHORT:
+				PC += 2;
+				absoluteAddress = memory->readWordFromMemory(PC);
+				if (size == SIZE_WORD) {
+					data2 = memory->readWordFromMemory(absoluteAddress);
+					result = data - data2;
+					mostSignificantBitResult = (result >> 15) & 1;
+					mostSignificantBitSource = (data2 >> 15) & 1;
+				}
+				else {
+					data2 = memory->readLongFromMemory(absoluteAddress);
+					result = data - data2;
+					mostSignificantBitResult = (result >> 31) & 1;
+					mostSignificantBitSource = (data2 >> 31) & 1;
+				}
+				break;
+			case ADDRESS_MODE_ABSOLUTE_LONG:
+				PC += 2;
+				absoluteAddress = memory->readLongFromMemory(PC);
+				if (size == SIZE_WORD) {
+					data2 = memory->readWordFromMemory(absoluteAddress);
+					result = data - data2;
+					mostSignificantBitResult = (result >> 15) & 1;
+					mostSignificantBitSource = (data2 >> 15) & 1;
+					PC += 2;
+				}
+				else {
+					data2 = memory->readLongFromMemory(absoluteAddress);
+					result = data - data2;
+					mostSignificantBitResult = (result >> 31) & 1;
+					mostSignificantBitSource = (data2 >> 31) & 1;
+				}
+				PC += 2;
+				break;
+			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_DISPLACEMENT:
+				PC += 2;
+				displacement = memory->readWordFromMemory(PC);
+				if (debugMode)
+					cout << "Displacement: " << displacement << endl;
+				if (size == SIZE_WORD) {
+					data2 = memory->readWordFromMemory(PC, displacement);
+					result = data - data2;
+					mostSignificantBitResult = (result >> 15) & 1;
+					mostSignificantBitSource = (data2 >> 15) & 1;
+				}
+				else if (size == SIZE_LONG) {
+					data2 = memory->readLongFromMemory(PC, displacement);
+					result = data - data2;
+					mostSignificantBitResult = (result >> 31) & 1;
+					mostSignificantBitSource = (data2 >> 31) & 1;
+					PC += 2;
+				}
+				break;
+			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_INDEX:
+				PC += 2;
+				indexRegister = (memory->readByteFromMemory(PC) >> 4) & 0x0F;
+				indexSize = memory->readByteFromMemory(PC) & 0x0F;
+				longDisplacement = memory->readByteFromMemory(PC + 1);
+				if (indexRegister <= 7) {
+					if (indexSize == INDEX_SIZE_WORD) {
+						longDisplacement += (int16_t)D[indexRegister];
+					}
+					else
+						longDisplacement += D[indexRegister];
+				}
+				else {
+					if (indexSize == INDEX_SIZE_WORD) {
+						longDisplacement += (int16_t)A[indexRegister - 8];
+					}
+					else
+						longDisplacement += D[indexRegister - 8];
+				}
+				if (size == SIZE_WORD) {
+					data2 = memory->readWordFromMemory(PC, longDisplacement);
+					result = data - data2;
+					mostSignificantBitResult = (result >> 15) & 1;
+					mostSignificantBitSource = (data2 >> 15) & 1;
+				}
+				else if (size == SIZE_LONG) {
+					data2 = memory->readLongFromMemory(PC, longDisplacement);
+					result = data - data2;
+					mostSignificantBitResult = (result >> 31) & 1;
+					mostSignificantBitSource = (data2 >> 31) & 1;
+					PC += 2;
+				}
+				break;
+			case ADDRESS_MODE_IMMEDIATE_OR_STATUS_REGISTER:
+				PC += 2;
+				if (size == SIZE_WORD) {
+					data2 = memory->readWordFromMemory(PC);
+					result = data - data2;
+					mostSignificantBitResult = (result >> 15) & 1;
+					mostSignificantBitSource = (data2 >> 15) & 1;
+				}
+				else if (size == SIZE_LONG) {
+					data2 = memory->readLongFromMemory(PC);
+					result = data - data2;
+					mostSignificantBitResult = (result >> 31) & 1;
+					mostSignificantBitSource = (data2 >> 31) & 1;
+					PC += 2;
+				}
+				break;
+			default:
+				cout << "Invalid addressing mode" << endl;
+				return false;
+				break;
+			}
+			break;
+
+		default:
+			cout << "Unrecognised addressing mode" << endl;
+			return false;
+			break;
+		}
 
 		return true;
 	}
