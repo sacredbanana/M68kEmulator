@@ -31,6 +31,7 @@
 #define CMP_L 0xB080
 #define CMPA_W 0xB0C0
 #define CMPA_L 0xB1C0
+#define EXG 0xC100
 #define JMP 0x4EC0
 #define LEA 0x41C0
 #define MOVE_B 0x1000
@@ -4124,6 +4125,35 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			break;
 		}
 
+		return true;
+	}
+
+	// EXG (Exchange Registers)
+	if ((instruction & 0xF100) == EXG) {
+		int register1 = (instruction >> 9) & 7;
+		int register2 = instruction & 7;
+		int mode = (instruction >> 3) & 0x1F;
+
+		if (debugMode) {
+			cout << "We have an exchange" << endl;
+			cout << "Register 1: " << register1 << " Register 2: " << register2 << " Mode: " << mode << endl;
+		}
+
+		if (mode == 8) {
+			uint32_t temp = D[register1];
+			D[register1] = D[register2];
+			D[register2] = temp;
+		}
+		else if (mode == 9) {
+			uint32_t temp = A[register1];
+			A[register1] = A[register2];
+			A[register2] = temp;
+		}
+		else {
+			uint32_t temp = D[register1];
+			D[register1] = A[register2];
+			A[register2] = temp;
+		}
 		return true;
 	}
 
