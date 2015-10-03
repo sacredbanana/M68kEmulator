@@ -42,6 +42,7 @@
 #define MOVEM 0x4880
 #define NOP 0x4E71
 #define RTS 0x4E75
+#define SWAP 0x4840
 #define TRAP 0x4E40
 
 //Addressing modes
@@ -4154,6 +4155,28 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			D[register1] = A[register2];
 			A[register2] = temp;
 		}
+		return true;
+	}
+
+	// SWAP (Swap Register Halves)
+	if ((instruction & 0xFFF8) == SWAP) {
+		int reg = instruction & 7;
+
+		if (debugMode) {
+			cout << "We have a swap" << endl;
+			cout << "Register: " << reg << endl;
+		}
+
+		SR &= ~(1 << SR_CCR_OVERFLOW);
+		SR &= ~(1 << SR_CCR_CARRY);
+
+		uint16_t temp = D[reg] >> 16;
+		D[reg] = D[reg] << 16;
+		D[reg] += temp;
+
+		D[reg] == 0 ? SR |= 1 << SR_CCR_ZERO : SR &= ~(1 << SR_CCR_ZERO);
+		(D[reg] >> 31) & 1 == 1 ? SR |= 1 << SR_CCR_NEGATIVE : SR &= ~(1 << SR_CCR_NEGATIVE);
+
 		return true;
 	}
 
