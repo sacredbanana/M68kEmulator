@@ -1000,6 +1000,21 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			Post: D1.B contains ASCII code of character.
 			*/
 			switch (D[0] & 0xFF) {
+			case 0:
+			{
+				int length = (uint16_t)D[1];
+				for (int i = 0; i < length; i++)
+					cout << memory->readByteFromMemory(A[1], i);
+				cout << endl;
+				break;
+			}
+			case 1:
+			{
+				int length = (uint16_t)D[1];
+				for (int i = 0; i < length; i++)
+					cout << memory->readByteFromMemory(A[1], i);
+				break;
+			}
 			case 2:
 			{
 				string inputString;
@@ -1015,23 +1030,25 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 				}
 
 				memory->writeByteToMemory(0, A[1], index);
-				return true;
+				break;
+			}
+			case 3:
+			{
+				int32_t number = D[1];
+				cout << number;
 				break;
 			}
 			case 4:
 				int number;
 				cin >> number;
 				writeLongToDataRegister(number, 1);
-				return true;
 				break;
 			case 5:
 				char character;
 				cin >> character;
 				writeByteToDataRegister(character, 1);
-				return true;
 				break;
 			case 9:
-				return false;
 				break;
 			case 11:
 			{
@@ -1044,7 +1061,6 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 					GetStdHandle(STD_OUTPUT_HANDLE),
 					coord
 					);
-				return true;
 				break;
 			}
 			case 12:
@@ -1072,7 +1088,6 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 				(void)tcsetattr(STDIN_FILENO, TCSANOW, &tty);
 #endif
-				return true;
 				break;
 			case 13:
 				character = memory->readByteFromMemory(A[1]);
@@ -1083,7 +1098,6 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 					character = memory->readByteFromMemory(A[1] + characterIndex);
 				}
 				cout << endl;
-				return true;
 				break;
 			case 14:
 				character = memory->readByteFromMemory(A[1]);
@@ -1093,14 +1107,17 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 					characterIndex++;
 					character = memory->readByteFromMemory(A[1] + characterIndex);
 				}
-				return true;
 				break;
 			default:
 				cout << "Unknown IO task" << endl;
+				return false;
 				break;
 			}
+			return true;
 		default:
 			cout << "Unknown TRAP task" << endl;
+			return false;
+			break;
 		}
 	}
 

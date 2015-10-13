@@ -12,7 +12,7 @@ int main()
 {
 	Memory *memory = new Memory(256);
 	CPUCore *cpu = new CPUCore(memory, 68000);
-	cpu->debugMode = true;
+	cpu->debugMode = false;
 	ProgramLoader::loadProgram("program.S68", cpu, memory);
 	bool cpuRunning = true;
 	while (cpuRunning)
