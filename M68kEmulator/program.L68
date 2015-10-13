@@ -1,23 +1,83 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.04
-Created On: 10/13/2015 9:28:45 AM
+Created On: 10/13/2015 9:42:07 AM
 
-00000000                             1  * Test 68000 simulator program
-00000000                             2  
-00000000  =00000006                  3  WRCHAR  EQU     6                       Trap # for write D1.B char to screen
-00000000                             4  
-00001000                             5          ORG $1000
-00001000                             6  
-00001000  41FA 0012                  7          LEA      MESSAGE(PC),A0         Point A0 to start of message
-00001004  1218                       8  NEXT    MOVE.B  (A0)+,D1                Get character, increment pointer
-00001006  6708                       9          BEQ.S   FINISH                  Exit if end
-00001008  103C 0006                 10          MOVE.B  #WRCHAR,D0              Set up trap to write to screen
-0000100C  4E4F                      11          TRAP    #15                     Write char. to screen
-0000100E  60F4                      12          BRA.S   NEXT                    ..and loop back
-00001010  4E72 2700                 13  FINISH  STOP    #$2700                  Halt
-00001014= 54 68 69 73 20 69 ...     14  MESSAGE DC.B    'This is the message',$0D,$0A,0
-0000102A                            15  
-0000102A                            16          END     $1000
+00000000                             1  *       This program will prompt you for 2 assigments and 
+00000000                             2  *       your exam mark. The program then outputs the sum 
+00000000                             3  *       of these marks like this
+00000000                             4  *       'Sum = 78'
+00000000                             5  
+00000000  =00000000                  6  PRTSTRCRLF      EQU     0       TRAP function to print string + CRLF
+00000000  =00000001                  7  PRTSTR  EQU     1               TRAP function to print character string
+00000000  =00000004                  8  NUMIN   EQU     4               TRAP function to read integer from kb
+00000000  =00000003                  9  NUMOUT  EQU     3               TRAP function to o/p integer to screen
+00000000                            10  
+00001000                            11                  ORG     $1000
+00001000                            12  
+00001000                            13  *       Prompt for first assigment mark
+00001000  227C 0000108C             14          MOVEA.L #PROMPT1,A1             ;Pointer to start of prompt
+00001006  323C 0020                 15          MOVE.W  #(Prompt2-Prompt1),D1   ;Set prom0pt message length
+0000100A  103C 0001                 16          MOVE.B  #PRTSTR,D0              ;Set up the TRAP to print string
+0000100E  4E4F                      17          TRAP    #15                     ;Run it
+00001010                            18  
+00001010                            19  *       Get the Assigment mark from the kb and store it
+00001010  103C 0004                 20          MOVE.B  #NUMIN,D0                ;Set up trap to get number from kb
+00001014  4E4F                      21          TRAP    #15                     ;Get it
+00001016  23C1 000010EC             22          MOVE.L  D1,ASS1                 ;Store it
+0000101C                            23  
+0000101C                            24  *       Prompt for second assigment mark
+0000101C  227C 000010AC             25          MOVEA.L #PROMPT2,A1             ;Pointer to start of prompt
+00001022  323C 0020                 26          MOVE.W  #(Prompt3-Prompt2),D1   ;Set prom0pt message length
+00001026  103C 0001                 27          MOVE.B  #PRTSTR,D0              ;Set up the TRAP to print string
+0000102A  4E4F                      28          TRAP    #15                     ;Run it
+0000102C                            29  
+0000102C                            30  *       Get the Assigment mark from the kb and store it
+0000102C  103C 0004                 31          MOVE.B  #NUMIN,D0                ;Set up trap to get number from kb
+00001030  4E4F                      32          TRAP    #15                     ;Get it
+00001032  23C1 000010EC             33          MOVE.L  D1,ASS2                 ;Store it
+00001038                            34  
+00001038                            35  *       Prompt for exam mark
+00001038  227C 000010CC             36          MOVEA.L #PROMPT3,A1             ;Pointer to start of prompt
+0000103E  323C 0019                 37          MOVE.W  #(Prompt4-Prompt3),D1   ;Set prom0pt message length
+00001042  103C 0001                 38          MOVE.B  #PRTSTR,D0              ;Set up the TRAP to print string
+00001046  4E4F                      39          TRAP    #15                     ;Run it
+00001048                            40  
+00001048                            41  *       Get the Assigment mark from the kb and store it
+00001048  103C 0004                 42          MOVE.B  #NUMIN,D0               ;Set up trap to get number from kb
+0000104C  4E4F                      43          TRAP    #15                     ;Get it
+0000104E  23C1 000010EC             44          MOVE.L  D1,EXAM                 ;Store it
+00001054                            45  
+00001054                            46  *       Work out the Total Marks
+00001054  2439 000010EC             47          MOVE.L  ASS1,D2                 ;Add Assigment 1 mark to D2
+0000105A  D4B9 000010EC             48          ADD.L   ASS2,D2                 ;Add Assigment 2 mark to D2
+00001060  D4B9 000010EC             49          ADD.L   EXAM,D2                 ;Add Exam mark to D2
+00001066  23C2 000010EC             50          MOVE.L  D2,Total                ;Move D2 to total
+0000106C                            51  
+0000106C                            52  *       Display the Total Makrs
+0000106C  227C 000010E5             53          MOVEA.L #Prompt4,A1             ;Pointer to start o/p message
+00001072  323C 0006                 54          MOVE.W  #(DUMMY-PROMPT4),D1     ;Get message length
+00001076  103C 0001                 55          MOVE.B  #PRTSTR,D0              ;Set up output string trap
+0000107A  4E4F                      56          TRAP    #15                     ;Print it
+0000107C  2202                      57          MOVE.L  D2,D1
+0000107E  103C 0003                 58          MOVE.B  #NUMOUT,D0              ;Set up trap to o/p integer
+00001082  4E4F                      59          TRAP    #15                     ;Print it
+00001084                            60  
+00001084  4EE9 0002                 61          JMP     $2(A1)
+00001088  4E72 2700                 62          STOP    #$2700  
+0000108C                            63  
+0000108C                            64  
+0000108C= 50 6C 65 61 73 65 ...     65  Prompt1 DC.B    'Please enter Assigment 1 mark : '
+000010AC= 50 6C 65 61 73 65 ...     66  Prompt2 DC.B    'Please enter Assigment 2 mark : '
+000010CC= 50 6C 65 61 73 65 ...     67  Prompt3 DC.B    'Please enter Exam mark : '
+000010E5= 53 75 6D 20 3D 20         68  Prompt4 DC.B    'Sum = '
+000010EB= 01                        69  Dummy   DC.B    1
+000010EC                            70  
+000010EC                            71  ASS1    DS.L    0       ;Var for Assigment 1
+000010EC                            72  ASS2    DS.L    0       ;Var for Assigment 2
+000010EC                            73  EXAM    DS.L    0       ;Var for Exam Mark
+000010EC                            74  TOTAL   DS.L    0       ;Var for the total
+000010EC                            75  
+000010EC                            76          END     $1000
 
 No errors detected
 No warnings generated
@@ -26,7 +86,16 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-FINISH              1010
-MESSAGE             1014
-NEXT                1004
-WRCHAR              6
+ASS1                10EC
+ASS2                10EC
+DUMMY               10EB
+EXAM                10EC
+NUMIN               4
+NUMOUT              3
+PROMPT1             108C
+PROMPT2             10AC
+PROMPT3             10CC
+PROMPT4             10E5
+PRTSTR              1
+PRTSTRCRLF          0
+TOTAL               10EC
