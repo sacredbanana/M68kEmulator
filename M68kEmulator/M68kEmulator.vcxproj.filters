@@ -30,6 +30,9 @@
     <ClInclude Include="ProgramLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\packages\cppconlib.1.0.1\build\native\include\conmanip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="M68kEmulator.cpp">

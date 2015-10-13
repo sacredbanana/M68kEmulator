@@ -1056,15 +1056,25 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 				break;
 			case 11:
 			{
-				uint16_t row = D[1] & 0xFF;
-				uint16_t column = (D[1] >> 8) & 0xFF;
-				COORD coord;
-				coord.X = column;
-				coord.Y = row;
-				SetConsoleCursorPosition(
-					GetStdHandle(STD_OUTPUT_HANDLE),
-					coord
-					);
+				if ((uint16_t)D[1] == 0xFF00) {
+					// Clear screen
+#ifdef WIN32
+					system("cls");
+#endif
+				}
+				else {
+					uint16_t row = D[1] & 0xFF;
+					uint16_t column = (D[1] >> 8) & 0xFF;
+#ifdef WIN32
+					COORD coord;
+					coord.X = column;
+					coord.Y = row;
+					SetConsoleCursorPosition(
+						GetStdHandle(STD_OUTPUT_HANDLE),
+						coord
+						);
+#endif
+				}
 				break;
 			}
 			case 12:

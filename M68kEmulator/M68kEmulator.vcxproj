@@ -149,6 +149,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\packages\cppconlib.1.0.1\build\native\include\conmanip.h" />
     <ClInclude Include="CPUCore.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="ProgramLoader.h" />

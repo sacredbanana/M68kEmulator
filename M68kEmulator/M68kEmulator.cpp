@@ -32,10 +32,10 @@ int main()
 		//<< setbgcolor(console_bg_colors::cyan)
 		<< "M68kEmulator" << endl
 		<< settextcolor(console_text_colors::light_magenta)
-		<< "(c) Cameron Armstrong 2015" << endl << endl;
+		<< "Made by Cameron Armstrong 2015" << settextcolor(console_text_colors::light_green) << endl << endl;
 
 #else
-	cout << "M68kEmulator" << endl	<< "(c) Cameron Armstrong 2015" << endl << endl;
+	cout << "M68kEmulator" << endl	<< "Made by Cameron Armstrong 2015" << endl << endl;
 #endif
 
 	Memory *memory = new Memory(256);
