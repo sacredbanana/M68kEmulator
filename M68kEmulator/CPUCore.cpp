@@ -1049,6 +1049,9 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 				cin >> character;
 				writeByteToDataRegister(character, 1);
 				break;
+			case 6:
+				cout << (char)D[1];
+				break;
 			case 9:
 				break;
 			case 11:

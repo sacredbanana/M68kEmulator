@@ -69,7 +69,7 @@ void Memory::clearMemory()
 	unsigned int sizeInBytes = sizeInKB * 1024;
 
 	for (unsigned int address = 0; address < sizeInBytes; address++)
-		memoryBlock[address] = 0x00;
+		memoryBlock[address] = 0xFF;
 }
 
 void Memory::dumpMemoryToFile(string fileName)

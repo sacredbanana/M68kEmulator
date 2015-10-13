@@ -1,57 +1,23 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.04
-Created On: 10/13/2015 8:47:04 AM
+Created On: 10/13/2015 9:28:45 AM
 
-00000000                             1  *       Program which illustrates use of TRAPS on teh 60K simulator
-00000000                             2  *       Prompts user for his/her age and rewrite this to the screen
-00000000                             3  *       for the user's edification
+00000000                             1  * Test 68000 simulator program
+00000000                             2  
+00000000  =00000006                  3  WRCHAR  EQU     6                       Trap # for write D1.B char to screen
 00000000                             4  
-00000000                             5  *       Author : Greg
-00000000                             6  *       Date   : 08/01/99
-00000000                             7  
-00000000  =00000000                  8  PRTSTRCRLF      EQU     0                         TRAP function to print string + CRLF
-00000000  =00000001                  9  PRTSTR          EQU     1                       TRAP function to print character string
-00000000  =00000004                 10  NUMIN           EQU     4                       TRAP function to read integer from kb
-00000000  =00000003                 11  NUMOUT          EQU     3                       TRAP function to o/p integer to screen
-00000000                            12  
-00001000                            13          ORG     $1000
-00001000                            14  *       Prompt users for their age.
-00001000  227C 0000104E             15          MOVEA.L #PROMPT,A1              ;Pointer to start to prompt
-00001006  323C 001E                 16          MOVE.W  #(AGE-PROMPT),D1        ;Get prompt message length
-0000100A  103C 0001                 17          MOVE.B  #PRTSTR,D0              ;Set up TRAP to print string
-0000100E  4E4F                      18          TRAP    #15                     ;.. and print prompt
-00001010                            19  
-00001010                            20  *       Get age from keyboard and store it in AGE
-00001010  103C 0004                 21          MOVE.B  #NUMIN,D0               ;Set up trap to get age from kb
-00001014  4E4F                      22          TRAP    #15                     ;Get it
-00001016  23C1 0000106C             23          MOVE.L  D1,AGE                  ;.. and store it
-0000101C                            24  
-0000101C                            25  *       Output message
-0000101C  227C 00001070             26          MOVEA.L #MESSG1,A1              ;Pointer to start of o/p message
-00001022  323C 0026                 27          MOVE.W  #(MESSG2-MESSG1),D1     ;Get message length
-00001026  103C 0001                 28          MOVE.B  #PRTSTR,D0              ;Set up output string TRAP
-0000102A  4E4F                      29          TRAP    #15                     ;.. and do it
-0000102C                            30  
-0000102C                            31  *       Output twice user's age
-0000102C  2239 0000106C             32          MOVE.L  AGE,D1                  ;Get user's age
-00001032  D281                      33          ADD.L   D1,D1                   ;Double it
-00001034  103C 0003                 34          MOVE.B  #NUMOUT,D0              ;Set up TRAP to o/p integer
-00001038  4E4F                      35          TRAP    #15                     ;.. and do it
-0000103A                            36  
-0000103A                            37  *       Finish output line     
-0000103A  227C 00001096             38          MOVEA.L #MESSG2,A1              ;Point to final string
-00001040  323C 000A                 39          MOVE.W  #(COUNTER-MESSG2),D1    ;Get its length
-00001044  103C 0000                 40          MOVE.B  #PRTSTRCRLF,D0          ;TRAP to o/p string + CRLF
-00001048  4E4F                      41          TRAP    #15                     ; and do it
-0000104A  4E72 2700                 42          STOP    #$2700
-0000104E                            43  
-0000104E= 57 68 61 74 20 69 ...     44  PROMPT  DC.B    'What is your age in years? : ' 
-0000106C                            45  AGE     DS.L    1                                          ;Space for age
-00001070= 49 66 20 79 6F 75 ...     46  MESSG1  DC.B    'If you were twice as old you would be '   ;Oitput message 
-00001096= 20 79 65 61 72 73 ...     47  MESSG2  DC.B    ' years old'                               ; .. in parts
-000010A0  =000010A0                 48  COUNTER EQU     *                                          ; End of data
-000010A0                            49  
-000010A0                            50          END     $1000
+00001000                             5          ORG $1000
+00001000                             6  
+00001000  41FA 0012                  7          LEA      MESSAGE(PC),A0         Point A0 to start of message
+00001004  1218                       8  NEXT    MOVE.B  (A0)+,D1                Get character, increment pointer
+00001006  6708                       9          BEQ.S   FINISH                  Exit if end
+00001008  103C 0006                 10          MOVE.B  #WRCHAR,D0              Set up trap to write to screen
+0000100C  4E4F                      11          TRAP    #15                     Write char. to screen
+0000100E  60F4                      12          BRA.S   NEXT                    ..and loop back
+00001010  4E72 2700                 13  FINISH  STOP    #$2700                  Halt
+00001014= 54 68 69 73 20 69 ...     14  MESSAGE DC.B    'This is the message',$0D,$0A,0
+0000102A                            15  
+0000102A                            16          END     $1000
 
 No errors detected
 No warnings generated
@@ -60,12 +26,7 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-AGE                 106C
-COUNTER             10A0
-MESSG1              1070
-MESSG2              1096
-NUMIN               4
-NUMOUT              3
-PROMPT              104E
-PRTSTR              1
-PRTSTRCRLF          0
+FINISH              1010
+MESSAGE             1014
+NEXT                1004
+WRCHAR              6
