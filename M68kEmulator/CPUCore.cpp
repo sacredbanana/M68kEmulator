@@ -42,6 +42,7 @@
 #define MOVEM 0x4880
 #define NOP 0x4E71
 #define RTS 0x4E75
+#define STOP 0x4E72
 #define SWAP 0x4840
 #define TRAP 0x4E40
 
@@ -4195,6 +4196,23 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		(D[reg] >> 31) & 1 == 1 ? SR |= 1 << SR_CCR_NEGATIVE : SR &= ~(1 << SR_CCR_NEGATIVE);
 
 		return true;
+	}
+
+	// STOP Load Status Register and Stop (Privileged Instruction)
+	if (instruction == STOP) {
+		if ((SR >> SR_SUPERVISOR_MODE) & 1 == 1) {
+			if (debugMode)
+				cout << "STOP" << endl;
+			PC += 2;
+			SR = memory->readWordFromMemory(PC);
+			PC += 2;
+			return false;
+		}
+		else {
+			// TRAP HERE
+			cout << "Permission denied." << endl;
+			return false;
+		}
 	}
 
 	// Illegal instruction
