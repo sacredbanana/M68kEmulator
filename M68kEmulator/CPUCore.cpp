@@ -2,8 +2,10 @@
 #include <iostream>
 #include <iomanip>
 #include <bitset>
-#include <windows.h>
 #include <string>
+#ifdef WIN32
+#include <windows.h>
+#endif
 
 //Status Register flags
 #define SR_CCR_CARRY 0
@@ -923,9 +925,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		uint8_t vector = instruction & 15;
 		if (debugMode)
 			cout << "TRAP" << endl;
-		char character = 0;
-		unsigned int characterIndex = 0;
-		
+
 		switch (vector) {
 		case 15:
 			/* IO (Compatible with Easy68k)
@@ -1045,14 +1045,17 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 				writeLongToDataRegister(number, 1);
 				break;
 			case 5:
+			{
 				char character;
 				cin >> character;
 				writeByteToDataRegister(character, 1);
 				break;
+			}
 			case 6:
 				cout << (char)D[1];
 				break;
 			case 9:
+				return false;
 				break;
 			case 11:
 			{
@@ -1104,8 +1107,9 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 #endif
 				break;
 			case 13:
-				character = memory->readByteFromMemory(A[1]);
-				characterIndex = 0;
+			{
+				char character = memory->readByteFromMemory(A[1]);
+				unsigned int characterIndex = 0;
 				while (character != 0) {
 					cout << character;
 					characterIndex++;
@@ -1113,15 +1117,18 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 				}
 				cout << endl;
 				break;
+			}
 			case 14:
-				character = memory->readByteFromMemory(A[1]);
-				characterIndex = 0;
+			{
+				char character = memory->readByteFromMemory(A[1]);
+				unsigned int characterIndex = 0;
 				while (character != 0) {
 					cout << character;
 					characterIndex++;
 					character = memory->readByteFromMemory(A[1] + characterIndex);
 				}
 				break;
+			}
 			default:
 				cout << "Unknown IO task" << endl;
 				return false;
