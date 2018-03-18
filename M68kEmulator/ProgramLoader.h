@@ -5,7 +5,7 @@
 class ProgramLoader
 {
 public:
-	static void loadProgram(string fileName, CPUCore *cpu, Memory *memory);
+	static bool loadProgram(string fileName, CPUCore *cpu, Memory *memory);
 private:
 	static inline uint32_t extractHex(string record);
 };

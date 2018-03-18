@@ -4,7 +4,7 @@
 #include <string>
 #include <cstdlib>
 
-void ProgramLoader::loadProgram(string fileName, CPUCore *cpu, Memory *memory)
+bool ProgramLoader::loadProgram(string fileName, CPUCore *cpu, Memory *memory)
 {
 	string line;
 	ifstream programFile;
@@ -66,9 +66,11 @@ void ProgramLoader::loadProgram(string fileName, CPUCore *cpu, Memory *memory)
 		}
 		cout << "Program loaded!" << endl << endl;
 		programFile.close();
+		return true;
 	}
 
-	else cout << "Unable to open file";
+	else cout << "Unable to open file" << endl;
+	return false;
 	
 }
 

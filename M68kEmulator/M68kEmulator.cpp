@@ -41,7 +41,10 @@ int main()
 	Memory *memory = new Memory(256);
 	CPUCore *cpu = new CPUCore(memory, 68000);
 	cpu->debugMode = false;
-	ProgramLoader::loadProgram("program.S68", cpu, memory);
+	if (!ProgramLoader::loadProgram("program.S68", cpu, memory)) {
+		cout << "Program loader failed. Exiting." << endl;
+		return 1;
+	}
 	bool cpuRunning = true;
 	while (cpuRunning)
 		cpuRunning = cpu->startNextCycle();
