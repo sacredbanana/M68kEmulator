@@ -3,6 +3,12 @@
 #include <iomanip>
 #include <bitset>
 #include <string>
+#include <sstream>
+#ifdef _DEBUG
+#define DEBUG_MODE 1
+#else
+#define DEBUG_MODE 0
+#endif
 #ifdef WIN32
 #include <windows.h>
 #endif
@@ -151,9 +157,16 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	uint32_t absoluteAddress = 0;
 	uint8_t indexRegister = 0;
 	uint8_t indexSize = 0;
+	// debugging variables
+	string descriptiveInstruction = "";
+	string descriptiveSize = "";
+	string descriptiveAddressingMode = "";
+	ostringstream operand1;
+	ostringstream operand2;
+	ostringstream fullInstruction;
 
-	if (debugMode)
-		cout << hex << uppercase << "The instruction is: " << instruction << " and PC is: " << PC << dec << endl;
+	if (DEBUG_MODE)
+		cout << hex << uppercase << "Instruction: "<< instruction << endl << "PC: " << PC << dec << endl;
 	
 	// CLR (Clear an Operand)
 	if ((instruction & 0xFF00) == CLR) {
@@ -166,11 +179,62 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		int mode = ((instruction >> 3) & 7);
 		int reg = (instruction & 7);
 
-		if (debugMode) {
-			cout << "WE HAVE A CLEAR" << endl;
-			cout << "Size is: " << size << endl;
-			cout << "Mode is: " << mode << endl;
-			cout << "Address register is: " << reg << endl << endl;
+		if (DEBUG_MODE) {
+			descriptiveInstruction = "Clear";
+			switch (size) {
+			case SIZE_BYTE:
+				descriptiveSize = "Byte";
+				break;
+			case SIZE_WORD:
+				descriptiveSize = "Word";
+				break;
+			case SIZE_LONG:
+				descriptiveSize = "Long";
+				break;
+			default:
+				descriptiveSize = "? *Illegal size*";
+			}
+			switch (mode) {
+			case ADDRESS_MODE_DATA_REGISTER_DIRECT:
+				descriptiveAddressingMode = "Data register direct";
+				operand1 << "D" << reg;
+				break;
+			case ADDRESS_MODE_ADDRESS_REGISTER_DIRECT:
+				descriptiveAddressingMode = "Address register direct *Illegal address mode*";
+				break;
+			case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT:
+				descriptiveAddressingMode = "Address register indirect";
+				operand1 << "(A" << reg << ")";
+				break;
+			case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_POSTINCREMENT:
+				descriptiveAddressingMode = "Address register indirect with postincrement";
+				operand1 << "(A" << reg << ")+";
+				break;
+			case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_PREDECREMENT:
+				descriptiveAddressingMode = "Address register indirect with predecrement";
+				operand1 << "-(A" << reg << ")";
+				break;
+			case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
+				descriptiveAddressingMode = "Address register indirect with displacement";
+				displacement = memory->readWordFromMemory(PC);
+				operand1 << displacement << "(A" << reg << ")";
+				break;
+			case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_INDEX:
+				descriptiveAddressingMode = "Address register indirect with displacement";
+				displacement = memory->readWordFromMemory(PC);
+				operand1 << displacement << "(A" << reg << ")";
+				break;
+			}
+
+			fullInstruction << "CLR." << descriptiveSize[0] << " " << operand1.str();
+
+			cout << "Instruction description: " << descriptiveInstruction << endl;
+			cout << "Size: " << hex << uppercase << size << endl;
+			cout << "Size description: " << descriptiveSize << endl;
+			cout << "Mode: " << hex << uppercase << mode << endl;
+			cout << "Mode description: " << descriptiveAddressingMode << endl;
+			cout << "Address register: " << hex << uppercase << reg << endl;
+			cout << "Full instruction: " << fullInstruction.str() << endl << endl;
 		}
 
 		switch (mode) {
@@ -225,7 +289,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Displacement: " << displacement << endl;
 			if (size == SIZE_BYTE)
 				memory->writeByteToMemory(0, A[reg], displacement);
@@ -305,7 +369,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		int mode = ((instruction >> 3) & 7);
 		int reg = (instruction & 7);
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "JUMPING" << endl;
 			cout << "Mode is: " << mode << endl;
 			cout << "Address register is: " << reg << endl << endl;
@@ -319,7 +383,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Displacement: " << displacement << endl;
 			PC = A[reg] + displacement - 2;
 			return true;
@@ -365,7 +429,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_DISPLACEMENT:
 				PC += 2;
 				displacement = memory->readWordFromMemory(PC);
-				if (debugMode)
+				if (DEBUG_MODE)
 					cout << "Displacement: " << displacement << endl;
 				PC += displacement - 2;;
 				break;
@@ -413,7 +477,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		int destinationMode = ((instruction >> 6) & 7);
 		int destinationReg = ((instruction >> 9) & 7);
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "WE HAVE A MOVE BYTE" << endl;
 			cout << "Source mode is: " << sourceMode << endl;
 			cout << "Source address register is: " << sourceReg << endl;
@@ -439,7 +503,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Displacement: " << displacement << endl;
 			data = memory->readByteFromMemory(A[sourceReg], displacement);
 			break;
@@ -480,7 +544,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_DISPLACEMENT:
 				PC += 2;
 				displacement = memory->readWordFromMemory(PC);
-				if (debugMode)
+				if (DEBUG_MODE)
 					cout << "Displacement: " << displacement << endl;
 				data = memory->readByteFromMemory(PC, displacement);
 				break;
@@ -616,7 +680,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		int destinationMode = ((instruction >> 6) & 7);
 		int destinationReg = ((instruction >> 9) & 7);
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "WE HAVE A MOVE" << endl;
 			cout << "Source mode is: " << sourceMode << endl;
 			cout << "Source address register is: " << sourceReg << endl;
@@ -660,7 +724,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Displacement: " << displacement << endl;
 			if (size == SIZE_WORD)
 				data = memory->readWordFromMemory(A[sourceReg], displacement);
@@ -717,7 +781,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_DISPLACEMENT:
 				PC += 2;
 				displacement = memory->readWordFromMemory(PC);
-				if (debugMode)
+				if (DEBUG_MODE)
 					cout << "Displacement: " << displacement << endl;
 				if (size == SIZE_WORD) {
 					data = memory->readWordFromMemory(PC, displacement);
@@ -831,7 +895,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Displacement: " << displacement << endl;
 			if (size == SIZE_WORD)
 				memory->writeWordToMemory(data, A[destinationReg], displacement);
@@ -906,7 +970,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		SR &= ~(1 << SR_CCR_CARRY);
 		data = instruction & 0xFF;
 		int destinationReg = ((instruction >> 9) & 7);
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "WE HAVE A MOVE QUICK" << endl;
 			cout << "Data is: " << hex << data << dec << endl;
 			cout << "Destination register is: " << destinationReg << endl;
@@ -923,7 +987,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	// TRAP
 	if ((instruction & 0xFFF0) == TRAP) {
 		uint8_t vector = instruction & 15;
-		if (debugMode)
+		if (DEBUG_MODE)
 			cout << "TRAP" << endl;
 
 		switch (vector) {
@@ -1021,7 +1085,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 				string inputString;
 				cin >> inputString;
 
-				writeWordToDataRegister(inputString.length(), 1);
+				writeWordToDataRegister((uint16_t)inputString.length(), 1);
 
 				int index = 0;
 
@@ -1144,7 +1208,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 	// NOP (No Operation)
 	if (instruction == NOP) {
-		if (debugMode)
+		if (DEBUG_MODE)
 			cout << "NO OPERATION" << endl;
 
 		return true;
@@ -1157,7 +1221,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		int sourceReg = (instruction & 7);
 		int destinationReg = ((instruction >> 9) & 7);
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "LOADING EFFECTIVE ADDRESS" << endl;
 			cout << "Source mode is: " << sourceMode << endl;
 			cout << "Source address register is: " << sourceReg << endl;
@@ -1171,7 +1235,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Displacement: " << displacement << endl;
 			A[destinationReg] = A[sourceReg] + displacement;
 			break;
@@ -1212,7 +1276,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_DISPLACEMENT:
 				PC += 2;
 				displacement = memory->readWordFromMemory(PC);
-				if (debugMode)
+				if (DEBUG_MODE)
 					cout << "Displacement: " << displacement << endl;
 				A[destinationReg] = PC + displacement;
 				break;
@@ -1269,7 +1333,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		if (size > 3)
 			registerIsSource = true;
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "WE HAVE AN ADD" << endl;
 			cout << "Mode is: " << mode << endl;
 			cout << "Data register is: " << dataReg << endl;
@@ -1304,7 +1368,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		switch (mode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Data: " << data << endl;
 			if (size == SIZE_BYTE || (size - 4) == SIZE_BYTE) {
 				data2 = (uint8_t)D[addressRegister];
@@ -1347,7 +1411,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			}
 			break;
 		case ADDRESS_MODE_ADDRESS_REGISTER_DIRECT:
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Data: " << data << endl;
 			if (size == SIZE_BYTE || (size - 4) == SIZE_BYTE) {
 				cout << "Invalid addressing mode." << endl;
@@ -1520,7 +1584,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Displacement: " << displacement << endl;
 			if (size == SIZE_BYTE || (size - 4) == SIZE_BYTE) {
 				data2 = memory->readByteFromMemory(A[addressRegister], displacement);
@@ -1713,7 +1777,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_DISPLACEMENT:
 				PC += 2;
 				displacement = memory->readWordFromMemory(PC);
-				if (debugMode)
+				if (DEBUG_MODE)
 					cout << "Displacement: " << displacement << endl;
 				if (size == SIZE_BYTE) {
 					data2 = memory->readByteFromMemory(PC, displacement);
@@ -1873,7 +1937,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		int dataReg = (instruction >> 9) & 7;
 		int addressRegister = instruction & 7;
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "WE HAVE AN ADDA" << endl;
 			cout << "Mode is: " << mode << endl;
 			cout << "Destination address register is: " << dataReg << endl;
@@ -1887,7 +1951,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		switch (mode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Data: " << data << endl;
 			if (size == SIZE_WORD) {
 				data2 = (uint16_t)D[addressRegister];
@@ -1901,7 +1965,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			}
 			break;
 		case ADDRESS_MODE_ADDRESS_REGISTER_DIRECT:
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Data: " << data << endl;
 			if (size == SIZE_WORD) {
 				data2 = (uint16_t)A[addressRegister];
@@ -1957,7 +2021,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Displacement: " << displacement << endl;
 			if (size == SIZE_WORD) {
 				data2 = memory->readWordFromMemory(A[addressRegister], displacement);
@@ -2034,7 +2098,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_DISPLACEMENT:
 				PC += 2;
 				displacement = memory->readWordFromMemory(PC);
-				if (debugMode)
+				if (DEBUG_MODE)
 					cout << "Displacement: " << displacement << endl;
 				if (size == SIZE_WORD) {
 					data2 = memory->readWordFromMemory(PC, displacement);
@@ -2116,7 +2180,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		int mode = ((instruction >> 3) & 7);
 		int destinationReg = (instruction & 7);
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "WE HAVE AN ADD IMMEDIATE" << endl;
 			cout << "Mode is: " << mode << endl;
 			cout << "Destination address register is: " << destinationReg << endl << endl;
@@ -2140,7 +2204,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		switch (mode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Data: " << data << endl;
 			if (size == SIZE_BYTE) {
 				data2 = (uint8_t)D[destinationReg];
@@ -2243,7 +2307,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Displacement: " << displacement << endl;
 			if (size == SIZE_BYTE) {
 				data2 = memory->readByteFromMemory(A[destinationReg], displacement);
@@ -2406,7 +2470,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		data = (instruction >> 9) & 7;
 		mostSignificantBitSource = (data >> 2) & 1;
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "WE HAVE AN ADD QUICK" << endl;
 			cout << "Mode is: " << mode << endl;
 			cout << "Destination address register is: " << destinationReg << endl << endl;
@@ -2414,7 +2478,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		switch (mode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Data: " << data << endl;
 			if (size == SIZE_BYTE) {
 				data2 = (uint8_t)D[destinationReg];
@@ -2533,7 +2597,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Displacement: " << displacement << endl;
 			if (size == SIZE_BYTE) {
 				data2 = memory->readByteFromMemory(A[destinationReg], displacement);
@@ -2696,7 +2760,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		int dataReg = (instruction >> 9) & 7;
 		int addressRegister = instruction & 7;
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "WE HAVE A COMPARE" << endl;
 			cout << "Mode is: " << mode << endl;
 			cout << "Data register is: " << dataReg << endl;
@@ -2718,7 +2782,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		switch (mode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Data: " << data << endl;
 			if (size == SIZE_BYTE) {
 				data2 = (uint8_t)D[addressRegister];
@@ -2740,7 +2804,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			}
 			break;
 		case ADDRESS_MODE_ADDRESS_REGISTER_DIRECT:
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Data: " << data << endl;
 			if (size == SIZE_BYTE) {
 				cout << "Invalid addressing mode." << endl;
@@ -2828,7 +2892,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Displacement: " << displacement << endl;
 			if (size == SIZE_BYTE) {
 				data2 = memory->readByteFromMemory(A[addressRegister], displacement);
@@ -2937,7 +3001,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_DISPLACEMENT:
 				PC += 2;
 				displacement = memory->readWordFromMemory(PC);
-				if (debugMode)
+				if (DEBUG_MODE)
 					cout << "Displacement: " << displacement << endl;
 				if (size == SIZE_BYTE) {
 					data2 = memory->readByteFromMemory(PC, displacement);
@@ -3075,7 +3139,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		int addressRegister = (instruction >> 9) & 7;
 		int reg = instruction & 7;
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "WE HAVE A COMPARE ADDRESS" << endl;
 			cout << "Mode is: " << mode << endl;
 			cout << "Dest register is: " << reg << endl;
@@ -3098,7 +3162,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 		switch (mode) {
 		case ADDRESS_MODE_DATA_REGISTER_DIRECT:
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Data: " << data << endl;
 			if (size == SIZE_WORD) {
 				data2 = (uint16_t)D[reg];
@@ -3114,7 +3178,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			}
 			break;
 		case ADDRESS_MODE_ADDRESS_REGISTER_DIRECT:
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Data: " << data << endl;
 			if (size == SIZE_WORD) {
 				data2 = (uint16_t)A[reg];
@@ -3178,7 +3242,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Displacement: " << displacement << endl;
 			if (size == SIZE_WORD) {
 				data2 = memory->readWordFromMemory(A[reg], displacement);
@@ -3264,7 +3328,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			case ADDRESS_MODE_PROGRAM_COUNTER_WITH_DISPLACEMENT:
 				PC += 2;
 				displacement = memory->readWordFromMemory(PC);
-				if (debugMode)
+				if (DEBUG_MODE)
 					cout << "Displacement: " << displacement << endl;
 				if (size == SIZE_WORD) {
 					data2 = memory->readWordFromMemory(PC, displacement);
@@ -3347,7 +3411,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 	// BSR (Branch to Subroutine)
 	if ((instruction & 0xFF00) == BSR) {
-		if (debugMode)
+		if (DEBUG_MODE)
 			cout << "Branch to subroutine" << endl;
 		SP -= 2;
 		memory->writeWordToMemory(PC,SP);
@@ -3380,7 +3444,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		}
 
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "We have a branch" << endl;
 			cout << "Displacement: " << hex << displacement << endl;
 		}
@@ -3419,7 +3483,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		}
 		
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "We have a branch" << endl;
 			cout << "Displacement: " << hex << displacement << endl;
 		}
@@ -3438,7 +3502,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			displacement = memory->readWordFromMemory(PC);
 		}
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "We have a conditional branch" << endl;
 			cout << "Displacement: " << hex << displacement << endl;
 		}
@@ -3527,7 +3591,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		uint16_t address = memory->readWordFromMemory(SP);
 		SP += 2;
 		PC = address + 2;
-		if (debugMode)
+		if (DEBUG_MODE)
 			cout << "Returning from subroutine" << endl;
 		return true;
 	}
@@ -3542,7 +3606,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		PC += 2;
 		uint16_t registerListMask = memory->readWordFromMemory(PC);
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "We have a MOVEM" << endl;
 			cout << "Direction: " << direction << " Size: " << size << hex << uppercase << endl << "Register list mask: " << registerListMask << endl;
 		}
@@ -3554,7 +3618,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			if (direction == 0) {
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> i) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Uploading data register: " << i << endl;
 						if (size == SIZE_WORD) {
 							memory->writeWordToMemory((uint16_t)D[i], A[reg], offset);
@@ -3569,7 +3633,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> (i + 8)) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Uploading address register: " << i << endl;
 						if (size == SIZE_WORD) {
 							memory->writeWordToMemory((uint16_t)A[i], A[reg], offset);
@@ -3585,7 +3649,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			else {
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> i) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Downloading data register: " << i << endl;
 						if (size == SIZE_WORD) {
 							D[i] = memory->readWordFromMemory(A[reg], offset);
@@ -3600,7 +3664,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> i) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Downloading address register: " << i << endl;
 						if (size == SIZE_WORD) {
 							A[i] = memory->readWordFromMemory(A[reg], offset);
@@ -3622,7 +3686,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 			for (int i = 0; i < 8; i++) {
 				if (((registerListMask >> i) & 1) == 1) {
-					if (debugMode)
+					if (DEBUG_MODE)
 						cout << "Uploading data register: " << i << endl;
 					if (size == SIZE_WORD) {
 						memory->writeWordToMemory((uint16_t)D[i], A[reg]);
@@ -3637,7 +3701,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 			for (int i = 0; i < 8; i++) {
 				if (((registerListMask >> (i + 8)) & 1) == 1) {
-					if (debugMode)
+					if (DEBUG_MODE)
 						cout << "Uploading address register: " << i << endl;
 					if (size == SIZE_WORD) {
 						memory->writeWordToMemory((uint16_t)A[i], A[reg]);
@@ -3658,7 +3722,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 			for (int i = 0; i < 8; i++) {
 				if (((registerListMask >> i) & 1) == 1) {
-					if (debugMode)
+					if (DEBUG_MODE)
 						cout << "Downloading address register: " << i << endl;
 					if (size == SIZE_WORD) {
 						A[reg] -= 2;
@@ -3673,7 +3737,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 			for (int i = 0; i < 8; i++) {
 				if (((registerListMask >> i) & 1) == 1) {
-					if (debugMode)
+					if (DEBUG_MODE)
 						cout << "Downloading data register: " << i << endl;
 					if (size == SIZE_WORD) {
 						A[reg] -= 2;
@@ -3689,13 +3753,13 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Displacement: " << displacement << endl;
 
 			if (direction == 0) {
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> i) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Uploading data register: " << i << endl;
 						if (size == SIZE_WORD) {
 							memory->writeWordToMemory((uint16_t)D[i], A[reg], offset + displacement);
@@ -3710,7 +3774,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> (i + 8)) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Uploading address register: " << i << endl;
 						if (size == SIZE_WORD) {
 							memory->writeWordToMemory((uint16_t)A[i], A[reg], offset + displacement);
@@ -3726,7 +3790,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			else {
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> i) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Downloading data register: " << i << endl;
 						if (size == SIZE_WORD) {
 							D[i] = memory->readWordFromMemory(A[reg], offset + displacement);
@@ -3741,7 +3805,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> i) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Downloading address register: " << i << endl;
 						if (size == SIZE_WORD) {
 							A[i] = memory->readWordFromMemory(A[reg], offset + displacement);
@@ -3778,7 +3842,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			if (direction == 0) {
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> i) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Uploading data register: " << i << endl;
 						if (size == SIZE_WORD) {
 							memory->writeWordToMemory((uint16_t)D[i], A[reg], offset + longDisplacement);
@@ -3793,7 +3857,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> (i + 8)) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Uploading address register: " << i << endl;
 						if (size == SIZE_WORD) {
 							memory->writeWordToMemory((uint16_t)A[i], A[reg], offset + longDisplacement);
@@ -3809,7 +3873,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 			else {
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> i) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Downloading data register: " << i << endl;
 						if (size == SIZE_WORD) {
 							D[i] = memory->readWordFromMemory(A[reg], offset + longDisplacement);
@@ -3824,7 +3888,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> i) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Downloading address register: " << i << endl;
 						if (size == SIZE_WORD) {
 							A[i] = memory->readWordFromMemory(A[reg], offset + longDisplacement);
@@ -3846,7 +3910,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 				if (direction == 0) {
 					for (int i = 0; i < 8; i++) {
 						if (((registerListMask >> i) & 1) == 1) {
-							if (debugMode)
+							if (DEBUG_MODE)
 								cout << "Uploading data register: " << i << endl;
 							if (size == SIZE_WORD) {
 								memory->writeWordToMemory((uint16_t)D[i], absoluteAddress, offset);
@@ -3861,7 +3925,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 					for (int i = 0; i < 8; i++) {
 						if (((registerListMask >> (i + 8)) & 1) == 1) {
-							if (debugMode)
+							if (DEBUG_MODE)
 								cout << "Uploading address register: " << i << endl;
 							if (size == SIZE_WORD) {
 								memory->writeWordToMemory((uint16_t)A[i], absoluteAddress, offset);
@@ -3877,7 +3941,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 				else {
 					for (int i = 0; i < 8; i++) {
 						if (((registerListMask >> i) & 1) == 1) {
-							if (debugMode)
+							if (DEBUG_MODE)
 								cout << "Downloading data register: " << i << endl;
 							if (size == SIZE_WORD) {
 								D[i] = memory->readWordFromMemory(absoluteAddress, offset);
@@ -3892,7 +3956,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 					for (int i = 0; i < 8; i++) {
 						if (((registerListMask >> i) & 1) == 1) {
-							if (debugMode)
+							if (DEBUG_MODE)
 								cout << "Downloading address register: " << i << endl;
 							if (size == SIZE_WORD) {
 								A[i] = memory->readWordFromMemory(absoluteAddress, offset);
@@ -3912,7 +3976,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 				if (direction == 0) {
 					for (int i = 0; i < 8; i++) {
 						if (((registerListMask >> i) & 1) == 1) {
-							if (debugMode)
+							if (DEBUG_MODE)
 								cout << "Uploading data register: " << i << endl;
 							if (size == SIZE_WORD) {
 								memory->writeWordToMemory((uint16_t)D[i], absoluteAddress, offset);
@@ -3927,7 +3991,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 					for (int i = 0; i < 8; i++) {
 						if (((registerListMask >> (i + 8)) & 1) == 1) {
-							if (debugMode)
+							if (DEBUG_MODE)
 								cout << "Uploading address register: " << i << endl;
 							if (size == SIZE_WORD) {
 								memory->writeWordToMemory((uint16_t)A[i], absoluteAddress, offset);
@@ -3943,7 +4007,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 				else {
 					for (int i = 0; i < 8; i++) {
 						if (((registerListMask >> i) & 1) == 1) {
-							if (debugMode)
+							if (DEBUG_MODE)
 								cout << "Downloading data register: " << i << endl;
 							if (size == SIZE_WORD) {
 								D[i] = memory->readWordFromMemory(absoluteAddress, offset);
@@ -3958,7 +4022,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 					for (int i = 0; i < 8; i++) {
 						if (((registerListMask >> i) & 1) == 1) {
-							if (debugMode)
+							if (DEBUG_MODE)
 								cout << "Downloading address register: " << i << endl;
 							if (size == SIZE_WORD) {
 								A[i] = memory->readWordFromMemory(absoluteAddress, offset);
@@ -3981,12 +4045,12 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 				PC += 2;
 				displacement = memory->readWordFromMemory(PC);
-				if (debugMode)
+				if (DEBUG_MODE)
 					cout << "Displacement: " << displacement << endl;
 
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> i) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Downloading data register: " << i << endl;
 						if (size == SIZE_WORD) {
 							D[i] = memory->readWordFromMemory(PC, offset + displacement);
@@ -4001,7 +4065,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> i) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Downloading address register: " << i << endl;
 						if (size == SIZE_WORD) {
 							A[i] = memory->readWordFromMemory(PC, offset + displacement);
@@ -4041,7 +4105,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> i) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Downloading data register: " << i << endl;
 						if (size == SIZE_WORD) {
 							D[i] = memory->readWordFromMemory(PC, offset + displacement);
@@ -4056,7 +4120,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 
 				for (int i = 0; i < 8; i++) {
 					if (((registerListMask >> i) & 1) == 1) {
-						if (debugMode)
+						if (DEBUG_MODE)
 							cout << "Downloading address register: " << i << endl;
 						if (size == SIZE_WORD) {
 							A[i] = memory->readWordFromMemory(PC, offset + displacement);
@@ -4089,7 +4153,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		int mode = ((instruction >> 3) & 7);
 		int reg = (instruction & 7);
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "WE HAVE A MOVE BYTE" << endl;
 			cout << "Mode is: " << mode << endl;
 			cout << "Address register is: " << reg << endl;
@@ -4113,7 +4177,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		case ADDRESS_MODE_ADDRESS_REGISTER_INDIRECT_WITH_DISPLACEMENT:
 			PC += 2;
 			displacement = memory->readWordFromMemory(PC);
-			if (debugMode)
+			if (DEBUG_MODE)
 				cout << "Displacement: " << displacement << endl;
 			memory->writeWordToMemory(SR, A[reg], displacement);
 			break;
@@ -4173,7 +4237,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		int register2 = instruction & 7;
 		int mode = (instruction >> 3) & 0x1F;
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "We have an exchange" << endl;
 			cout << "Register 1: " << register1 << " Register 2: " << register2 << " Mode: " << mode << endl;
 		}
@@ -4200,7 +4264,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	if ((instruction & 0xFFF8) == SWAP) {
 		int reg = instruction & 7;
 
-		if (debugMode) {
+		if (DEBUG_MODE) {
 			cout << "We have a swap" << endl;
 			cout << "Register: " << reg << endl;
 		}
@@ -4213,15 +4277,15 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 		D[reg] += temp;
 
 		D[reg] == 0 ? SR |= 1 << SR_CCR_ZERO : SR &= ~(1 << SR_CCR_ZERO);
-		(D[reg] >> 31) & 1 == 1 ? SR |= 1 << SR_CCR_NEGATIVE : SR &= ~(1 << SR_CCR_NEGATIVE);
+		((D[reg] >> 31) & 1) == 1 ? SR |= 1 << SR_CCR_NEGATIVE : SR &= ~(1 << SR_CCR_NEGATIVE);
 
 		return true;
 	}
 
 	// STOP Load Status Register and Stop (Privileged Instruction)
 	if (instruction == STOP) {
-		if ((SR >> SR_SUPERVISOR_MODE) & 1 == 1) {
-			if (debugMode)
+		if (((SR >> SR_SUPERVISOR_MODE) & 1) == 1) {
+			if (DEBUG_MODE)
 				cout << "STOP" << endl;
 			PC += 2;
 			SR = memory->readWordFromMemory(PC);
@@ -4236,7 +4300,7 @@ bool CPUCore::decodeInstruction(uint16_t instruction)
 	}
 
 	// Illegal instruction
-	cout << "Illegal instruction " << uppercase << hex << instruction << " at address: " << PC << endl;
+	cout << endl << "Illegal instruction " << uppercase << hex << instruction << " at address: " << PC << endl;
 	return false;
 }
 
@@ -4277,6 +4341,34 @@ void CPUCore::writeLongToAddressRegister(uint32_t data, int reg)
 void CPUCore::setProgramCounter(unsigned int memoryLocation) 
 {
 	PC = memoryLocation;
+}
+
+void CPUCore::setAllRegisters(uint32_t value)
+{
+	for (int reg = 0; reg <= 7; reg++) {
+		D[reg] = value;
+		A[reg] = value;
+	}
+}
+
+uint32_t CPUCore::getDataRegister(int reg) 
+{
+	return D[reg];
+}
+
+uint32_t CPUCore::getAddressRegister(int reg)
+{
+	return A[reg];
+}
+
+void CPUCore::setDataRegister(int reg, uint32_t data)
+{
+	D[reg] = data;
+}
+
+void CPUCore::setAddressRegister(int reg, uint32_t data)
+{
+	A[reg] = data;
 }
 
 void CPUCore::displayInfo()

@@ -9,10 +9,10 @@ class Memory
 private:
 	uint8_t *memoryBlock;
 	unsigned int sizeInKB;
-	void clearMemory();
+	void clearMemory(uint8_t value);
 	void insertString(string s, unsigned int address);
 public:
-	Memory(unsigned int sizeInKB = 256);
+	Memory(unsigned int sizeInKB = 64);
 	~Memory();
 	uint32_t startingLocation = 0;
 	uint8_t readByteFromMemory(uint32_t address, int offset = 0);

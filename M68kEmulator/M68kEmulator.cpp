@@ -5,6 +5,11 @@
 #include "Memory.h"
 #include "ProgramLoader.h"
 #include <iostream>
+#ifdef _DEBUG
+#define DEBUG_MODE 1
+#else
+#define DEBUG_MODE 0
+#endif
 #ifdef WIN32
 #include "conmanip.h"
 using namespace conmanip;
@@ -32,15 +37,14 @@ int main()
 		//<< setbgcolor(console_bg_colors::cyan)
 		<< "M68kEmulator" << endl
 		<< settextcolor(console_text_colors::light_magenta)
-		<< "Made by Cameron Armstrong 2015" << settextcolor(console_text_colors::light_green) << endl << endl;
+		<< "Made by Cameron Armstrong 2015-2018" << settextcolor(console_text_colors::light_green) << endl << endl;
 
 #else
-	cout << "M68kEmulator" << endl	<< "Made by Cameron Armstrong 2015" << endl << endl;
+	cout << "M68kEmulator" << endl	<< "Made by Cameron Armstrong 2015-2018" << endl << endl;
 #endif
 
 	Memory *memory = new Memory(256);
 	CPUCore *cpu = new CPUCore(memory, 68000);
-	cpu->debugMode = false;
 	if (!ProgramLoader::loadProgram("program.S68", cpu, memory)) {
 		cout << "Program loader failed. Exiting." << endl;
 		return 1;
@@ -49,7 +53,7 @@ int main()
 	while (cpuRunning)
 		cpuRunning = cpu->startNextCycle();
 	cout << endl << "Execution completed." << endl << endl;
-	if (cpu->debugMode) {
+	if (DEBUG_MODE) {
 		cpu->displayInfo();
 		memory->dumpMemoryToConsole();
 		memory->dumpMemoryToFile("core_dump.txt");

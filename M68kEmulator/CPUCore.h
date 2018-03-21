@@ -14,6 +14,7 @@ private:
 
 	enum models {
 		MC68000 = 68000,
+		MC68010 = 68010,
 		MC68020 = 68020,
 		MC68040 = 68040,
 		MC68060 = 68060
@@ -31,9 +32,18 @@ private:
 public:
 	CPUCore(Memory *memory, int model);
 	~CPUCore();
-	bool debugMode = false;
 	bool startNextCycle();
 	void displayInfo();
 	void setProgramCounter(unsigned int memoryLocation);
+	// Sets all data and address registers to a value. Used for testing.
+	void setAllRegisters(uint32_t value);
+	// Returns the contents of data register
+	uint32_t getDataRegister(int reg);
+	// Returns the contents of address register
+	uint32_t getAddressRegister(int reg);
+	// Set the contents of data register
+	void setDataRegister(int reg, uint32_t data);
+	// Set the contents of data register
+	void setAddressRegister(int reg, uint32_t data);
 };
 

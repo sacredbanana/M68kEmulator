@@ -9,7 +9,7 @@ Memory::Memory(unsigned int sizeinKB)
 	this->sizeInKB = sizeinKB;
 	unsigned int sizeInBytes = sizeinKB * 1024;
 	memoryBlock = new uint8_t[sizeInBytes];
-	clearMemory();
+	clearMemory(0);
 }
 
 
@@ -64,12 +64,12 @@ void Memory::writeLongToMemory(uint32_t data, uint32_t address, int offset)
 	memoryBlock[address + 3 + offset] = fourthByte;
 }
 
-void Memory::clearMemory()
+void Memory::clearMemory(uint8_t value)
 {
 	unsigned int sizeInBytes = sizeInKB * 1024;
 
 	for (unsigned int address = 0; address < sizeInBytes; address++)
-		memoryBlock[address] = 0xFF;
+		memoryBlock[address] = value;
 }
 
 void Memory::dumpMemoryToFile(string fileName)
@@ -130,7 +130,6 @@ void Memory::dumpMemoryToConsole(unsigned int rowsToShow)
 				cout << dec << character;
 		}
 		cout << endl;
-		
 	}
 }
 
